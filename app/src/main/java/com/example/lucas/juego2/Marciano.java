@@ -18,7 +18,6 @@ public class Marciano {
     private ArrayList<RectF> balas;
     private RectF contenedor, aux;
     private Paint p;
-    private int vBala = 5;
 
 
     //------------------------CONSTRUCTOR------------------------
@@ -41,7 +40,7 @@ public class Marciano {
         balas = new ArrayList<RectF>();
 
     }
-//------------------------GETTER AND SETTER------------------------
+    //------------------------GETTER AND SETTER------------------------
 
 
     public PointF getPos() {

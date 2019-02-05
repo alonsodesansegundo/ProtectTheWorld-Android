@@ -10,15 +10,14 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 
 public class Nave {
-    public PointF pos;
-    public Bitmap imagen;
-    public int salud;
-    public RectF contenedor;
+    private PointF pos;
+    private Bitmap imagen;
+    private RectF contenedor;
     //para el proyectil
-    public boolean hayBala;
-    public RectF bala;
-    public Paint p;
-    public float vBala;
+    private boolean hayBala;
+    private RectF bala;
+    private Paint p;
+    private float vBala;
     public Nave(Bitmap imagen,float x,float y,float velocidadBala) {
         this.pos=new PointF(x,y);
         this.imagen = imagen;
@@ -29,6 +28,28 @@ public class Nave {
 
         contenedor=new RectF(pos.x,pos.y,pos.x+imagen.getWidth(),pos.y+imagen.getWidth());
     }
+
+    public boolean getHayBala() {
+        return hayBala;
+    }
+
+    public Bitmap getImagen() {
+        return imagen;
+    }
+
+    public void setHayBala(boolean hayBala) {
+        this.hayBala = hayBala;
+    }
+
+    public RectF getContenedor() {
+        return contenedor;
+    }
+
+
+    public RectF getBala() {
+        return bala;
+    }
+
     //metodo al que le paso la posicion x y se encarga de mover la nave (su pos x)
     public void moverNave(float nuevaX){
         this.pos.x=nuevaX-imagen.getWidth()/2;

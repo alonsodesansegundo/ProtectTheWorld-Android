@@ -16,182 +16,92 @@ import java.util.ArrayList;
 import java.util.Timer;
 
 public class Gameplay extends Pantalla {
+    //------------------------PROPIEDADES GAMEPLAY------------------------
     Rect back;
     int nivel;
     Bitmap imgMarciano1, imgMarciano2, imgNave;
-    float primeraX = 0;
-    float primeraY = 0;
+    float primeraX;
+    float primeraY;
     int filas, columnas;
     Marciano marcianos[][];
     Nave miNave;
-    boolean voyIzquierda = false;
-    boolean voyAbajo = false;
+    boolean voyIzquierda;
+    boolean voyAbajo;
     double vMarciano;
-    Paint pincelMarcianos;
-
-    Boolean mueveNave = false;
-    ArrayList misColumnas = new ArrayList();
+    Boolean mueveNave;
+    Boolean btnBack = false;
+    ArrayList misColumnas;
     ArrayList<BalaMarciano> balasMarcianos;
 
+    //------------------------CONSTRUCTOR------------------------
     public Gameplay(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
         super(contexto, idPantalla, anchoPantalla, altoPantalla);
+        //POSICIÓN PRIMER MARCIANO
+        primeraX = 0;
+        primeraY = altoPantalla / 10;
+        //al comienzo los marcianos se moverán hacia la derecha
+        voyIzquierda = false;
+        //al comienzo los marcianos no irán hacia abajo ya
+        voyAbajo = false;
+        //al comienzo la nave todavía no se mueve
+        mueveNave = false;
+        //nivel inicial
         nivel = 0;
+        //filas y columnas de marcianos
         filas = 5;
         columnas = 6;
-        marcianos = new Marciano[filas][columnas];  //cinco filas seis columnas
-        //velocidad de los marcianos al comienzo
+        marcianos = new Marciano[filas][columnas];  //cinco filas seis columnas de marcianos
+        //velocidad de movimiento lateral de los marcianos al comienzo
         vMarciano = 0.5;
-        pincelMarcianos = new Paint();
-        pincelMarcianos.setColor(Color.WHITE);
+        //boton volver al menu principal
         back = new Rect(anchoPantalla - anchoPantalla / 10, 0, anchoPantalla, anchoPantalla / 10);
 
+        //imagen marcianos impacto 1
         imgMarciano1 = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.marciano1);
         imgMarciano1 = Bitmap.createScaledBitmap(imgMarciano1, anchoPantalla / 20, altoPantalla / 30, true);
 
+        //imagen marcianos impacto 2
         imgMarciano2 = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.marciano2);
         imgMarciano2 = Bitmap.createScaledBitmap(imgMarciano2, anchoPantalla / 20, altoPantalla / 30, true);
 
         //llenar de marcianos el array bidimensional
         rellenaMarcianos();
 
-        //creo la nave, y la situo en la mitad de la pantalla
+        //imagen de la nave
         imgNave = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.nave);
         imgNave = Bitmap.createScaledBitmap(imgNave, anchoPantalla / 10, altoPantalla / 15, true);
 
+        //creo el objeto nave
         miNave = new Nave(imgNave, anchoPantalla / 2 - imgNave.getWidth() / 2, altoPantalla - imgNave.getHeight(), 10);
+
+        //arraylist con las balas generadas por los marcianos
         balasMarcianos = new ArrayList<BalaMarciano>();
 
+        //arraylist auxiliar para que disparen solamente los ultimos marcianos de cada columna
+        misColumnas = new ArrayList();
     }
 
     // Actualizamos la física de los elementos en pantalla
     public void actualizarFisica() {
 
-        //DISPARO DE LA NAVE
-        //si hay bala, la muevo
-        if (miNave.hayBala) {
-            //acutalizo las posiciones del proyectil
-            miNave.actualizaProyectil();
-            //recorro los marcianos, para ver si alguno choca, en el caso de ser asi miNave.hayBala = false
-            for (int i = 0; i < marcianos.length; i++) {
-                for (int j = 0; j < marcianos[0].length; j++) {
-                    //si hay un marciano
-                    if (marcianos[i][j] != null) {
-                        if (marcianos[i][j].colisiona(miNave.bala)) { // si la bala impacta con un marciano
-                            //le resto uno de salud
-                            marcianos[i][j].setSalud(marcianos[i][j].getSalud() - 1);
-                            if (marcianos[i][j].getSalud() == 0) {
-                                //elimino el marciano
-//                                Log.i("MARCIANO RIP","FILA: "+i+" COLUMNA: "+j);
-                                marcianos[i][j] = null;
-                            } else {
-                                //cambio la imagen del marciano por una de marciano nivel 1
-                                marcianos[i][j].setImagen(imgMarciano1);
-                            }
-                            //quito la bala
-                            miNave.hayBala = false;
+        //------------------------DISPARO DE LA NAVE------------------------
+        disparaNave();
 
-                            //si no hay marcianos
-                            //relleno el array segun el nivel
-                            if (!hayMarcianos()) {
-                                rellenaMarcianos();
-                            }
-                            //salgo del bucle
-                            break;
-                        }
-                    }
-                }
-            }
-        } else {
-            //si no hay bala, la genero
-            miNave.disparar();
-        }
+        //------------------------DISPARO DE LOS MARCIANOS------------------------
+        disparanMarcianos();
 
-        //DISPARO MARCIANOS CADA 10 SEGUNDOS!!
-        for (int i = marcianos.length - 1; i >= 0; i--) {
-            for (int j = 0; j < marcianos[0].length; j++) {
-                if (misColumnas.indexOf(j) == -1 && marcianos[i][j] != null) {
-                    misColumnas.add(j);
-                    //si se decide que el marciano dispare (porque sale x probabilidad)
-                    if (marcianos[i][j].dispara()) {
-                        //genero una nueva bala marciano que añado a su array
-                        balasMarcianos.add(new BalaMarciano((int) marcianos[i][j].getPos().x,
-                                (int) marcianos[i][j].getPos().y, marcianos[i][j].getImagen().getWidth(),
-                                marcianos[i][j].getImagen().getHeight()));
-                    }
-                }
-            }
-        }
 
-        //ARRAYLIST BALAS MARCIANOS
-        //de atrás alante para no tener problemas al eliminar
-        for(int i=balasMarcianos.size()-1;i>=0;i--){
-            balasMarcianos.get(i).bajar();
-            //si choca con la nave
-            if(balasMarcianos.get(i).getContenedor().intersect(miNave.contenedor)){
-                perdi=true;
-            }else{
-                //si desaparece de la pantalla
-                if(balasMarcianos.get(i).getContenedor().top>=altoPantalla){
-                    //la elimino
-                    balasMarcianos.remove(i);
-                }
-            }
-        }
-//        Log.i("MARCIANO","-------------------------------");
-        misColumnas.clear();
+        //------------------------MOVER BALAS MARCIANOS (ARRAYLIST)------------------------
+        actualizaBalasMarcianos();
 
-        //aqui veré en que dirección tienen que ir los marcianos (izq o drch) -> bandera voyIzquierda
-        //también veré si descienden un nivel o no -> bandera voy abajo
 
-        //recorro las filas de marcianos
-        for (int i = 0; i < marcianos.length; i++) {
-            //recorro las columnas
-            for (int j = 0; j < marcianos[0].length; j++) {
-                //si hay un marciano
-                if (marcianos[i][j] != null) {
-                    //si un marciano llega al limite de la derecha
-                    if (marcianos[i][j].limiteDerecha(anchoPantalla)) {
-                        //bandera voy abajo a true
-                        voyAbajo = true;
-                        //pongo la bandera voyIzquierda a true
-                        voyIzquierda = true;
-                        //salgo del for
-                        break;
-                    } else {
-                        //si no llegue al limite por la derecha, miro si llegue al limite por la izquierda
-                        if (marcianos[i][j].limiteIzquierda()) {
-                            //bandera voy abajo a true
-                            voyAbajo = true;
-                            //pongo la bandera voyIzquierda a false
-                            voyIzquierda = false;
-                            //salgo del for
-                            break;
-                        }
-                    }
-                }
-            }
-        }
+        //------------------------MOVIMIENTO VERTICAL Y HORIZONTAL DE LOS MARCIANOS------------------------
+        //VEO EN QUE DIRECCIÓN SE TIENEN QUE MOVER Y SI DESCIENDEN UN NIVEL O NO Y ACTUALIZO LAS BANDERAS
+        actualizaBanderasMovimiento();
 
-        //aqui muevo los marcianos, tanto de manera horizontal y vertical (en caso de ser necesario)
+        //MUEVO LOS MARCIANOS SEGÚN LAS BANDERAS
+        mueveMarcianos();
 
-        //recorro las filas
-        for (int i = 0; i < marcianos.length; i++) {
-            //recorro las columnas
-            for (int j = 0; j < marcianos[0].length; j++) {
-                //si hay un marciano
-                if (marcianos[i][j] != null) {
-                    //lo muevo de manera lateral segun en que dirección tengo que ir
-                    marcianos[i][j].moverLateral(voyIzquierda);
-                    //en caso de tener que descender un nivel, lo hace
-                    marcianos[i][j].moverAbajo(voyAbajo);
-                    if (marcianos[i][j].limiteAbajo(altoPantalla - miNave.imagen.getHeight())) {
-                        perdi = true;
-                    }
-                }
-            }
-        }
-        //pongo la bandera voyAbajo a false
-        voyAbajo = false;
     }
 
     // Rutina de dibujo en el lienzo. Se le llamará desde el hilo
@@ -208,7 +118,7 @@ public class Gameplay extends Pantalla {
                 }
             }
             //dibujo todas las balas marcianos
-            for(int i=0;i<balasMarcianos.size();i++){
+            for (int i = 0; i < balasMarcianos.size(); i++) {
                 balasMarcianos.get(i).dibujar(c);
             }
             //dibujo el boton de volver
@@ -228,13 +138,8 @@ public class Gameplay extends Pantalla {
         nivel++;
         //recorro las filas
         for (int i = 0; i < marcianos.length; i++) {
-            //si no estoy en la primera fila
-            if (i != 0) {
-                primeraY += imgMarciano1.getHeight() + altoPantalla / 20;
-            } else {
-                //si estoy en la primera fila
-                primeraY = altoPantalla / 10;
-            }
+            //incremento la pos y
+            primeraY += imgMarciano1.getHeight() + altoPantalla / 20;
             //recorro las columnas
             for (int j = 0; j < marcianos[0].length; j++) {
                 //dependiendo del nivel y de la fila en la que esté
@@ -273,6 +178,155 @@ public class Gameplay extends Pantalla {
         return false;
     }
 
+    //------------------------DISPARO DE LA NAVE------------------------
+    public void disparaNave() {
+        //solo habrá una bala de la nave en la pantalla
+        //si hay bala, la muevo
+        if (miNave.getHayBala()) {
+            //acutalizo las posiciones del proyectil
+            miNave.actualizaProyectil();
+            //recorro los marcianos, para ver si alguno choca, en el caso de ser asi miNave.hayBala = false
+            for (int i = 0; i < marcianos.length; i++) {
+                for (int j = 0; j < marcianos[0].length; j++) {
+                    //si hay un marciano
+                    if (marcianos[i][j] != null) {
+                        // si la bala impacta con un marciano
+                        if (marcianos[i][j].colisiona(miNave.getBala())) {
+                            //le resto uno de salud al marciano
+                            marcianos[i][j].setSalud(marcianos[i][j].getSalud() - 1);
+                            //si salud es cero
+                            if (marcianos[i][j].getSalud() == 0) {
+                                //elimino el marciano
+                                marcianos[i][j] = null;
+                            } else {
+                                //si continua con salud
+                                //cambio la imagen del marciano por una de marciano nivel 1
+                                marcianos[i][j].setImagen(imgMarciano1);
+                            }
+                            //quito la bala
+                            miNave.setHayBala(false);
+
+                            //si no hay marcianos
+                            //relleno el array segun el nivel, de ello se encarga rellena marcianos
+                            if (!hayMarcianos()) {
+                                rellenaMarcianos();
+                            }
+                            //salgo del bucle porque no hace falta seguir recorriendo todos los marcianos, ya que solo es posible que haya un impacto
+                            break;
+                        }
+                    }
+                }
+            }
+        } else {
+            //si no hay bala, la genero
+            miNave.disparar();
+        }
+    }
+
+    //------------------------DISPARO DE LOS MARCIANOS------------------------
+    public void disparanMarcianos() {
+        //solo podrán disparar los últimos marcianos de cada columna
+        //recorro las filas de abajo a arriba
+        for (int i = marcianos.length - 1; i >= 0; i--) {
+            //recorro las columnas de izq a drch
+            for (int j = 0; j < marcianos[0].length; j++) {
+                //si esa columna no está en mi arraylist de columnas y en la posicion actual hay un marciano
+                if (misColumnas.indexOf(j) == -1 && marcianos[i][j] != null) {
+                    //añado la columna a mi arraylist
+                    misColumnas.add(j);
+                    //si se decide que el marciano dispare (porque sale x probabilidad)
+                    if (marcianos[i][j].dispara()) {
+                        //genero una nueva bala marciano que añado a su array
+                        balasMarcianos.add(new BalaMarciano((int) marcianos[i][j].getPos().x,
+                                (int) marcianos[i][j].getPos().y + marcianos[i][j].getImagen().getHeight(), marcianos[i][j].getImagen().getWidth(),
+                                marcianos[i][j].getImagen().getHeight()));
+                    }
+                }
+            }
+        }
+        //limpio el arraylist que uso de contenedor de las columnas
+        misColumnas.clear();
+    }
+
+    //------------------------MOVER BALAS MARCIANOS (ARRAYLIST)------------------------
+    public void actualizaBalasMarcianos() {
+        //además de mover las balas, gestiono si chocan o no con la nave, y si desaparecen de la pantalla las elimino
+        //de atrás alante para no tener problemas al eliminar
+        for (int i = balasMarcianos.size() - 1; i >= 0; i--) {
+            //muevo la bala actual hacia abajo
+            balasMarcianos.get(i).bajar();
+            //si choca con la nave
+            if (balasMarcianos.get(i).getContenedor().intersect(miNave.getContenedor())) {
+                //perdi
+                perdi = true;
+            } else {
+                //si no ha chocado con la nave
+                //veo si desaparece de la pantalla, si es así
+                if (balasMarcianos.get(i).getContenedor().top >= altoPantalla) {
+                    //la elimino para no mover balas que no se ven
+                    balasMarcianos.remove(i);
+                }
+            }
+        }
+    }
+
+    //------------------------MOVIMIENTO VERTICAL Y HORIZONTAL DE LOS MARCIANOS------------------------
+    public void actualizaBanderasMovimiento() {
+        //aqui veré en que dirección tienen que ir los marcianos (izq o drch) -> bandera voyIzquierda
+        //también veré si descienden un nivel o no -> bandera voy abajo
+        //recorro las filas de marcianos
+        for (int i = 0; i < marcianos.length; i++) {
+            //recorro las columnas
+            for (int j = 0; j < marcianos[0].length; j++) {
+                //si hay un marciano
+                if (marcianos[i][j] != null) {
+                    //si un marciano llega al limite de la derecha
+                    if (marcianos[i][j].limiteDerecha(anchoPantalla)) {
+                        //bandera voy abajo a true
+                        voyAbajo = true;
+                        //pongo la bandera voyIzquierda a true
+                        voyIzquierda = true;
+                        //salgo del for porque uno de ellos a llegado al limite
+                        break;
+                    } else {
+                        //si no llegue al limite por la derecha, miro si llegue al limite por la izquierda
+                        if (marcianos[i][j].limiteIzquierda()) {
+                            //bandera voy abajo a true
+                            voyAbajo = true;
+                            //pongo la bandera voyIzquierda a false
+                            voyIzquierda = false;
+                            //salgo del for porque uno de ellos a llegado al limite
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void mueveMarcianos() {
+        //recorro las filas
+        for (int i = 0; i < marcianos.length; i++) {
+            //recorro las columnas
+            for (int j = 0; j < marcianos[0].length; j++) {
+                //si hay un marciano
+                if (marcianos[i][j] != null) {
+                    //lo muevo de manera lateral segun en que dirección tengo que ir
+                    marcianos[i][j].moverLateral(voyIzquierda);
+                    //en caso de tener que descender un nivel, lo hace
+                    marcianos[i][j].moverAbajo(voyAbajo);
+                    if (marcianos[i][j].limiteAbajo(altoPantalla - miNave.getImagen().getHeight())) {
+                        perdi = true;
+                    }
+                }
+            }
+        }
+        //después de mover todos los marcianos
+        //pongo la bandera voyAbajo a false
+        voyAbajo = false;
+    }
+
+    //------------------------CUANDO PULSO LA PANTALLA------------------------
     public int onTouchEvent(MotionEvent event) {
         //cuando el dedo esté en la pantalla, muevo la nave con respecto al eje x!!!!!!!!!!
         int pointerIndex = event.getActionIndex();        //Obtenemos el índice de la acción
@@ -280,31 +334,26 @@ public class Gameplay extends Pantalla {
         int accion = event.getActionMasked();             //Obtenemos el tipo de pulsación
         switch (accion) {
             case MotionEvent.ACTION_DOWN:
-//                mueveNave=true;
                 // Primer dedo toca
+                if (pulsa(back, event)) {
+                    btnBack = true;
+                }
             case MotionEvent.ACTION_POINTER_DOWN:  // Segundo y siguientes tocan
                 break;
             case MotionEvent.ACTION_UP:                     // Al levantar el último dedo
                 mueveNave = false;
             case MotionEvent.ACTION_POINTER_UP:  // Al levantar un dedo que no es el último
                 //si pulso la opcion volver
-                if (pulsa(back, event)) {
+                if (pulsa(back, event) && btnBack) {
                     //vuelvo al menu
                     return 0;
                 }
                 break;
 
             case MotionEvent.ACTION_MOVE: // Se mueve alguno de los dedos
-//si pulso la opcion volver
-                if (pulsa(back, event)) {
-                    //vuelvo al menu
-                    return 0;
-                } else {
-                    //si no he pulsado el boton
-                    if ((event.getX() > miNave.contenedor.left && event.getX() < miNave.contenedor.right) || mueveNave) {
-                        mueveNave = true;
-                        miNave.moverNave(event.getX());
-                    }
+                if ((event.getX() > miNave.getContenedor().left && event.getX() < miNave.getContenedor().right) || mueveNave) {
+                    mueveNave = true;
+                    miNave.moverNave(event.getX());
                 }
                 break;
             default:
