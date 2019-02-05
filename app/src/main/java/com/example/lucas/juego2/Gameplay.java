@@ -17,25 +17,33 @@ import java.util.Timer;
 
 public class Gameplay extends Pantalla {
     //------------------------PROPIEDADES GAMEPLAY------------------------
-    Rect back;
-    int nivel;
-    Bitmap imgMarciano1, imgMarciano2, imgNave;
-    float primeraX;
-    float primeraY;
-    int filas, columnas;
-    Marciano marcianos[][];
-    Nave miNave;
-    boolean voyIzquierda;
-    boolean voyAbajo;
-    double vMarciano;
-    Boolean mueveNave;
-    Boolean btnBack = false;
-    ArrayList misColumnas;
-    ArrayList<BalaMarciano> balasMarcianos;
+    private Rect back;
+    private int nivel,filas, columnas,puntuacionGlobal;
+    private Bitmap imgMarciano1, imgMarciano2, imgNave;
+    private float primeraX, primeraY,tamañoPuntuacion;
+    private double vMarciano;
+    private Marciano marcianos[][];
+    private Nave miNave;
+    private boolean voyIzquierda, voyAbajo, mueveNave;
+    private Boolean flagVolver = false;
+    private ArrayList misColumnas;
+    private ArrayList<BalaMarciano> balasMarcianos;
+    private Paint pPunutacion;
+
 
     //------------------------CONSTRUCTOR------------------------
     public Gameplay(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
         super(contexto, idPantalla, anchoPantalla, altoPantalla);
+        //tamaño alto puntuacion
+        tamañoPuntuacion=altoPantalla / 15;
+        //paint
+        pPunutacion=new Paint();
+        pPunutacion.setColor(Color.WHITE);
+        pPunutacion.setTextAlign(Paint.Align.CENTER);
+        pPunutacion.setTextSize(tamañoPuntuacion);
+        //puntuación global
+        puntuacionGlobal=0;
+        //bandera flagVolver
         //POSICIÓN PRIMER MARCIANO
         primeraX = 0;
         primeraY = altoPantalla / 10;
@@ -127,6 +135,10 @@ public class Gameplay extends Pantalla {
             //dibujo la nave y el proyectil que genera
             miNave.dibujar(c);
 
+            //dibujo la puntuacion
+
+
+            c.drawText( Integer.toString(puntuacionGlobal),anchoPantalla/2,altoPantalla / 20,pPunutacion);
         } catch (Exception e) {
             Log.i("Error al dibujar", e.getLocalizedMessage());
         }
@@ -146,9 +158,9 @@ public class Gameplay extends Pantalla {
                 //pongo un marciano nivel 1 o marciano nivel 2
                 //por ejemplo, si estoy en la ultima fila y en el nivel 2-1, sera de marcianos de dos impactos
                 if (i >= marcianos.length - (nivel - 1)) {
-                    marcianos[i][j] = new Marciano(imgMarciano2, primeraX, primeraY, 2, vMarciano);
+                    marcianos[i][j] = new Marciano(imgMarciano2, primeraX, primeraY, 2, vMarciano,25);
                 } else {
-                    marcianos[i][j] = new Marciano(imgMarciano1, primeraX, primeraY, 1, vMarciano);
+                    marcianos[i][j] = new Marciano(imgMarciano1, primeraX, primeraY, 1, vMarciano,10);
                 }
                 //aumento la posX
                 primeraX += imgMarciano1.getWidth() + anchoPantalla / 10;
@@ -196,6 +208,8 @@ public class Gameplay extends Pantalla {
                             marcianos[i][j].setSalud(marcianos[i][j].getSalud() - 1);
                             //si salud es cero
                             if (marcianos[i][j].getSalud() == 0) {
+                                //sumo a mi puntuacion global los puntos del marciano
+                                puntuacionGlobal+=marcianos[i][j].getPuntuacion();
                                 //elimino el marciano
                                 marcianos[i][j] = null;
                             } else {
@@ -336,7 +350,7 @@ public class Gameplay extends Pantalla {
             case MotionEvent.ACTION_DOWN:
                 // Primer dedo toca
                 if (pulsa(back, event)) {
-                    btnBack = true;
+                    flagVolver = true;
                 }
             case MotionEvent.ACTION_POINTER_DOWN:  // Segundo y siguientes tocan
                 break;
@@ -344,7 +358,7 @@ public class Gameplay extends Pantalla {
                 mueveNave = false;
             case MotionEvent.ACTION_POINTER_UP:  // Al levantar un dedo que no es el último
                 //si pulso la opcion volver
-                if (pulsa(back, event) && btnBack) {
+                if (pulsa(back, event) && flagVolver) {
                     //vuelvo al menu
                     return 0;
                 }

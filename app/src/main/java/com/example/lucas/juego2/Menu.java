@@ -43,10 +43,6 @@ public class Menu extends Pantalla {
         try {
             //dibujo la imagen de fondo
             c.drawBitmap(fondo, 0, 0, null);
-            //dibujo el siguiente texto
-            c.drawText("Protect the World", anchoPantalla / 2, 0, pTexto);
-//            c.drawText("Protect the World",anchoPantalla/2,altoPantalla/5+10,pTexto2);
-
             //BOTON JUGAR
             //dibujo el boton jugar
             pBoton.setColor(jugar.getColor());

@@ -17,15 +17,15 @@ public class Marciano {
     private double vMovimiento;
     private RectF contenedor, aux;
     private Paint p;
-
+    private int puntuacion;
 
     //------------------------CONSTRUCTOR------------------------
-    public Marciano(Bitmap imagen, float x, float y, int salud, double velocidad) {
+    public Marciano(Bitmap imagen, float x, float y, int salud, double velocidad,int puntuacion) {
         this.pos = new PointF(x, y);
         this.imagen = imagen;
         this.salud = salud;
         this.vMovimiento = velocidad;
-
+this.puntuacion=puntuacion;
         //inicializo el contenedor
         contenedor = new RectF(this.pos.x, this.pos.y, this.pos.x + this.imagen.getWidth(), this.pos.y + this.imagen.getHeight());
 
@@ -36,6 +36,10 @@ public class Marciano {
 
     }
     //------------------------GETTER AND SETTER------------------------
+    public int getPuntuacion() {
+        return puntuacion;
+    }
+
     public PointF getPos() {
         return pos;
     }
