@@ -21,7 +21,7 @@ public class Gameplay extends Pantalla {
     Bitmap imgMarciano1, imgMarciano2, imgNave;
     float primeraX = 0;
     float primeraY = 0;
-    int filas,columnas;
+    int filas, columnas;
     Marciano marcianos[][];
     Nave miNave;
     boolean voyIzquierda = false;
@@ -29,15 +29,16 @@ public class Gameplay extends Pantalla {
     double vMarciano;
     Paint pincelMarcianos;
 
-    Boolean mueveNave=false;
-    ArrayList misColumnas=new ArrayList();
+    Boolean mueveNave = false;
+    ArrayList misColumnas = new ArrayList();
+    ArrayList<BalaMarciano> balasMarcianos;
 
     public Gameplay(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
         super(contexto, idPantalla, anchoPantalla, altoPantalla);
         nivel = 0;
-        filas=5;
-        columnas=6;
-         marcianos= new Marciano[filas][columnas];  //cinco filas seis columnas
+        filas = 5;
+        columnas = 6;
+        marcianos = new Marciano[filas][columnas];  //cinco filas seis columnas
         //velocidad de los marcianos al comienzo
         vMarciano = 0.5;
         pincelMarcianos = new Paint();
@@ -55,10 +56,10 @@ public class Gameplay extends Pantalla {
 
         //creo la nave, y la situo en la mitad de la pantalla
         imgNave = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.nave);
-        imgNave = Bitmap.createScaledBitmap(imgNave, anchoPantalla / 10,  altoPantalla / 15, true);
+        imgNave = Bitmap.createScaledBitmap(imgNave, anchoPantalla / 10, altoPantalla / 15, true);
 
         miNave = new Nave(imgNave, anchoPantalla / 2 - imgNave.getWidth() / 2, altoPantalla - imgNave.getHeight(), 10);
-
+        balasMarcianos = new ArrayList<BalaMarciano>();
 
     }
 
@@ -92,7 +93,7 @@ public class Gameplay extends Pantalla {
                             //si no hay marcianos
                             //relleno el array segun el nivel
                             if (!hayMarcianos()) {
-                               rellenaMarcianos();
+                                rellenaMarcianos();
                             }
                             //salgo del bucle
                             break;
@@ -106,18 +107,33 @@ public class Gameplay extends Pantalla {
         }
 
         //DISPARO MARCIANOS CADA 10 SEGUNDOS!!
-        for(int i=marcianos.length-1;i>=0;i--){
-            for(int j=0;j<marcianos[0].length;j++){
-                if(misColumnas.indexOf(j)==-1 && marcianos[i][j]!=null){
+        for (int i = marcianos.length - 1; i >= 0; i--) {
+            for (int j = 0; j < marcianos[0].length; j++) {
+                if (misColumnas.indexOf(j) == -1 && marcianos[i][j] != null) {
                     misColumnas.add(j);
-                    marcianos[i][j].dispara();
-                    marcianos[i][j].actualizaBalas();
-                    //ver si choca o no con la nave
-                    if(marcianos[i][j].colisionNave(miNave)){
-                        perdi=true;
+                    //si se decide que el marciano dispare (porque sale x probabilidad)
+                    if (marcianos[i][j].dispara()) {
+                        //genero una nueva bala marciano que añado a su array
+                        balasMarcianos.add(new BalaMarciano((int) marcianos[i][j].getPos().x,
+                                (int) marcianos[i][j].getPos().y, marcianos[i][j].getImagen().getWidth(),
+                                marcianos[i][j].getImagen().getHeight()));
                     }
-                //Log.i("MARCIANO","FILA: "+i+" COLUMNA: "+j);
+                }
+            }
+        }
 
+        //ARRAYLIST BALAS MARCIANOS
+        //de atrás alante para no tener problemas al eliminar
+        for(int i=balasMarcianos.size()-1;i>=0;i--){
+            balasMarcianos.get(i).bajar();
+            //si choca con la nave
+            if(balasMarcianos.get(i).getContenedor().intersect(miNave.contenedor)){
+                perdi=true;
+            }else{
+                //si desaparece de la pantalla
+                if(balasMarcianos.get(i).getContenedor().top>=altoPantalla){
+                    //la elimino
+                    balasMarcianos.remove(i);
                 }
             }
         }
@@ -168,14 +184,14 @@ public class Gameplay extends Pantalla {
                     marcianos[i][j].moverLateral(voyIzquierda);
                     //en caso de tener que descender un nivel, lo hace
                     marcianos[i][j].moverAbajo(voyAbajo);
-                    if(marcianos[i][j].limiteAbajo(altoPantalla-miNave.imagen.getHeight())){
-                        perdi=true;
+                    if (marcianos[i][j].limiteAbajo(altoPantalla - miNave.imagen.getHeight())) {
+                        perdi = true;
                     }
                 }
             }
         }
         //pongo la bandera voyAbajo a false
-        voyAbajo=false;
+        voyAbajo = false;
     }
 
     // Rutina de dibujo en el lienzo. Se le llamará desde el hilo
@@ -191,6 +207,10 @@ public class Gameplay extends Pantalla {
                     }
                 }
             }
+            //dibujo todas las balas marcianos
+            for(int i=0;i<balasMarcianos.size();i++){
+                balasMarcianos.get(i).dibujar(c);
+            }
             //dibujo el boton de volver
             c.drawRect(back, pBoton);
 
@@ -203,7 +223,7 @@ public class Gameplay extends Pantalla {
     }
 
 
-    public void rellenaMarcianos(){
+    public void rellenaMarcianos() {
         //incremento el nivel
         nivel++;
         //recorro las filas
@@ -220,7 +240,7 @@ public class Gameplay extends Pantalla {
                 //dependiendo del nivel y de la fila en la que esté
                 //pongo un marciano nivel 1 o marciano nivel 2
                 //por ejemplo, si estoy en la ultima fila y en el nivel 2-1, sera de marcianos de dos impactos
-                if (i >= marcianos.length - (nivel-1)) {
+                if (i >= marcianos.length - (nivel - 1)) {
                     marcianos[i][j] = new Marciano(imgMarciano2, primeraX, primeraY, 2, vMarciano);
                 } else {
                     marcianos[i][j] = new Marciano(imgMarciano1, primeraX, primeraY, 1, vMarciano);
@@ -234,9 +254,9 @@ public class Gameplay extends Pantalla {
         //una vez recorro todas las filas y columnas
         primeraY = 0;
         //si el nivel - 1 es igual al numero de filas, es decir, he llegado a cubrir la pantalla de marcianos de dos impactos
-        if(nivel-1==filas){
-            nivel=0;
-            vMarciano=vMarciano*2;
+        if (nivel - 1 == filas) {
+            nivel = 0;
+            vMarciano = vMarciano * 2;
         }
     }
 
@@ -265,7 +285,7 @@ public class Gameplay extends Pantalla {
             case MotionEvent.ACTION_POINTER_DOWN:  // Segundo y siguientes tocan
                 break;
             case MotionEvent.ACTION_UP:                     // Al levantar el último dedo
-                mueveNave=false;
+                mueveNave = false;
             case MotionEvent.ACTION_POINTER_UP:  // Al levantar un dedo que no es el último
                 //si pulso la opcion volver
                 if (pulsa(back, event)) {
@@ -281,8 +301,8 @@ public class Gameplay extends Pantalla {
                     return 0;
                 } else {
                     //si no he pulsado el boton
-                    if((event.getX()>miNave.contenedor.left && event.getX()<miNave.contenedor.right) || mueveNave){
-                        mueveNave=true;
+                    if ((event.getX() > miNave.contenedor.left && event.getX() < miNave.contenedor.right) || mueveNave) {
+                        mueveNave = true;
                         miNave.moverNave(event.getX());
                     }
                 }
