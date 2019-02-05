@@ -18,6 +18,7 @@ public class Nave {
     private RectF bala;
     private Paint p;
     private float vBala;
+    //------------------------CONSTRUCTOR------------------------
     public Nave(Bitmap imagen,float x,float y,float velocidadBala) {
         this.pos=new PointF(x,y);
         this.imagen = imagen;
@@ -29,6 +30,7 @@ public class Nave {
         contenedor=new RectF(pos.x,pos.y,pos.x+imagen.getWidth(),pos.y+imagen.getWidth());
     }
 
+    //------------------------GETTER AND SETTER------------------------
     public boolean getHayBala() {
         return hayBala;
     }
@@ -45,17 +47,19 @@ public class Nave {
         return contenedor;
     }
 
-
     public RectF getBala() {
         return bala;
     }
 
+    //------------------------MOVER LA NAVE EN EL EJE X------------------------
     //metodo al que le paso la posicion x y se encarga de mover la nave (su pos x)
     public void moverNave(float nuevaX){
         this.pos.x=nuevaX-imagen.getWidth()/2;
         contenedor.right=pos.x+imagen.getWidth();
         contenedor.left=pos.x;
     }
+
+    //------------------------DISPARO DE LA NAVE------------------------
     public boolean disparar(){
         if(!hayBala){
             //genero el proyectil a traves de la posicion de la nave
@@ -65,6 +69,8 @@ public class Nave {
         }
         return false;
     }
+
+    //------------------------MOVIMIENTO PROYECTIL NAVE------------------------
     public void actualizaProyectil(){
        bala.top-=vBala;
         bala.bottom-=vBala;
@@ -73,6 +79,8 @@ public class Nave {
             hayBala=false;
         }
     }
+
+    //------------------------DIBUJO LA NAVE Y SU PROYECTIL
     public void dibujar(Canvas c){
         if(hayBala){
             //dibujo la bala

@@ -14,8 +14,7 @@ public class Marciano {
     private PointF pos;
     private Bitmap imagen;
     private int salud;
-    private double movimiento;
-    private ArrayList<RectF> balas;
+    private double vMovimiento;
     private RectF contenedor, aux;
     private Paint p;
 
@@ -25,9 +24,7 @@ public class Marciano {
         this.pos = new PointF(x, y);
         this.imagen = imagen;
         this.salud = salud;
-        //inicializo el movimiento a un numero aleatorio entre 1 y cinco
-        //this.movimiento=(int)Math.random()*5+1;
-        this.movimiento = velocidad;
+        this.vMovimiento = velocidad;
 
         //inicializo el contenedor
         contenedor = new RectF(this.pos.x, this.pos.y, this.pos.x + this.imagen.getWidth(), this.pos.y + this.imagen.getHeight());
@@ -37,12 +34,8 @@ public class Marciano {
         p.setColor(Color.RED);
         //p.setStyle(Paint.Style.STROKE);
 
-        balas = new ArrayList<RectF>();
-
     }
     //------------------------GETTER AND SETTER------------------------
-
-
     public PointF getPos() {
         return pos;
     }
@@ -63,7 +56,7 @@ public class Marciano {
         this.salud = salud;
     }
 
-    //------------------------MOVIMIENTO------------------------
+    //------------------------MOVIMIENTO DE LOS MARCIANOS------------------------
     //metodo mover abajo
     public void moverAbajo(boolean abajo) {
         if (abajo) {
@@ -87,12 +80,12 @@ public class Marciano {
     //si no está a true voy a la derecha
     public void moverLateral(boolean izq) {
         if (izq) {
-            this.pos.x -= movimiento;
+            this.pos.x -= vMovimiento;
             //acutalizo la pos x del contenedor
             this.contenedor.left = this.pos.x;
             this.contenedor.right = this.pos.x + imagen.getWidth();
         } else {
-            this.pos.x += movimiento;
+            this.pos.x += vMovimiento;
             //acutalizo la pos x del contenedor
             this.contenedor.left = this.pos.x;
             this.contenedor.right = this.pos.x + imagen.getWidth();
@@ -131,34 +124,9 @@ public class Marciano {
         c.drawRect(contenedor, p);
         //dibujo la imagen marciano
         c.drawBitmap(imagen, pos.x, pos.y, null);
-
-        //recorro las balas y las dibujo
-        for (int i = 0; i < balas.size(); i++) {
-            c.drawRect(balas.get(i), p);
-        }
     }
 
-    //    public Boolean colisionNave(Nave miNave){
-//        //recorro las balas
-//        for(int i=0;i<balas.size();i++){
-//            if(balas.get(i).intersect(miNave.contenedor)){
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
-//    public void actualizaBalas(){
-//        for(int i=balas.size()-1;i>=0;i--){
-//            balas.get(i).top+=vBala;
-//            balas.get(i).bottom+=vBala;
-//
-//            //si cuando actualizo el proyectil, llego al alto de la pantalla
-//            if(balas.get(i).bottom<=0){
-//              //la elimino
-//                balas.remove(i);
-//            }
-//        }
-//    }
+    //------------------------PROBABILIDAD DISPARO MARCIANO------------------------
     public boolean dispara() {
         //probabilidad de disparo
         //numero aleatorio entre 1 y 10

@@ -326,9 +326,9 @@ public class Gameplay extends Pantalla {
         voyAbajo = false;
     }
 
-    //------------------------CUANDO PULSO LA PANTALLA------------------------
+    //------------------------CUANDO PULSO LA PANTALLA (PUEDO PULSAR UN BOTON O MOVER LA NAVE)------------------------
     public int onTouchEvent(MotionEvent event) {
-        //cuando el dedo esté en la pantalla, muevo la nave con respecto al eje x!!!!!!!!!!
+        //cuando el dedo esté en la pantalla, muevo la nave con respecto al eje x!!!!!!!!!
         int pointerIndex = event.getActionIndex();        //Obtenemos el índice de la acción
         int pointerID = event.getPointerId(pointerIndex); //Obtenemos el Id del pointer asociado a la acción
         int accion = event.getActionMasked();             //Obtenemos el tipo de pulsación
