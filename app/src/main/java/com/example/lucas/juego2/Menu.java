@@ -25,7 +25,7 @@ public class Menu extends Pantalla {
         jugar=new Boton(ancho,alto,ancho*5,alto*2, Color.BLACK);
         opciones=new Boton(ancho,alto*2+espacio,ancho*5,alto*2+espacio+alto, Color.BLACK);
         records=new Boton(ancho,alto*2+2*espacio+alto,ancho*5,alto*2+2*espacio+2*alto,Color.BLACK);
-        ayuda=new Boton(ancho,alto*2+3*espacio+2*alto,ancho*5,alto*2+3*espacio+3*alto,Color.BLUE);
+        ayuda=new Boton(ancho,alto*2+3*espacio+2*alto,ancho*5,alto*2+3*espacio+3*alto,Color.BLACK);
     }
     // Actualizamos la física de los elementos en pantalla
     public void actualizarFisica(){

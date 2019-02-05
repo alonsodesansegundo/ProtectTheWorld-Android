@@ -28,6 +28,8 @@ public class Gameplay extends Pantalla {
     boolean voyAbajo = false;
     double vMarciano;
     Paint pincelMarcianos;
+
+    Boolean mueveNave=false;
     ArrayList misColumnas=new ArrayList();
 
     public Gameplay(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
@@ -257,29 +259,32 @@ public class Gameplay extends Pantalla {
         int pointerID = event.getPointerId(pointerIndex); //Obtenemos el Id del pointer asociado a la acción
         int accion = event.getActionMasked();             //Obtenemos el tipo de pulsación
         switch (accion) {
-            case MotionEvent.ACTION_DOWN:           // Primer dedo toca
+            case MotionEvent.ACTION_DOWN:
+//                mueveNave=true;
+                // Primer dedo toca
             case MotionEvent.ACTION_POINTER_DOWN:  // Segundo y siguientes tocan
                 break;
-
             case MotionEvent.ACTION_UP:                     // Al levantar el último dedo
+                mueveNave=false;
             case MotionEvent.ACTION_POINTER_UP:  // Al levantar un dedo que no es el último
                 //si pulso la opcion volver
                 if (pulsa(back, event)) {
+                    //vuelvo al menu
                     return 0;
                 }
-//                else {
-//                    //si no he pulsado el boton
-//                    miNave.moverNave(event.getX());
-//                }
                 break;
 
             case MotionEvent.ACTION_MOVE: // Se mueve alguno de los dedos
 //si pulso la opcion volver
                 if (pulsa(back, event)) {
+                    //vuelvo al menu
                     return 0;
                 } else {
                     //si no he pulsado el boton
-                    miNave.moverNave(event.getX());
+                    if((event.getX()>miNave.contenedor.left && event.getX()<miNave.contenedor.right) || mueveNave){
+                        mueveNave=true;
+                        miNave.moverNave(event.getX());
+                    }
                 }
                 break;
             default:
