@@ -8,6 +8,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.os.Build;
+import android.os.VibrationEffect;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.Toast;
@@ -29,11 +31,13 @@ public class Gameplay extends Pantalla {
     private ArrayList misColumnas;
     private ArrayList<BalaMarciano> balasMarcianos;
     private Paint pPunutacion;
-
+    private int tiempoVibracion;
 
     //------------------------CONSTRUCTOR------------------------
     public Gameplay(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
         super(contexto, idPantalla, anchoPantalla, altoPantalla);
+        //miliseguundos vibracion
+        tiempoVibracion=3000;
         //tamaño alto puntuacion
         tamañoPuntuacion=altoPantalla / 15;
         //paint
@@ -101,7 +105,6 @@ public class Gameplay extends Pantalla {
 
         //------------------------MOVER BALAS MARCIANOS (ARRAYLIST)------------------------
         actualizaBalasMarcianos();
-
 
         //------------------------MOVIMIENTO VERTICAL Y HORIZONTAL DE LOS MARCIANOS------------------------
         //VEO EN QUE DIRECCIÓN SE TIENEN QUE MOVER Y SI DESCIENDEN UN NIVEL O NO Y ACTUALIZO LAS BANDERAS
@@ -271,6 +274,8 @@ public class Gameplay extends Pantalla {
             balasMarcianos.get(i).bajar();
             //si choca con la nave
             if (balasMarcianos.get(i).getContenedor().intersect(miNave.getContenedor())) {
+                //vibra el dispositivo
+                vibrar();
                 //perdi
                 perdi = true;
             } else {
@@ -330,6 +335,8 @@ public class Gameplay extends Pantalla {
                     //en caso de tener que descender un nivel, lo hace
                     marcianos[i][j].moverAbajo(voyAbajo);
                     if (marcianos[i][j].limiteAbajo(altoPantalla - miNave.getImagen().getHeight())) {
+                        //hago que el dispositivo vibre
+                        vibrar();
                         perdi = true;
                     }
                 }
@@ -338,6 +345,15 @@ public class Gameplay extends Pantalla {
         //después de mover todos los marcianos
         //pongo la bandera voyAbajo a false
         voyAbajo = false;
+    }
+
+    //------------------------VIBRACIÓN DEL DISPOSITIVO------------------------
+    public void vibrar(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            miVibrador.vibrate(VibrationEffect.createOneShot(3000, VibrationEffect.DEFAULT_AMPLITUDE));
+        }else {
+            miVibrador.vibrate(tiempoVibracion);
+        }
     }
 
     //------------------------CUANDO PULSO LA PANTALLA (PUEDO PULSAR UN BOTON O MOVER LA NAVE)------------------------
@@ -359,7 +375,8 @@ public class Gameplay extends Pantalla {
             case MotionEvent.ACTION_POINTER_UP:  // Al levantar un dedo que no es el último
                 //si pulso la opcion volver
                 if (pulsa(back, event) && flagVolver) {
-                    //vuelvo al menu
+                  //muestro submenu, reanudar o salir
+                  //si salgo vuelvo al menu, si reanudo sigo la partida
                     return 0;
                 }
                 break;

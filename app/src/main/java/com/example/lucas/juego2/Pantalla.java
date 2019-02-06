@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
@@ -18,10 +19,10 @@ public class Pantalla {
     Bitmap fondo;
     Boolean perdi;
     Paint pTexto, pTexto2, pBoton;
-
+    Vibrator miVibrador;
     public Pantalla(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
         perdi=false;
-
+        miVibrador= (Vibrator) contexto.getSystemService(Context.VIBRATOR_SERVICE);
         this.contexto = contexto;
         this.idPantalla = idPantalla;
         this.altoPantalla = altoPantalla;

@@ -104,13 +104,18 @@ public class Juego  extends SurfaceView implements SurfaceHolder.Callback{
                         pantallaActual.dibujar(c);              // Dibujamos los elementos
                         //si estoy en el gameplay y he perdido
                         if(pantallaActual.idPantalla==1){
+
                             //perdi la partida por el motivo que sea
                             if(pantallaActual.perdi){
-                                //cambio la pantalla actual
+                                //espero 3 segundos
+                                hilo.sleep(3000);
+                                //vuelvo al menu
                                 pantallaActual=new Menu(context,0,anchoPantalla,altoPantalla);
                             }
                         }
                     }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 } finally {  // Haya o no excepción, hay que liberar el lienzo
                     if (c != null) {
                         surfaceHolder.unlockCanvasAndPost(c);
