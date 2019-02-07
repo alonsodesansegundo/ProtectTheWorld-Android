@@ -14,14 +14,9 @@ import java.util.ArrayList;
 public class Menu extends Pantalla {
     Boton jugar, ayuda, opciones, records;
     int alto, ancho, espacio;
-    Boolean flagJugar, flagAyuda, flagOpciones, flagRecords;
 
     public Menu(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
         super(contexto, idPantalla, anchoPantalla, altoPantalla);
-        flagJugar = false;
-        flagAyuda = false;
-        flagOpciones = false;
-        flagRecords = false;
         fondo = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.fondo1);
         fondo = Bitmap.createScaledBitmap(fondo, anchoPantalla, altoPantalla, true);
         alto = altoPantalla / 10;
@@ -79,16 +74,16 @@ public class Menu extends Pantalla {
         switch (accion) {
             case MotionEvent.ACTION_DOWN:           // Primer dedo toca
                 if (pulsa(jugar.getRectangulo(), event)) {
-                    flagJugar = true;
+                   jugar.setBandera(true);
                 }
                 if (pulsa(opciones.getRectangulo(), event)) {
-                    flagOpciones = true;
+                   opciones.setBandera(true);
                 }
                 if (pulsa(records.getRectangulo(), event)) {
-                    flagRecords = true;
+                    records.setBandera(true);
                 }
                 if (pulsa(ayuda.getRectangulo(), event)) {
-                    flagAyuda= true;
+                    ayuda.setBandera(true);
                 }
             case MotionEvent.ACTION_POINTER_DOWN:  // Segundo y siguientes tocan
                 break;
@@ -96,23 +91,24 @@ public class Menu extends Pantalla {
             case MotionEvent.ACTION_UP:                     // Al levantar el último dedo
             case MotionEvent.ACTION_POINTER_UP:  // Al levantar un dedo que no es el último
                 //si pulso la opcion jugar
-                if (pulsa(jugar.getRectangulo(), event) && flagJugar) {
+                if (pulsa(jugar.getRectangulo(), event) && jugar.getBandera()) {
                     return 1;
                 }
                 //si pulso la opcion opciones
-                if (pulsa(opciones.getRectangulo(), event)&&flagOpciones) {
+                if (pulsa(opciones.getRectangulo(), event)&&opciones.getBandera()) {
                     return 2;
                 }
-                if (pulsa(records.getRectangulo(), event)&&flagRecords) {
+                if (pulsa(records.getRectangulo(), event)&&records.getBandera()) {
                     return 3;
                 }
-                if (pulsa(ayuda.getRectangulo(), event)&&flagAyuda) {
+                if (pulsa(ayuda.getRectangulo(), event)&&ayuda.getBandera()) {
                     return 4;
                 }
-                flagJugar = false;
-                flagAyuda = false;
-                flagOpciones = false;
-                flagRecords = false;
+                //pongo todas las banderas de los botones a false
+                jugar.setBandera(false);
+                opciones.setBandera(false);
+                ayuda.setBandera(false);
+                records.setBandera(false);
                 break;
 
             case MotionEvent.ACTION_MOVE: // Se mueve alguno de los dedos

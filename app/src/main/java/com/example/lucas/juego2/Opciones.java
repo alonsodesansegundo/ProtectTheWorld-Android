@@ -1,17 +1,31 @@
 package com.example.lucas.juego2;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.Log;
 import android.view.MotionEvent;
 
 public class Opciones extends Pantalla {
+    Bitmap n,n1,n2;
     Rect back;
     public Opciones(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
         super(contexto, idPantalla, anchoPantalla, altoPantalla);
         back=new Rect(anchoPantalla-anchoPantalla/10,0,anchoPantalla,anchoPantalla/10);
+
+        //imagenes nave
+        n=fondo = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.nave);
+        n1=fondo = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.nave1);
+        n2=fondo = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.nave2);
+
+        //escalado de las imagenes
+        n = Bitmap.createScaledBitmap(n, anchoPantalla / 8, altoPantalla / 15, true);
+        n1 = Bitmap.createScaledBitmap(n1, anchoPantalla / 8, altoPantalla / 15, true);
+        n2 = Bitmap.createScaledBitmap(n2, anchoPantalla / 8, altoPantalla / 15, true);
     }
 
     @Override
@@ -19,8 +33,16 @@ public class Opciones extends Pantalla {
         try{
             c.drawColor(Color.BLACK);
             pTexto.setTextSize(altoPantalla/10);
-            c.drawText("Opciones",anchoPantalla/2,altoPantalla/5,pTexto);
+            c.drawText("OPCIONES",anchoPantalla/2,altoPantalla/5,pTexto);
             c.drawRect(back,pBoton);
+            pTexto.setTextSize(altoPantalla/20);
+            c.drawText("Seleccionar nave",anchoPantalla/2,altoPantalla/3,pTexto);
+            //dibujo imagenes nave
+            c.drawBitmap(n,0,altoPantalla/3+altoPantalla/20,null);
+            c.drawBitmap(n1,anchoPantalla/2-n1.getWidth()/2,altoPantalla/3+altoPantalla/20,null);
+            c.drawBitmap(n2,anchoPantalla-n2.getWidth(),altoPantalla/3+altoPantalla/20,null);
+
+
         }catch (Exception e){
 
         }
