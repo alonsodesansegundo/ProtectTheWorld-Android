@@ -8,9 +8,10 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
 
 public class Opciones extends Pantalla {
-    String selNave;
+    String selNave,opciones;
     Bitmap n,n1,n2;
     int anchoSelectNave;
     Rect back,selectNave;
@@ -31,8 +32,8 @@ public class Opciones extends Pantalla {
         n2 = Bitmap.createScaledBitmap(n2, anchoPantalla / 8, altoPantalla / 15, true);
 
         //----------------STRINGS---------------
-        selNave="Seleccionar nave";
-
+        opciones=contexto.getString(R.string.opciones);
+        selNave=contexto.getString(R.string.escogerNave);
         //para obtener el ancho de la cadena seleccionar nave
         pTexto.getTextBounds(selNave, 0, selNave.length(), selectNave);
         //ancho seleccionar nave
@@ -51,7 +52,6 @@ public class Opciones extends Pantalla {
                 anchoPantalla-n2.getWidth()-(anchoPantalla-anchoSelectNave)/2+n2.getWidth(),altoPantalla/3+altoPantalla/20+n2.getHeight(), Color.BLUE);
         nave2.setImg(n2);
 
-
     }
 
     @Override
@@ -62,7 +62,7 @@ public class Opciones extends Pantalla {
             //tamaño texto opciones
             pTexto.setTextSize(altoPantalla/10);
             //dibujo el texto opciones
-            c.drawText("OPCIONES",anchoPantalla/2,altoPantalla/5,pTexto);
+            c.drawText(opciones,anchoPantalla/2,altoPantalla/5,pTexto);
             //dibujo el boton para volver hacia atras
             c.drawRect(back,pBoton);
             //tamaño texto seleccionar nave

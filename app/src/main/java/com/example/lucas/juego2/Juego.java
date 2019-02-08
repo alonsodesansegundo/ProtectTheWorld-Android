@@ -108,7 +108,7 @@ public class Juego  extends SurfaceView implements SurfaceHolder.Callback{
                             //perdi la partida por el motivo que sea
                             if(pantallaActual.perdi){
                                 //espero 3 segundos
-                                hilo.sleep(3000);
+                                hilo.sleep(1000);
                                 //vuelvo al menu
                                 pantallaActual=new Menu(context,0,anchoPantalla,altoPantalla);
                             }

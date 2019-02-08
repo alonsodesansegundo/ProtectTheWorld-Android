@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Protect the World</string>
+    <string name="jugar">Jugar</string>
+    <string name="opciones">Opciones</string>
+    <string name="records">Récords</string>
+    <string name="ayuda">Ayuda</string>
+    <string name="escogerNave">Seleccionar nave</string>
+</resources>

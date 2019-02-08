@@ -17,10 +17,11 @@ public class Pantalla {
     Context contexto;
     int idPantalla, altoPantalla, anchoPantalla;
     Bitmap fondo;
-    Boolean perdi;
+    Boolean perdi,pausa;
     Paint pTexto, pTexto2, pBoton;
     Vibrator miVibrador;
     public Pantalla(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
+        pausa=false;
         perdi=false;
         miVibrador= (Vibrator) contexto.getSystemService(Context.VIBRATOR_SERVICE);
         this.contexto = contexto;

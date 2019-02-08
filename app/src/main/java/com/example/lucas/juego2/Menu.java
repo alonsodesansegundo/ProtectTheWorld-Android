@@ -14,10 +14,19 @@ import java.util.ArrayList;
 public class Menu extends Pantalla {
     Boton jugar, ayuda, opciones, records;
     int alto, ancho, espacio;
+    String txtJugar,txtOpciones,txtAyuda,txtRecords;
 
     public Menu(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
         super(contexto, idPantalla, anchoPantalla, altoPantalla);
-        fondo = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.fondo1);
+
+        //---------------------STRINGS-----------------
+        txtJugar=contexto.getString(R.string.jugar);
+        txtOpciones=contexto.getString(R.string.opciones);
+        txtRecords=contexto.getString(R.string.records);
+        txtAyuda=contexto.getString(R.string.ayuda);
+
+        //----------------------------------------------
+        fondo = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.fondo3);
         fondo = Bitmap.createScaledBitmap(fondo, anchoPantalla, altoPantalla, true);
         alto = altoPantalla / 10;
         ancho = anchoPantalla / 10;
@@ -45,21 +54,21 @@ public class Menu extends Pantalla {
             //dibujo el boton jugar
             jugar.dibujar(c);
             //dibujo el texto del boton jugar
-            c.drawText("Jugar", jugar.getRectangulo().centerX(), jugar.getRectangulo().centerY() - ((pTexto.descent() + pTexto.ascent()) / 2), pTexto);
+            c.drawText(txtJugar, jugar.getRectangulo().centerX(), jugar.getRectangulo().centerY() - ((pTexto.descent() + pTexto.ascent()) / 2), pTexto);
 
             //BOTON OPCIONES
             //dibujo el boton opciones
            opciones.dibujar(c);
             //dibujo el texto del boton opciones
-            c.drawText("Opciones", opciones.getRectangulo().centerX(), opciones.getRectangulo().centerY() - ((pTexto.descent() + pTexto.ascent()) / 2), pTexto);
+            c.drawText(txtOpciones, opciones.getRectangulo().centerX(), opciones.getRectangulo().centerY() - ((pTexto.descent() + pTexto.ascent()) / 2), pTexto);
 
             //BOTON RECORDS
             records.dibujar(c);
-            c.drawText("Records", records.getRectangulo().centerX(), records.getRectangulo().centerY() - ((pTexto.descent() + pTexto.ascent()) / 2), pTexto);
+            c.drawText(txtRecords, records.getRectangulo().centerX(), records.getRectangulo().centerY() - ((pTexto.descent() + pTexto.ascent()) / 2), pTexto);
 
             //BOTON AYUDA
             ayuda.dibujar(c);
-            c.drawText("Ayuda", ayuda.getRectangulo().centerX(), ayuda.getRectangulo().centerY() - ((pTexto.descent() + pTexto.ascent()) / 2), pTexto);
+            c.drawText(txtAyuda, ayuda.getRectangulo().centerX(), ayuda.getRectangulo().centerY() - ((pTexto.descent() + pTexto.ascent()) / 2), pTexto);
 
         } catch (Exception e) {
             Log.i("Error al dibujar", e.getLocalizedMessage());

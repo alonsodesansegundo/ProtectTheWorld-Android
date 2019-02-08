@@ -19,34 +19,53 @@ import java.util.Timer;
 
 public class Gameplay extends Pantalla {
     //------------------------PROPIEDADES GAMEPLAY------------------------
-    private Rect back;
-    private int nivel,filas, columnas,puntuacionGlobal;
+    private int nivel, filas, columnas, puntuacionGlobal;
     private Bitmap imgMarciano1, imgMarciano2, imgNave;
-    private float primeraX, primeraY,tamañoPuntuacion;
+    private float primeraX, primeraY, tamañoPuntuacion;
     private double vMarciano;
     private Marciano marcianos[][];
     private Nave miNave;
     private boolean voyIzquierda, voyAbajo, mueveNave;
-    private Boolean flagVolver = false;
     private ArrayList misColumnas;
     private ArrayList<BalaMarciano> balasMarcianos;
-    private Paint pPunutacion;
+    private Paint pPunutacion,ppantallaPausa;
     private int tiempoVibracion;
+    private Boton btnPausa,btnReanudar,btnSalir;
+    private Bitmap imgPausa,imgPlay;
+    private Rect pantallaPausa;
 
     //------------------------CONSTRUCTOR------------------------
     public Gameplay(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
         super(contexto, idPantalla, anchoPantalla, altoPantalla);
+        //rectangulo grande pantallaPausa
+        pantallaPausa=new Rect(0,0,anchoPantalla,altoPantalla);
+        ppantallaPausa=new Paint();
+
+        ppantallaPausa.setColor(Color.GRAY);
+        ppantallaPausa.setAlpha(130);
+
+
+        //btn pausa
+        btnPausa = new Boton(anchoPantalla - anchoPantalla / 10, 0,
+                anchoPantalla, anchoPantalla / 10, Color.RED);
+        imgPausa = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.pause);
+        imgPausa = Bitmap.createScaledBitmap(imgPausa, anchoPantalla / 10, anchoPantalla / 10, true);
+        btnPausa.setImg(imgPausa);
+
+            //imagen play
+            imgPlay=BitmapFactory.decodeResource(contexto.getResources(), R.drawable.play);
+        imgPlay = Bitmap.createScaledBitmap(imgPlay, anchoPantalla / 10, anchoPantalla / 10, true);
         //miliseguundos vibracion
-        tiempoVibracion=3000;
+        tiempoVibracion = 1000;
         //tamaño alto puntuacion
-        tamañoPuntuacion=altoPantalla / 15;
+        tamañoPuntuacion = altoPantalla / 15;
         //paint
-        pPunutacion=new Paint();
+        pPunutacion = new Paint();
         pPunutacion.setColor(Color.WHITE);
         pPunutacion.setTextAlign(Paint.Align.CENTER);
         pPunutacion.setTextSize(tamañoPuntuacion);
         //puntuación global
-        puntuacionGlobal=0;
+        puntuacionGlobal = 0;
         //bandera flagVolver
         //POSICIÓN PRIMER MARCIANO
         primeraX = 0;
@@ -65,8 +84,6 @@ public class Gameplay extends Pantalla {
         marcianos = new Marciano[filas][columnas];  //cinco filas seis columnas de marcianos
         //velocidad de movimiento lateral de los marcianos al comienzo
         vMarciano = 0.5;
-        //boton volver al menu principal
-        back = new Rect(anchoPantalla - anchoPantalla / 10, 0, anchoPantalla, anchoPantalla / 10);
 
         //imagen marcianos impacto 1
         imgMarciano1 = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.marciano1);
@@ -95,23 +112,26 @@ public class Gameplay extends Pantalla {
 
     // Actualizamos la física de los elementos en pantalla
     public void actualizarFisica() {
+        //si no he pausado, el gameplay continua
+        if (!pausa) {
+            //------------------------DISPARO DE LA NAVE------------------------
+            disparaNave();
 
-        //------------------------DISPARO DE LA NAVE------------------------
-        disparaNave();
-
-        //------------------------DISPARO DE LOS MARCIANOS------------------------
-        disparanMarcianos();
+            //------------------------DISPARO DE LOS MARCIANOS------------------------
+            disparanMarcianos();
 
 
-        //------------------------MOVER BALAS MARCIANOS (ARRAYLIST)------------------------
-        actualizaBalasMarcianos();
+            //------------------------MOVER BALAS MARCIANOS (ARRAYLIST)------------------------
+            actualizaBalasMarcianos();
 
-        //------------------------MOVIMIENTO VERTICAL Y HORIZONTAL DE LOS MARCIANOS------------------------
-        //VEO EN QUE DIRECCIÓN SE TIENEN QUE MOVER Y SI DESCIENDEN UN NIVEL O NO Y ACTUALIZO LAS BANDERAS
-        actualizaBanderasMovimiento();
+            //------------------------MOVIMIENTO VERTICAL Y HORIZONTAL DE LOS MARCIANOS------------------------
+            //VEO EN QUE DIRECCIÓN SE TIENEN QUE MOVER Y SI DESCIENDEN UN NIVEL O NO Y ACTUALIZO LAS BANDERAS
+            actualizaBanderasMovimiento();
 
-        //MUEVO LOS MARCIANOS SEGÚN LAS BANDERAS
-        mueveMarcianos();
+            //MUEVO LOS MARCIANOS SEGÚN LAS BANDERAS
+            mueveMarcianos();
+        }
+
 
     }
 
@@ -119,6 +139,9 @@ public class Gameplay extends Pantalla {
     public void dibujar(Canvas c) {
         try {
             c.drawColor(Color.BLACK);
+            //dibujo el btnPausa
+            btnPausa.dibujar(c);
+
             //dibujo los marcianos del array bidimensional (marcianos)
             for (int i = 0; i < marcianos.length; i++) {
                 for (int j = 0; j < marcianos[0].length; j++) {
@@ -132,16 +155,19 @@ public class Gameplay extends Pantalla {
             for (int i = 0; i < balasMarcianos.size(); i++) {
                 balasMarcianos.get(i).dibujar(c);
             }
-            //dibujo el boton de volver
-            c.drawRect(back, pBoton);
 
             //dibujo la nave y el proyectil que genera
             miNave.dibujar(c);
 
             //dibujo la puntuacion
+            c.drawText(Integer.toString(puntuacionGlobal), anchoPantalla / 2, altoPantalla / 20, pPunutacion);
 
+            //si he pulsado el boton de pausa
+            if (pausa) {
 
-            c.drawText( Integer.toString(puntuacionGlobal),anchoPantalla/2,altoPantalla / 20,pPunutacion);
+                //dibujo el pantallaPausa
+                c.drawRect(pantallaPausa,ppantallaPausa);
+            }
         } catch (Exception e) {
             Log.i("Error al dibujar", e.getLocalizedMessage());
         }
@@ -161,9 +187,9 @@ public class Gameplay extends Pantalla {
                 //pongo un marciano nivel 1 o marciano nivel 2
                 //por ejemplo, si estoy en la ultima fila y en el nivel 2-1, sera de marcianos de dos impactos
                 if (i >= marcianos.length - (nivel - 1)) {
-                    marcianos[i][j] = new Marciano(imgMarciano2, primeraX, primeraY, 2, vMarciano,25);
+                    marcianos[i][j] = new Marciano(imgMarciano2, primeraX, primeraY, 2, vMarciano, 25);
                 } else {
-                    marcianos[i][j] = new Marciano(imgMarciano1, primeraX, primeraY, 1, vMarciano,10);
+                    marcianos[i][j] = new Marciano(imgMarciano1, primeraX, primeraY, 1, vMarciano, 10);
                 }
                 //aumento la posX
                 primeraX += imgMarciano1.getWidth() + anchoPantalla / 10;
@@ -212,7 +238,7 @@ public class Gameplay extends Pantalla {
                             //si salud es cero
                             if (marcianos[i][j].getSalud() == 0) {
                                 //sumo a mi puntuacion global los puntos del marciano
-                                puntuacionGlobal+=marcianos[i][j].getPuntuacion();
+                                puntuacionGlobal += marcianos[i][j].getPuntuacion();
                                 //elimino el marciano
                                 marcianos[i][j] = null;
                             } else {
@@ -348,10 +374,10 @@ public class Gameplay extends Pantalla {
     }
 
     //------------------------VIBRACIÓN DEL DISPOSITIVO------------------------
-    public void vibrar(){
+    public void vibrar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             miVibrador.vibrate(VibrationEffect.createOneShot(3000, VibrationEffect.DEFAULT_AMPLITUDE));
-        }else {
+        } else {
             miVibrador.vibrate(tiempoVibracion);
         }
     }
@@ -365,8 +391,8 @@ public class Gameplay extends Pantalla {
         switch (accion) {
             case MotionEvent.ACTION_DOWN:
                 // Primer dedo toca
-                if (pulsa(back, event)) {
-                    flagVolver = true;
+                if (pulsa(btnPausa.getRectangulo(), event)) {
+                    btnPausa.setBandera(true);
                 }
             case MotionEvent.ACTION_POINTER_DOWN:  // Segundo y siguientes tocan
                 break;
@@ -374,10 +400,20 @@ public class Gameplay extends Pantalla {
                 mueveNave = false;
             case MotionEvent.ACTION_POINTER_UP:  // Al levantar un dedo que no es el último
                 //si pulso la opcion volver
-                if (pulsa(back, event) && flagVolver) {
-                  //muestro submenu, reanudar o salir
-                  //si salgo vuelvo al menu, si reanudo sigo la partida
-                    return 0;
+                if (pulsa(btnPausa.getRectangulo(), event) && btnPausa.getBandera()) {
+                    //pongo la bandera del propio boton a false
+                    btnPausa.setBandera(false);
+
+                    //muestro pantallaPausa, reanudar o salir
+                    pausa = !pausa;
+                    if(pausa){
+
+                        btnPausa.setImg(imgPlay);
+                    }else{
+                        btnPausa.setImg(imgPausa);
+                    }
+                    //si salgo vuelvo al menu, si reanudo sigo la partida
+//                    return 0;
                 }
                 break;
 
