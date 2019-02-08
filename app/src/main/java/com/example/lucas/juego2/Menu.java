@@ -24,9 +24,12 @@ public class Menu extends Pantalla {
         espacio = altoPantalla / 50;
 
         jugar = new Boton(ancho, alto, ancho * 5, alto * 2, Color.BLACK);
-        opciones = new Boton(ancho, alto * 2 + espacio, ancho * 5, alto * 2 + espacio + alto, Color.BLACK);
-        records = new Boton(ancho, alto * 2 + 2 * espacio + alto, ancho * 5, alto * 2 + 2 * espacio + 2 * alto, Color.BLACK);
-        ayuda = new Boton(ancho, alto * 2 + 3 * espacio + 2 * alto, ancho * 5, alto * 2 + 3 * espacio + 3 * alto, Color.BLACK);
+        opciones = new Boton(ancho, alto * 2 + espacio, ancho * 5,
+                alto * 2 + espacio + alto, Color.BLACK);
+        records = new Boton(ancho, alto * 2 + 2 * espacio + alto, ancho * 5,
+                alto * 2 + 2 * espacio + 2 * alto, Color.BLACK);
+        ayuda = new Boton(ancho, alto * 2 + 3 * espacio + 2 * alto, ancho * 5,
+                alto * 2 + 3 * espacio + 3 * alto, Color.BLACK);
     }
 
     // Actualizamos la física de los elementos en pantalla
@@ -40,26 +43,22 @@ public class Menu extends Pantalla {
             c.drawBitmap(fondo, 0, 0, null);
             //BOTON JUGAR
             //dibujo el boton jugar
-            pBoton.setColor(jugar.getColor());
-            c.drawRect(jugar.getRectangulo(), pBoton);
+            jugar.dibujar(c);
             //dibujo el texto del boton jugar
             c.drawText("Jugar", jugar.getRectangulo().centerX(), jugar.getRectangulo().centerY() - ((pTexto.descent() + pTexto.ascent()) / 2), pTexto);
 
             //BOTON OPCIONES
             //dibujo el boton opciones
-            pBoton.setColor(opciones.getColor());
-            c.drawRect(opciones.getRectangulo(), pBoton);
+           opciones.dibujar(c);
             //dibujo el texto del boton opciones
             c.drawText("Opciones", opciones.getRectangulo().centerX(), opciones.getRectangulo().centerY() - ((pTexto.descent() + pTexto.ascent()) / 2), pTexto);
 
             //BOTON RECORDS
-            pBoton.setColor(records.getColor());
-            c.drawRect(records.getRectangulo(), pBoton);
+            records.dibujar(c);
             c.drawText("Records", records.getRectangulo().centerX(), records.getRectangulo().centerY() - ((pTexto.descent() + pTexto.ascent()) / 2), pTexto);
 
             //BOTON AYUDA
-            pBoton.setColor(ayuda.getColor());
-            c.drawRect(ayuda.getRectangulo(), pBoton);
+            ayuda.dibujar(c);
             c.drawText("Ayuda", ayuda.getRectangulo().centerX(), ayuda.getRectangulo().centerY() - ((pTexto.descent() + pTexto.ascent()) / 2), pTexto);
 
         } catch (Exception e) {

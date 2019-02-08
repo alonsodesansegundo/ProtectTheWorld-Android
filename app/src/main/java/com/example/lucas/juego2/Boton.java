@@ -1,16 +1,25 @@
 package com.example.lucas.juego2;
 
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Rect;
 
 public class Boton {
+    private Paint p;
     private Rect rectangulo;
-    private int color;
     private boolean bandera;
-
+    private Bitmap img;
     public Boton(int left,int top,int right,int bottom, int color) {
         this.rectangulo = new Rect(left,top,right,bottom);
         bandera=false;
-        this.color = color;
+        p=new Paint();
+        p.setColor(color);
+        this.img=null;
+    }
+
+    public void setImg(Bitmap img) {
+        this.img = img;
     }
 
     public boolean getBandera() {
@@ -25,11 +34,10 @@ public class Boton {
         return rectangulo;
     }
 
-    public int getColor() {
-        return color;
+    public void dibujar(Canvas c){
+    c.drawRect(this.rectangulo,p);
+    if(img!=null){
+        c.drawBitmap(img,this.rectangulo.left,this.rectangulo.top,null);
     }
-
-    public void setColor(int color) {
-        this.color = color;
     }
 }
