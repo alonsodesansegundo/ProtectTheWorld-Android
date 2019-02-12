@@ -1,6 +1,8 @@
 package com.example.lucas.juego2;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Rect;
@@ -8,10 +10,14 @@ import android.util.Log;
 import android.view.MotionEvent;
 
 public class Ayuda extends Pantalla {
-    Rect back;
+    Bitmap imgVolver;
+    Boton back;
     public Ayuda(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
         super(contexto, idPantalla, anchoPantalla, altoPantalla);
-        back=new Rect(anchoPantalla-anchoPantalla/10,0,anchoPantalla,anchoPantalla/10);
+        back=new Boton(anchoPantalla-anchoPantalla/10,0,anchoPantalla,anchoPantalla/10, Color.TRANSPARENT);
+        imgVolver= BitmapFactory.decodeResource(contexto.getResources(), R.drawable.back);
+        imgVolver = Bitmap.createScaledBitmap(imgVolver, anchoPantalla/10, anchoPantalla/10, true);
+        back.setImg(imgVolver);
     }
 
     @Override
@@ -20,7 +26,7 @@ public class Ayuda extends Pantalla {
             c.drawColor(Color.BLACK);
             pTexto.setTextSize(altoPantalla/10);
             c.drawText("Ayuda",anchoPantalla/2,altoPantalla/5,pTexto);
-            c.drawRect(back,pBoton);
+            back.dibujar(c);
         }catch (Exception e){
 
         }
@@ -38,7 +44,7 @@ public class Ayuda extends Pantalla {
             case MotionEvent.ACTION_UP:                     // Al levantar el último dedo
             case MotionEvent.ACTION_POINTER_UP:  // Al levantar un dedo que no es el último
                 //si pulso la opcion jugar
-                if (pulsa(back, event)) {
+                if (pulsa(back.getRectangulo(), event)) {
                     return 0;
                 }
 

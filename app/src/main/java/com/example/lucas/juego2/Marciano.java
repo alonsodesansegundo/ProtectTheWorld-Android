@@ -135,7 +135,7 @@ this.puntuacion=puntuacion;
         //probabilidad de disparo
         //numero aleatorio entre 1 y 10
         int numero = (int) (Math.random() * 100) + 1;
-        if (numero ==1) {
+        if (numero <=1) {
             return true;
         }
         return false;

@@ -5,4 +5,6 @@
     <string name="records">Records</string>
     <string name="ayuda">Help</string>
     <string name="escogerNave">Select spaceship</string>
+    <string name="continuar">Continue</string>
+    <string name="salir">Exit</string>
 </resources>

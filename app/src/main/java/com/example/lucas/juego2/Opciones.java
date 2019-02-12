@@ -1,6 +1,7 @@
 package com.example.lucas.juego2;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -12,15 +13,27 @@ import android.view.View;
 
 public class Opciones extends Pantalla {
     String selNave,opciones;
-    Bitmap n,n1,n2;
+    Bitmap n,n1,n2,imgVolver;
     int anchoSelectNave;
-    Rect back,selectNave;
-    Boton nave,nave1,nave2;
+    Rect selectNave;
+    int naveSeleccionada;
+    Boton nave,nave1,nave2,back;
+    SharedPreferences preferencias;
+    SharedPreferences.Editor editorPreferencias;
     public Opciones(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
         super(contexto, idPantalla, anchoPantalla, altoPantalla);
-        selectNave=new Rect();
-        back=new Rect(anchoPantalla-anchoPantalla/10,0,anchoPantalla,anchoPantalla/10);
+        //----------------archivo configuración--------------
+        preferencias=contexto.getSharedPreferences("preferencias",Context.MODE_PRIVATE);
+        editorPreferencias=preferencias.edit();
 
+        //---------------- nave seleccionada---------------------
+        naveSeleccionada=preferencias.getInt("idNave",0);
+        //----------------boton volver--------------
+        selectNave=new Rect();
+        back=new Boton(anchoPantalla-anchoPantalla/10,0,anchoPantalla,anchoPantalla/10, Color.TRANSPARENT);
+        imgVolver=BitmapFactory.decodeResource(contexto.getResources(), R.drawable.back);
+        imgVolver = Bitmap.createScaledBitmap(imgVolver, anchoPantalla/10, anchoPantalla/10, true);
+        back.setImg(imgVolver);
         //imagenes nave
         n=fondo = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.nave);
         n1=fondo = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.nave1);
@@ -41,17 +54,19 @@ public class Opciones extends Pantalla {
 
         //----------------BOTONES SELECCIONAR NAVE---------------
         nave=new Boton((anchoPantalla-anchoSelectNave)/2,altoPantalla/3+altoPantalla/20,(anchoPantalla-anchoSelectNave)/2+n.getWidth(),
-                altoPantalla/3+altoPantalla/20+n.getHeight(), Color.BLUE);
+                altoPantalla/3+altoPantalla/20+n.getHeight(), Color.TRANSPARENT);
         nave.setImg(n);
 
         nave1=new Boton(anchoPantalla/2-n1.getWidth()/2,altoPantalla/3+altoPantalla/20,anchoPantalla/2+n1.getWidth()/2,
-                altoPantalla/3+altoPantalla/20+n1.getHeight(), Color.BLUE);
+                altoPantalla/3+altoPantalla/20+n1.getHeight(), Color.TRANSPARENT);
         nave1.setImg(n1);
 
         nave2=new Boton(anchoPantalla-n2.getWidth()-(anchoPantalla-anchoSelectNave)/2,altoPantalla/3+altoPantalla/20,
-                anchoPantalla-n2.getWidth()-(anchoPantalla-anchoSelectNave)/2+n2.getWidth(),altoPantalla/3+altoPantalla/20+n2.getHeight(), Color.BLUE);
+                anchoPantalla-n2.getWidth()-(anchoPantalla-anchoSelectNave)/2+n2.getWidth(),altoPantalla/3+altoPantalla/20+n2.getHeight(), Color.TRANSPARENT);
         nave2.setImg(n2);
 
+        //marco la nave seleccionada
+        actualizaNaveSeleccionada();
     }
 
     @Override
@@ -64,7 +79,7 @@ public class Opciones extends Pantalla {
             //dibujo el texto opciones
             c.drawText(opciones,anchoPantalla/2,altoPantalla/5,pTexto);
             //dibujo el boton para volver hacia atras
-            c.drawRect(back,pBoton);
+            back.dibujar(c);
             //tamaño texto seleccionar nave
             pTexto.setTextSize(altoPantalla/20);
             //dibujo el texto seleccionar nave
@@ -89,17 +104,58 @@ public class Opciones extends Pantalla {
         int accion = event.getActionMasked();             //Obtenemos el tipo de pulsación
         switch (accion) {
             case MotionEvent.ACTION_DOWN:           // Primer dedo toca
+                //si pulso el btn volver
+                if (pulsa(back.getRectangulo(), event)) {
+                    //pongo su bandera a true
+                    back.setBandera(true);
+                }
+                //he pulsado la primera nave
+                if(pulsa(nave.getRectangulo(),event)){
+                    nave.setBandera(true);
+                }
+                //he pulsado la segunda nave
+                if(pulsa(nave1.getRectangulo(),event)){
+                    nave1.setBandera(true);
+                }
+
+                //he pulsado la tercera nave
+                if(pulsa(nave2.getRectangulo(),event)){
+                    nave2.setBandera(true);
+                }
             case MotionEvent.ACTION_POINTER_DOWN:  // Segundo y siguientes tocan
                 break;
 
             case MotionEvent.ACTION_UP:                     // Al levantar el último dedo
             case MotionEvent.ACTION_POINTER_UP:  // Al levantar un dedo que no es el último
                 //si pulso la opcion jugar
-                if (pulsa(back, event)) {
+                if (pulsa(back.getRectangulo(), event)&&back.getBandera()) {
                     //vuelvo al menu
                     return 0;
                 }
-
+                //si he pulsado la primera nave
+                if(pulsa(nave.getRectangulo(),event)&&nave.getBandera()){
+                    editorPreferencias.putInt("idNave",0);
+                    editorPreferencias.commit();
+                    naveSeleccionada=0;
+                }
+                //he pulsado la segunda nave
+                if(pulsa(nave1.getRectangulo(),event)&&nave1.getBandera()){
+                    editorPreferencias.putInt("idNave",1);
+                    editorPreferencias.commit();
+                    naveSeleccionada=1;
+                }
+                //si he pulsado la tercera nave
+                if(pulsa(nave2.getRectangulo(),event)&&nave2.getBandera()){
+                    editorPreferencias.putInt("idNave",2);
+                    editorPreferencias.commit();
+                    naveSeleccionada=2;
+                }
+                actualizaNaveSeleccionada();
+                //pongo las banderas de todos los botones a false
+                back.setBandera(false);
+                nave.setBandera(false);
+                nave1.setBandera(false);
+                nave2.setBandera(false);
                 break;
 
             case MotionEvent.ACTION_MOVE: // Se mueve alguno de los dedos
@@ -109,5 +165,24 @@ public class Opciones extends Pantalla {
                 Log.i("Otra acción", "Acción no definida: " + accion);
         }
         return idPantalla;
+    }
+    public void actualizaNaveSeleccionada(){
+        switch (naveSeleccionada){
+            case 0:
+                nave.setColor(Color.LTGRAY);
+                nave1.setColor(Color.TRANSPARENT);
+                nave2.setColor(Color.TRANSPARENT);
+                break;
+            case 1:
+                nave.setColor(Color.TRANSPARENT);
+                nave1.setColor(Color.LTGRAY);
+                nave2.setColor(Color.TRANSPARENT);
+                break;
+            case 2:
+                nave.setColor(Color.TRANSPARENT);
+                nave1.setColor(Color.TRANSPARENT);
+                nave2.setColor(Color.LTGRAY);
+                break;
+        }
     }
 }

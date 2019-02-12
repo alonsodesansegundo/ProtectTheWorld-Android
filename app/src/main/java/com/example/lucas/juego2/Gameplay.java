@@ -1,6 +1,7 @@
 package com.example.lucas.juego2;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -28,36 +29,42 @@ public class Gameplay extends Pantalla {
     private boolean voyIzquierda, voyAbajo, mueveNave;
     private ArrayList misColumnas;
     private ArrayList<BalaMarciano> balasMarcianos;
-    private Paint pPunutacion,ppantallaPausa;
+    private Paint pPunutacion;
     private int tiempoVibracion;
-    private Boton btnPausa,btnReanudar,btnSalir;
-    private Bitmap imgPausa,imgPlay;
-    private Rect pantallaPausa;
+    private Boton btnPausa, btnReanudar, btnSalir;
+    private Bitmap imgPausa, imgPlay;
+    private int codNave;
+    private int margenLateralPausa;
+    private int altoMenuPausa;
+    private SharedPreferences preferencias;
+    private String txtContinuar, txtSalir;
 
     //------------------------CONSTRUCTOR------------------------
     public Gameplay(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
         super(contexto, idPantalla, anchoPantalla, altoPantalla);
-        //rectangulo grande pantallaPausa
-        pantallaPausa=new Rect(0,0,anchoPantalla,altoPantalla);
-        ppantallaPausa=new Paint();
+        //----------------STRINGS----------------
+        txtContinuar = contexto.getString(R.string.continuar);
+        txtSalir = contexto.getString(R.string.salir);
 
-        ppantallaPausa.setColor(Color.GRAY);
-        ppantallaPausa.setAlpha(130);
+        //-----------------MENU PAUSA----------------
+        margenLateralPausa = anchoPantalla / 20;
+        altoMenuPausa = altoPantalla / 4;
+        //----------------ARCHIVO CONFIGURACIÓN--------------
+        preferencias = contexto.getSharedPreferences("preferencias", Context.MODE_PRIVATE);
 
-
-        //btn pausa
+        //----------------BOTON PAUSA----------------
         btnPausa = new Boton(anchoPantalla - anchoPantalla / 10, 0,
                 anchoPantalla, anchoPantalla / 10, Color.RED);
         imgPausa = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.pause);
         imgPausa = Bitmap.createScaledBitmap(imgPausa, anchoPantalla / 10, anchoPantalla / 10, true);
         btnPausa.setImg(imgPausa);
 
-            //imagen play
-            imgPlay=BitmapFactory.decodeResource(contexto.getResources(), R.drawable.play);
+        //----------------IMAGEN PLAY----------------
+        imgPlay = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.play);
         imgPlay = Bitmap.createScaledBitmap(imgPlay, anchoPantalla / 10, anchoPantalla / 10, true);
-        //miliseguundos vibracion
+        //----------------MILISEGUNDOS VIBRACIÓN----------------
         tiempoVibracion = 1000;
-        //tamaño alto puntuacion
+        //----------------ALTO DE LA PUNTUACIÓN----------------
         tamañoPuntuacion = altoPantalla / 15;
         //paint
         pPunutacion = new Paint();
@@ -66,7 +73,6 @@ public class Gameplay extends Pantalla {
         pPunutacion.setTextSize(tamañoPuntuacion);
         //puntuación global
         puntuacionGlobal = 0;
-        //bandera flagVolver
         //POSICIÓN PRIMER MARCIANO
         primeraX = 0;
         primeraY = altoPantalla / 10;
@@ -97,8 +103,22 @@ public class Gameplay extends Pantalla {
         rellenaMarcianos();
 
         //imagen de la nave
-        imgNave = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.nave);
-        imgNave = Bitmap.createScaledBitmap(imgNave, anchoPantalla / 10, altoPantalla / 15, true);
+
+        codNave = preferencias.getInt("idNave", 1);
+        switch (codNave) {
+            case 0:
+                imgNave = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.nave);
+                imgNave = Bitmap.createScaledBitmap(imgNave, anchoPantalla / 10, altoPantalla / 15, true);
+                break;
+            case 1:
+                imgNave = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.nave1);
+                imgNave = Bitmap.createScaledBitmap(imgNave, anchoPantalla / 10, altoPantalla / 15, true);
+                break;
+            case 2:
+                imgNave = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.nave2);
+                imgNave = Bitmap.createScaledBitmap(imgNave, anchoPantalla / 10, altoPantalla / 15, true);
+        }
+
 
         //creo el objeto nave
         miNave = new Nave(imgNave, anchoPantalla / 2 - imgNave.getWidth() / 2, altoPantalla - imgNave.getHeight(), 10);
@@ -131,8 +151,6 @@ public class Gameplay extends Pantalla {
             //MUEVO LOS MARCIANOS SEGÚN LAS BANDERAS
             mueveMarcianos();
         }
-
-
     }
 
     // Rutina de dibujo en el lienzo. Se le llamará desde el hilo
@@ -165,8 +183,13 @@ public class Gameplay extends Pantalla {
             //si he pulsado el boton de pausa
             if (pausa) {
 
-                //dibujo el pantallaPausa
-                c.drawRect(pantallaPausa,ppantallaPausa);
+                //fondo
+                Paint a = new Paint();
+                a.setColor(Color.LTGRAY);
+                a.setAlpha(125);
+                c.drawRect(0, 0, anchoPantalla, altoPantalla, a);
+                a.setColor(Color.WHITE);
+                c.drawRect(margenLateralPausa, altoPantalla / 2 - altoMenuPausa / 2, anchoPantalla - margenLateralPausa, altoPantalla / 2 + altoMenuPausa / 2, a);
             }
         } catch (Exception e) {
             Log.i("Error al dibujar", e.getLocalizedMessage());
@@ -206,7 +229,7 @@ public class Gameplay extends Pantalla {
         }
     }
 
-    //devuelvo true si encuentro algun marciano, devuelvo false si no hay ningun marciano
+    //devuelvo true si encuentro algun marciano, devuelvo false si no hay 7ningun marciano
     public boolean hayMarcianos() {
         for (int i = 0; i < marcianos.length; i++) {
             for (int j = 0; j < marcianos[0].length; j++) {
@@ -406,10 +429,10 @@ public class Gameplay extends Pantalla {
 
                     //muestro pantallaPausa, reanudar o salir
                     pausa = !pausa;
-                    if(pausa){
+                    if (pausa) {
 
                         btnPausa.setImg(imgPlay);
-                    }else{
+                    } else {
                         btnPausa.setImg(imgPausa);
                     }
                     //si salgo vuelvo al menu, si reanudo sigo la partida

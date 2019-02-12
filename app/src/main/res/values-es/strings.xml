@@ -6,4 +6,6 @@
     <string name="records">Récords</string>
     <string name="ayuda">Ayuda</string>
     <string name="escogerNave">Seleccionar nave</string>
+    <string name="continuar">Continuar</string>
+    <string name="salir">Salir</string>
 </resources>

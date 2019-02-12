@@ -2,6 +2,7 @@ package com.example.lucas.juego2;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 
@@ -18,6 +19,9 @@ public class Boton {
         this.img=null;
     }
 
+    public void setColor(int col){
+        p.setColor(col);
+    }
     public void setImg(Bitmap img) {
         this.img = img;
     }
