@@ -11,6 +11,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
 import android.os.VibrationEffect;
+import android.support.annotation.ColorRes;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.Toast;
@@ -37,18 +38,22 @@ public class Gameplay extends Pantalla {
     private int margenLateralPausa;
     private int altoMenuPausa;
     private SharedPreferences preferencias;
-    private String txtContinuar, txtSalir;
+    private String txtContinuar, txtSalir,txtAccion;
 
     //------------------------CONSTRUCTOR------------------------
     public Gameplay(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
         super(contexto, idPantalla, anchoPantalla, altoPantalla);
+
+
         //----------------STRINGS----------------
         txtContinuar = contexto.getString(R.string.continuar);
         txtSalir = contexto.getString(R.string.salir);
+        txtAccion=contexto.getString(R.string.accion);
 
         //-----------------MENU PAUSA----------------
         margenLateralPausa = anchoPantalla / 20;
         altoMenuPausa = altoPantalla / 4;
+
         //----------------ARCHIVO CONFIGURACIÓN--------------
         preferencias = contexto.getSharedPreferences("preferencias", Context.MODE_PRIVATE);
 
@@ -62,18 +67,22 @@ public class Gameplay extends Pantalla {
         //----------------IMAGEN PLAY----------------
         imgPlay = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.play);
         imgPlay = Bitmap.createScaledBitmap(imgPlay, anchoPantalla / 10, anchoPantalla / 10, true);
+
         //----------------MILISEGUNDOS VIBRACIÓN----------------
         tiempoVibracion = 1000;
+
         //----------------ALTO DE LA PUNTUACIÓN----------------
         tamañoPuntuacion = altoPantalla / 15;
-        //paint
+        //-----------------PAINT PUNTUACIÓN-----------------
         pPunutacion = new Paint();
         pPunutacion.setColor(Color.WHITE);
         pPunutacion.setTextAlign(Paint.Align.CENTER);
         pPunutacion.setTextSize(tamañoPuntuacion);
-        //puntuación global
+
+        //-----------------PUNTUACIÓN GLOBAL-----------------
         puntuacionGlobal = 0;
-        //POSICIÓN PRIMER MARCIANO
+
+        //-----------------POSICIÓN PRIMER MARCIANO-----------------
         primeraX = 0;
         primeraY = altoPantalla / 10;
         //al comienzo los marcianos se moverán hacia la derecha
@@ -82,9 +91,9 @@ public class Gameplay extends Pantalla {
         voyAbajo = false;
         //al comienzo la nave todavía no se mueve
         mueveNave = false;
-        //nivel inicial
+        //-----------------NIVEL INICIAL-----------------
         nivel = 0;
-        //filas y columnas de marcianos
+        //-----------------FILAS Y COLUMNAS DE MARCIANOS-----------------
         filas = 5;
         columnas = 6;
         marcianos = new Marciano[filas][columnas];  //cinco filas seis columnas de marcianos
@@ -103,7 +112,6 @@ public class Gameplay extends Pantalla {
         rellenaMarcianos();
 
         //imagen de la nave
-
         codNave = preferencias.getInt("idNave", 1);
         switch (codNave) {
             case 0:
@@ -128,6 +136,18 @@ public class Gameplay extends Pantalla {
 
         //arraylist auxiliar para que disparen solamente los ultimos marcianos de cada columna
         misColumnas = new ArrayList();
+
+        //----------------BTN REANUDAR----------------
+        btnReanudar=new Boton(margenLateralPausa*2,altoPantalla/2,
+                anchoPantalla/2-margenLateralPausa,
+                altoPantalla / 2 + altoMenuPausa / 2-margenLateralPausa, Color.GREEN);
+btnReanudar.setTexto(txtContinuar,altoPantalla/30, Color.BLACK);
+
+        //----------------BTN SALIR----------------
+        btnSalir=new Boton(anchoPantalla/2+margenLateralPausa,altoPantalla/2,
+                anchoPantalla-margenLateralPausa*2,
+                altoPantalla / 2 + altoMenuPausa / 2-margenLateralPausa, Color.RED);
+        btnSalir.setTexto(txtSalir,altoPantalla/30, Color.BLACK);
     }
 
     // Actualizamos la física de los elementos en pantalla
@@ -159,7 +179,6 @@ public class Gameplay extends Pantalla {
             c.drawColor(Color.BLACK);
             //dibujo el btnPausa
             btnPausa.dibujar(c);
-
             //dibujo los marcianos del array bidimensional (marcianos)
             for (int i = 0; i < marcianos.length; i++) {
                 for (int j = 0; j < marcianos[0].length; j++) {
@@ -189,7 +208,18 @@ public class Gameplay extends Pantalla {
                 a.setAlpha(125);
                 c.drawRect(0, 0, anchoPantalla, altoPantalla, a);
                 a.setColor(Color.WHITE);
-                c.drawRect(margenLateralPausa, altoPantalla / 2 - altoMenuPausa / 2, anchoPantalla - margenLateralPausa, altoPantalla / 2 + altoMenuPausa / 2, a);
+                c.drawRect(margenLateralPausa, altoPantalla / 2 - altoMenuPausa / 2,
+                        anchoPantalla - margenLateralPausa, altoPantalla / 2 + altoMenuPausa / 2, a);
+
+                //dibujo los botones reanudar y salir
+                btnSalir.dibujar(c);
+                btnReanudar.dibujar(c);
+
+                //dibujo la pregunta
+                a.setColor(Color.BLACK);
+                a.setTextSize(altoPantalla/20);
+                a.setTextAlign(Paint.Align.CENTER);
+                c.drawText(txtAccion,anchoPantalla/2,altoPantalla/2-altoMenuPausa/2+altoPantalla/20+margenLateralPausa,a);
             }
         } catch (Exception e) {
             Log.i("Error al dibujar", e.getLocalizedMessage());
@@ -414,15 +444,25 @@ public class Gameplay extends Pantalla {
         switch (accion) {
             case MotionEvent.ACTION_DOWN:
                 // Primer dedo toca
+                //si pulso el btn pausa
                 if (pulsa(btnPausa.getRectangulo(), event)) {
                     btnPausa.setBandera(true);
+                }
+                //si pulso el btn salir
+                if(pulsa(btnSalir.getRectangulo(),event)){
+                    btnSalir.setBandera(true);
+                }
+                //si pulso el btn reanudar
+                //si pulso el btn salir
+                if(pulsa(btnReanudar.getRectangulo(),event)){
+                    btnReanudar.setBandera(true);
                 }
             case MotionEvent.ACTION_POINTER_DOWN:  // Segundo y siguientes tocan
                 break;
             case MotionEvent.ACTION_UP:                     // Al levantar el último dedo
                 mueveNave = false;
             case MotionEvent.ACTION_POINTER_UP:  // Al levantar un dedo que no es el último
-                //si pulso la opcion volver
+                //si pulso la opcion pausa
                 if (pulsa(btnPausa.getRectangulo(), event) && btnPausa.getBandera()) {
                     //pongo la bandera del propio boton a false
                     btnPausa.setBandera(false);
@@ -430,18 +470,29 @@ public class Gameplay extends Pantalla {
                     //muestro pantallaPausa, reanudar o salir
                     pausa = !pausa;
                     if (pausa) {
-
                         btnPausa.setImg(imgPlay);
                     } else {
                         btnPausa.setImg(imgPausa);
                     }
-                    //si salgo vuelvo al menu, si reanudo sigo la partida
-//                    return 0;
                 }
+                //si he pulsado la opcion salir
+                if(pulsa(btnSalir.getRectangulo(),event)&&btnSalir.getBandera()){
+                    //vuelvo al menu
+                    return 0;
+                }
+                if(pulsa(btnReanudar.getRectangulo(),event)&&btnReanudar.getBandera()){
+                    //reanudo el gameplay
+                    pausa=false;
+                    btnPausa.setImg(imgPausa);
+                }
+                //pongo las banderas reanudr y salir a false
+                btnReanudar.setBandera(false);
+                btnSalir.setBandera(false);
+                btnPausa.setBandera(false);
                 break;
 
             case MotionEvent.ACTION_MOVE: // Se mueve alguno de los dedos
-                if ((event.getX() > miNave.getContenedor().left && event.getX() < miNave.getContenedor().right) || mueveNave) {
+                if (!pausa&&(event.getX() > miNave.getContenedor().left && event.getX() < miNave.getContenedor().right) || mueveNave) {
                     mueveNave = true;
                     miNave.moverNave(event.getX());
                 }

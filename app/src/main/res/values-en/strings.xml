@@ -8,4 +8,5 @@
     <string name="escogerNave">Select spaceship</string>
     <string name="continuar">Continue</string>
     <string name="salir">Exit</string>
+    <string name="accion">Action?</string>
 </resources>

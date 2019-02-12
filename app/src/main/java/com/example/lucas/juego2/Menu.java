@@ -14,19 +14,39 @@ import java.util.ArrayList;
 public class Menu extends Pantalla {
     Boton jugar, ayuda, opciones, records;
     int alto, ancho, espacio;
+    String txtJugar,txtOpciones,txtAyuda,txtRecords;
 
     public Menu(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
         super(contexto, idPantalla, anchoPantalla, altoPantalla);
-        fondo = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.fondo1);
+
+        //---------------------STRINGS-----------------
+        txtJugar=contexto.getString(R.string.jugar);
+        txtOpciones=contexto.getString(R.string.opciones);
+        txtRecords=contexto.getString(R.string.records);
+        txtAyuda=contexto.getString(R.string.ayuda);
+
+        //-----------------IMAGEN FONDO-----------------
+        fondo = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.fondo3);
         fondo = Bitmap.createScaledBitmap(fondo, anchoPantalla, altoPantalla, true);
         alto = altoPantalla / 10;
         ancho = anchoPantalla / 10;
         espacio = altoPantalla / 50;
 
+        //-----------------BOTONES-----------------
         jugar = new Boton(ancho, alto, ancho * 5, alto * 2, Color.BLACK);
-        opciones = new Boton(ancho, alto * 2 + espacio, ancho * 5, alto * 2 + espacio + alto, Color.BLACK);
-        records = new Boton(ancho, alto * 2 + 2 * espacio + alto, ancho * 5, alto * 2 + 2 * espacio + 2 * alto, Color.BLACK);
-        ayuda = new Boton(ancho, alto * 2 + 3 * espacio + 2 * alto, ancho * 5, alto * 2 + 3 * espacio + 3 * alto, Color.BLACK);
+        jugar.setTexto(txtJugar,altoPantalla / 20, Color.WHITE);
+
+        opciones = new Boton(ancho, alto * 2 + espacio, ancho * 5,
+                alto * 2 + espacio + alto, Color.BLACK);
+        opciones.setTexto(txtOpciones,altoPantalla/20, Color.WHITE);
+
+        records = new Boton(ancho, alto * 2 + 2 * espacio + alto, ancho * 5,
+                alto * 2 + 2 * espacio + 2 * alto, Color.BLACK);
+        records.setTexto(txtRecords,altoPantalla/20, Color.WHITE);
+
+        ayuda = new Boton(ancho, alto * 2 + 3 * espacio + 2 * alto, ancho * 5,
+                alto * 2 + 3 * espacio + 3 * alto, Color.BLACK);
+        ayuda.setTexto(txtAyuda,altoPantalla/20, Color.WHITE);
     }
 
     // Actualizamos la física de los elementos en pantalla
@@ -40,27 +60,17 @@ public class Menu extends Pantalla {
             c.drawBitmap(fondo, 0, 0, null);
             //BOTON JUGAR
             //dibujo el boton jugar
-            pBoton.setColor(jugar.getColor());
-            c.drawRect(jugar.getRectangulo(), pBoton);
-            //dibujo el texto del boton jugar
-            c.drawText("Jugar", jugar.getRectangulo().centerX(), jugar.getRectangulo().centerY() - ((pTexto.descent() + pTexto.ascent()) / 2), pTexto);
+            jugar.dibujar(c);
 
             //BOTON OPCIONES
             //dibujo el boton opciones
-            pBoton.setColor(opciones.getColor());
-            c.drawRect(opciones.getRectangulo(), pBoton);
-            //dibujo el texto del boton opciones
-            c.drawText("Opciones", opciones.getRectangulo().centerX(), opciones.getRectangulo().centerY() - ((pTexto.descent() + pTexto.ascent()) / 2), pTexto);
+            opciones.dibujar(c);
 
             //BOTON RECORDS
-            pBoton.setColor(records.getColor());
-            c.drawRect(records.getRectangulo(), pBoton);
-            c.drawText("Records", records.getRectangulo().centerX(), records.getRectangulo().centerY() - ((pTexto.descent() + pTexto.ascent()) / 2), pTexto);
+            records.dibujar(c);
 
             //BOTON AYUDA
-            pBoton.setColor(ayuda.getColor());
-            c.drawRect(ayuda.getRectangulo(), pBoton);
-            c.drawText("Ayuda", ayuda.getRectangulo().centerX(), ayuda.getRectangulo().centerY() - ((pTexto.descent() + pTexto.ascent()) / 2), pTexto);
+            ayuda.dibujar(c);
 
         } catch (Exception e) {
             Log.i("Error al dibujar", e.getLocalizedMessage());
@@ -74,10 +84,10 @@ public class Menu extends Pantalla {
         switch (accion) {
             case MotionEvent.ACTION_DOWN:           // Primer dedo toca
                 if (pulsa(jugar.getRectangulo(), event)) {
-                   jugar.setBandera(true);
+                    jugar.setBandera(true);
                 }
                 if (pulsa(opciones.getRectangulo(), event)) {
-                   opciones.setBandera(true);
+                    opciones.setBandera(true);
                 }
                 if (pulsa(records.getRectangulo(), event)) {
                     records.setBandera(true);

@@ -8,4 +8,5 @@
     <string name="escogerNave">Seleccionar nave</string>
     <string name="continuar">Continuar</string>
     <string name="salir">Salir</string>
+    <string name="accion">¿Acción?</string>
 </resources>
