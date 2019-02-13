@@ -2,11 +2,14 @@ package com.example.lucas.juego2;
 
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Vibrator;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -14,6 +17,11 @@ import android.view.SurfaceView;
 import android.view.SurfaceHolder;
 
 public class Pantalla {
+    int cancion;
+    SharedPreferences preferencias;
+    private MediaPlayer mediaPlayer;
+    private AudioManager audioManager;
+    boolean musica;
     Context contexto;
     int idPantalla, altoPantalla, anchoPantalla;
     Bitmap fondo;
@@ -21,6 +29,7 @@ public class Pantalla {
     Paint pTexto, pTexto2, pBoton;
     Vibrator miVibrador;
     public Pantalla(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
+        preferencias = contexto.getSharedPreferences("preferencias", Context.MODE_PRIVATE);
         pausa=false;
         perdi=false;
         miVibrador= (Vibrator) contexto.getSystemService(Context.VIBRATOR_SERVICE);
@@ -130,4 +139,23 @@ public class Pantalla {
     public void setFondo(Bitmap fondo) {
         this.fondo = fondo;
     }
+    public void configuraMusica(int cancion){
+        mediaPlayer= MediaPlayer.create(contexto, cancion);
+        audioManager=(AudioManager)contexto.getSystemService(Context.AUDIO_SERVICE);
+        int v= audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+        mediaPlayer.setVolume(v/2,v/2);
+
+        mediaPlayer.setLooping(true);
+        suenaMusica();
+        paraMusica();
+    }
+    public void suenaMusica(){
+        mediaPlayer.start();
+    }
+    public void paraMusica (){
+        mediaPlayer.pause();
+    }
+public void acabaMusica(){
+    mediaPlayer.stop();
+}
 }

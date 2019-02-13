@@ -6,15 +6,18 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.util.Log;
 import android.view.MotionEvent;
 
 import java.util.ArrayList;
 
 public class Menu extends Pantalla {
-    Boton jugar, ayuda, opciones, records;
-    int alto, ancho, espacio;
-    String txtJugar,txtOpciones,txtAyuda,txtRecords;
+
+    private Boton jugar, ayuda, opciones, records;
+    private int alto, ancho, espacio;
+    private String txtJugar,txtOpciones,txtAyuda,txtRecords;
 
     public Menu(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
         super(contexto, idPantalla, anchoPantalla, altoPantalla);
@@ -47,6 +50,15 @@ public class Menu extends Pantalla {
         ayuda = new Boton(ancho, alto * 2 + 3 * espacio + 2 * alto, ancho * 5,
                 alto * 2 + 3 * espacio + 3 * alto, Color.BLACK);
         ayuda.setTexto(txtAyuda,altoPantalla/20, Color.WHITE);
+
+        //-----------------MUSICA-----------------
+        musica=preferencias.getBoolean("musica",true);
+        configuraMusica(R.raw.musica);
+        if(musica){
+            suenaMusica();
+        }else {
+            paraMusica();
+        }
     }
 
     // Actualizamos la física de los elementos en pantalla
@@ -102,16 +114,20 @@ public class Menu extends Pantalla {
             case MotionEvent.ACTION_POINTER_UP:  // Al levantar un dedo que no es el último
                 //si pulso la opcion jugar
                 if (pulsa(jugar.getRectangulo(), event) && jugar.getBandera()) {
+                    acabaMusica();
                     return 1;
                 }
                 //si pulso la opcion opciones
                 if (pulsa(opciones.getRectangulo(), event)&&opciones.getBandera()) {
+                    acabaMusica();
                     return 2;
                 }
                 if (pulsa(records.getRectangulo(), event)&&records.getBandera()) {
+                    acabaMusica();
                     return 3;
                 }
                 if (pulsa(ayuda.getRectangulo(), event)&&ayuda.getBandera()) {
+                    acabaMusica();
                     return 4;
                 }
                 //pongo todas las banderas de los botones a false

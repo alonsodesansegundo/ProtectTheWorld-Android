@@ -23,9 +23,6 @@ import java.util.Timer;
 
 public class Gameplay extends Pantalla {
     //------------------------PROPIEDADES GAMEPLAY------------------------
-    private MediaPlayer mediaPlayer;
-    private AudioManager audioManager;
-
     private int nivel, filas, columnas, puntuacionGlobal;
     private Bitmap imgMarciano1, imgMarciano2, imgNave;
     private float primeraX, primeraY, tamañoPuntuacion;
@@ -92,23 +89,16 @@ public class Gameplay extends Pantalla {
         imgMusicaOff=BitmapFactory.decodeResource(contexto.getResources(), R.drawable.musicano);
         imgMusicaOff=Bitmap.createScaledBitmap(imgMusicaOff, anchoPantalla / 10, anchoPantalla / 10, true);
 
-        //DEPENDIENDO DE LA CONFIGURACIÓN, UNA IMAGEN U OTRA
-       musica= preferencias.getBoolean("musica",true);
         //----------------MUSICA----------------
-        mediaPlayer= MediaPlayer.create(contexto, R.raw.spectre);
-        audioManager=(AudioManager)contexto.getSystemService(Context.AUDIO_SERVICE);
-        int v= audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-        mediaPlayer.setVolume(v/2,v/2);
-
-        mediaPlayer.start();
+        musica=preferencias.getBoolean("musica",true);
+        configuraMusica(R.raw.spectre);
         if(musica){
             btnMusica.setImg(imgMusicaOff);
-        }else{
-            mediaPlayer.pause();
+            suenaMusica();
+        }else {
             btnMusica.setImg(imgMusicaOn);
+            paraMusica();
         }
-
-
         //----------------MILISEGUNDOS VIBRACIÓN----------------
         tiempoVibracion = 1000;
 
@@ -182,7 +172,7 @@ public class Gameplay extends Pantalla {
         btnReanudar=new Boton(margenLateralPausa*2,altoPantalla/2,
                 anchoPantalla/2-margenLateralPausa,
                 altoPantalla / 2 + altoMenuPausa / 2-margenLateralPausa, Color.GREEN);
-btnReanudar.setTexto(txtContinuar,altoPantalla/30, Color.BLACK);
+        btnReanudar.setTexto(txtContinuar,altoPantalla/30, Color.BLACK);
 
         //----------------BTN SALIR----------------
         btnSalir=new Boton(anchoPantalla/2+margenLateralPausa,altoPantalla/2,
@@ -400,7 +390,7 @@ btnReanudar.setTexto(txtContinuar,altoPantalla/30, Color.BLACK);
                 //vibra el dispositivo
                 vibrar();
                 //perdi
-                mediaPlayer.pause();
+                acabaMusica();
                 perdi = true;
             } else {
                 //si no ha chocado con la nave
@@ -524,22 +514,23 @@ btnReanudar.setTexto(txtContinuar,altoPantalla/30, Color.BLACK);
                     //muestro pantallaPausa, reanudar o salir
                     pausa = !pausa;
                     if (pausa) {
-                        mediaPlayer.pause();
+                        paraMusica();
                         btnPausa.setImg(imgPlay);
                     } else {
-                        mediaPlayer.start();
+                        suenaMusica();
                         btnPausa.setImg(imgPausa);
                     }
                 }
                 //si he pulsado la opcion salir
                 if(pulsa(btnSalir.getRectangulo(),event)&&btnSalir.getBandera()){
                     //vuelvo al menu
+                    acabaMusica();
                     return 0;
                 }
                 if(pulsa(btnReanudar.getRectangulo(),event)&&btnReanudar.getBandera()){
                     //reanudo el gameplay
                     pausa=false;
-                    mediaPlayer.start();
+                    suenaMusica();
                     btnPausa.setImg(imgPausa);
                 }
                 //pongo las banderas de todos lso botones a false
@@ -561,14 +552,15 @@ btnReanudar.setTexto(txtContinuar,altoPantalla/30, Color.BLACK);
         return idPantalla;
     }
     public void cambiaBtnMusica(){
+
+        musica=!musica;
         if(musica){
-            mediaPlayer.start();
+            suenaMusica();
             btnMusica.setImg(imgMusicaOff);
         }else{
-            mediaPlayer.pause();
+            paraMusica();
             btnMusica.setImg(imgMusicaOn);
         }
-        musica=!musica;
         editorPreferencias.putBoolean("musica",musica);
         editorPreferencias.commit();
     }

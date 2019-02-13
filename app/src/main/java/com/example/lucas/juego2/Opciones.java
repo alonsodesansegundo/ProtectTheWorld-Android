@@ -16,15 +16,12 @@ public class Opciones extends Pantalla {
     private Bitmap n,n1,n2,imgVolver;
     private int anchoSelectNave;
     private Rect selectNave;
-    private boolean musica;
     private int naveSeleccionada;
     private Boton nave,nave1,nave2,back,siMusica,noMusica;
-    private SharedPreferences preferencias;
     private SharedPreferences.Editor editorPreferencias;
     public Opciones(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
         super(contexto, idPantalla, anchoPantalla, altoPantalla);
         //----------------ARCHIVO DE CONFIGURACION--------------
-        preferencias=contexto.getSharedPreferences("preferencias",Context.MODE_PRIVATE);
         editorPreferencias=preferencias.edit();
 
         //---------------------BOOLEAN MUSICA---------------------
@@ -76,6 +73,10 @@ public class Opciones extends Pantalla {
         actualizaNaveSeleccionada();
 
         //--------------BOTONES SELECCIONAR MUSICA--------------
+        //--------------MUSICA--------------
+        musica=preferencias.getBoolean("musica",true);
+        configuraMusica(R.raw.musica);
+
         siMusica=new Boton((anchoPantalla-anchoSelectNave)/2,altoPantalla/2+altoPantalla/10,
                 anchoPantalla/2,altoPantalla/2+altoPantalla/10*2, Color.TRANSPARENT);
         siMusica.setTexto(txtSi,altoPantalla/15, Color.BLACK);
@@ -84,6 +85,8 @@ public class Opciones extends Pantalla {
                 altoPantalla/2+altoPantalla/10*2, Color.TRANSPARENT);
         noMusica.setTexto(txtNo,altoPantalla/15, Color.BLACK);
         actualizaMusica();
+
+
     }
 
     @Override
@@ -166,19 +169,16 @@ public class Opciones extends Pantalla {
                 //si he pulsado si musica
                 if(pulsa(siMusica.getRectangulo(),event)&&siMusica.getBandera()){
                     musica=true;
-                    editorPreferencias.putBoolean("musica",true);
-                    editorPreferencias.commit();
                     actualizaMusica();
                 }
                 if(pulsa(noMusica.getRectangulo(),event)&&noMusica.getBandera()){
                     musica=false;
-                    editorPreferencias.putBoolean("musica",false);
-                    editorPreferencias.commit();
                     actualizaMusica();
                 }
                 //si pulso la opcion jugar
                 if (pulsa(back.getRectangulo(), event)&&back.getBandera()) {
                     //vuelvo al menu
+                    acabaMusica();
                     return 0;
                 }
                 //si he pulsado la primera nave
@@ -238,9 +238,15 @@ public class Opciones extends Pantalla {
     }
     public void actualizaMusica(){
         if(musica){
+            editorPreferencias.putBoolean("musica",true);
+            editorPreferencias.commit();
             siMusica.setColor(Color.LTGRAY);
             noMusica.setColor(Color.DKGRAY);
+            suenaMusica();
         }else{
+            editorPreferencias.putBoolean("musica",false);
+            editorPreferencias.commit();
+            paraMusica();
             siMusica.setColor(Color.DKGRAY);
             noMusica.setColor(Color.LTGRAY);
         }
