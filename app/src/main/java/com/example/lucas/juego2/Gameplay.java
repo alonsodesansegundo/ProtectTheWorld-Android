@@ -500,7 +500,6 @@ public class Gameplay extends Pantalla {
                 break;
             case MotionEvent.ACTION_UP:                     // Al levantar el último dedo
                 mueveNave = false;
-            case MotionEvent.ACTION_POINTER_UP:  // Al levantar un dedo que no es el último
                 //si levanto el dedo en el btn musica
                 if(pulsa(btnMusica.getRectangulo(),event)&&btnMusica.getBandera()&&!pausa){
                     cambiaBtnMusica();
@@ -538,6 +537,8 @@ public class Gameplay extends Pantalla {
                 btnSalir.setBandera(false);
                 btnPausa.setBandera(false);
                 btnReanudar.setBandera(false);
+            case MotionEvent.ACTION_POINTER_UP:  // Al levantar un dedo que no es el último
+
                 break;
 
             case MotionEvent.ACTION_MOVE: // Se mueve alguno de los dedos

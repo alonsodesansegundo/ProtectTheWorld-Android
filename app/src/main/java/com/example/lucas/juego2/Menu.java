@@ -14,7 +14,6 @@ import android.view.MotionEvent;
 import java.util.ArrayList;
 
 public class Menu extends Pantalla {
-
     private Boton jugar, ayuda, opciones, records;
     private int alto, ancho, espacio;
     private String txtJugar,txtOpciones,txtAyuda,txtRecords;
@@ -90,7 +89,7 @@ public class Menu extends Pantalla {
     }
 
     public int onTouchEvent(MotionEvent event) {
-        int pointerIndex = event.getActionIndex();        //Obtenemos el índice de la acción
+       int pointerIndex = event.getActionIndex();        //Obtenemos el índice de la acción
         int pointerID = event.getPointerId(pointerIndex); //Obtenemos el Id del pointer asociado a la acción
         int accion = event.getActionMasked();             //Obtenemos el tipo de pulsación
         switch (accion) {
@@ -111,7 +110,6 @@ public class Menu extends Pantalla {
                 break;
 
             case MotionEvent.ACTION_UP:                     // Al levantar el último dedo
-            case MotionEvent.ACTION_POINTER_UP:  // Al levantar un dedo que no es el último
                 //si pulso la opcion jugar
                 if (pulsa(jugar.getRectangulo(), event) && jugar.getBandera()) {
                     acabaMusica();
@@ -135,6 +133,8 @@ public class Menu extends Pantalla {
                 opciones.setBandera(false);
                 ayuda.setBandera(false);
                 records.setBandera(false);
+            case MotionEvent.ACTION_POINTER_UP:  // Al levantar un dedo que no es el último
+
                 break;
 
             case MotionEvent.ACTION_MOVE: // Se mueve alguno de los dedos

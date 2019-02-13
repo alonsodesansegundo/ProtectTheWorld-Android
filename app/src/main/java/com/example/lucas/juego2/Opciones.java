@@ -165,7 +165,6 @@ public class Opciones extends Pantalla {
                 break;
 
             case MotionEvent.ACTION_UP:                     // Al levantar el último dedo
-            case MotionEvent.ACTION_POINTER_UP:  // Al levantar un dedo que no es el último
                 //si he pulsado si musica
                 if(pulsa(siMusica.getRectangulo(),event)&&siMusica.getBandera()){
                     musica=true;
@@ -207,6 +206,8 @@ public class Opciones extends Pantalla {
                 nave2.setBandera(false);
                 siMusica.setBandera(false);
                 noMusica.setBandera(false);
+            case MotionEvent.ACTION_POINTER_UP:  // Al levantar un dedo que no es el último
+
                 break;
 
             case MotionEvent.ACTION_MOVE: // Se mueve alguno de los dedos

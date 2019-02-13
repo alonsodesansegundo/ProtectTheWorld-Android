@@ -42,11 +42,12 @@ public class Ayuda extends Pantalla {
                 break;
 
             case MotionEvent.ACTION_UP:                     // Al levantar el último dedo
-            case MotionEvent.ACTION_POINTER_UP:  // Al levantar un dedo que no es el último
                 //si pulso la opcion jugar
                 if (pulsa(back.getRectangulo(), event)) {
                     return 0;
                 }
+            case MotionEvent.ACTION_POINTER_UP:  // Al levantar un dedo que no es el último
+
 
                 break;
 
