@@ -57,32 +57,30 @@ public class Opciones extends Pantalla {
         anchoSelectNave=selectNave.width();
 
         //----------------BOTONES SELECCIONAR NAVE---------------
-        nave=new Boton((anchoPantalla-anchoSelectNave)/2,altoPantalla/3+altoPantalla/20,(anchoPantalla-anchoSelectNave)/2+n.getWidth(),
-                altoPantalla/3+altoPantalla/20+n.getHeight(), Color.TRANSPARENT);
+        nave=new Boton((anchoPantalla-anchoSelectNave)/2,altoPantalla/4+altoPantalla/20,(anchoPantalla-anchoSelectNave)/2+n.getWidth(),
+                altoPantalla/4+altoPantalla/20+n.getHeight(), Color.TRANSPARENT);
         nave.setImg(n);
 
-        nave1=new Boton(anchoPantalla/2-n1.getWidth()/2,altoPantalla/3+altoPantalla/20,anchoPantalla/2+n1.getWidth()/2,
-                altoPantalla/3+altoPantalla/20+n1.getHeight(), Color.TRANSPARENT);
+        nave1=new Boton(anchoPantalla/2-n1.getWidth()/2,altoPantalla/4+altoPantalla/20,anchoPantalla/2+n1.getWidth()/2,
+                altoPantalla/4+altoPantalla/20+n1.getHeight(), Color.TRANSPARENT);
         nave1.setImg(n1);
 
-        nave2=new Boton(anchoPantalla-n2.getWidth()-(anchoPantalla-anchoSelectNave)/2,altoPantalla/3+altoPantalla/20,
-                anchoPantalla-n2.getWidth()-(anchoPantalla-anchoSelectNave)/2+n2.getWidth(),altoPantalla/3+altoPantalla/20+n2.getHeight(), Color.TRANSPARENT);
+        nave2=new Boton(anchoPantalla-n2.getWidth()-(anchoPantalla-anchoSelectNave)/2,altoPantalla/4+altoPantalla/20,
+                anchoPantalla-n2.getWidth()-(anchoPantalla-anchoSelectNave)/2+n2.getWidth(),altoPantalla/4+altoPantalla/20+n2.getHeight(), Color.TRANSPARENT);
         nave2.setImg(n2);
 
         //--------------MARCO LA NAVE SELECCIONADA--------------
         actualizaNaveSeleccionada();
 
-        //--------------BOTONES SELECCIONAR MUSICA--------------
         //--------------MUSICA--------------
         musica=preferencias.getBoolean("musica",true);
         configuraMusica(R.raw.musica);
-
-        siMusica=new Boton((anchoPantalla-anchoSelectNave)/2,altoPantalla/2+altoPantalla/10,
-                anchoPantalla/2,altoPantalla/2+altoPantalla/10*2, Color.TRANSPARENT);
+        siMusica=new Boton((anchoPantalla-anchoSelectNave)/2,altoPantalla/2-altoPantalla/30,
+                anchoPantalla/2,altoPantalla/2-altoPantalla/25+altoPantalla/10, Color.TRANSPARENT);
         siMusica.setTexto(txtSi,altoPantalla/15, Color.BLACK);
-        noMusica=new Boton(anchoPantalla/2,altoPantalla/2+altoPantalla/10,
+        noMusica=new Boton(anchoPantalla/2,altoPantalla/2-altoPantalla/30,
                 anchoPantalla-(anchoPantalla-anchoSelectNave)/2,
-                altoPantalla/2+altoPantalla/10*2, Color.TRANSPARENT);
+                altoPantalla/2-altoPantalla/25+altoPantalla/10, Color.TRANSPARENT);
         noMusica.setTexto(txtNo,altoPantalla/15, Color.BLACK);
         actualizaMusica();
 
@@ -99,7 +97,7 @@ public class Opciones extends Pantalla {
             pTexto.setTextSize(altoPantalla/10);
 
             //dibujo el texto opciones
-            c.drawText(opciones,anchoPantalla/2,altoPantalla/5,pTexto);
+            c.drawText(opciones,anchoPantalla/2,altoPantalla/8,pTexto);
 
             //dibujo el boton para volver hacia atras
             back.dibujar(c);
@@ -108,7 +106,7 @@ public class Opciones extends Pantalla {
             pTexto.setTextSize(altoPantalla/20);
 
             //dibujo el texto seleccionar nave
-            c.drawText(selNave,anchoPantalla/2,altoPantalla/3,pTexto);
+            c.drawText(selNave,anchoPantalla/2,altoPantalla/4,pTexto);
 
             //dibujo los botones de las diferentes naves
             nave.dibujar(c);
@@ -116,7 +114,7 @@ public class Opciones extends Pantalla {
             nave2.dibujar(c);
 
             //dibujo el texto musica
-            c.drawText(txtMusica,anchoPantalla/2,altoPantalla/2+altoPantalla/20,pTexto);
+            c.drawText(txtMusica,anchoPantalla/2,altoPantalla/2-altoPantalla/20,pTexto);
             siMusica.dibujar(c);
             noMusica.dibujar(c);
         }catch (Exception e){
