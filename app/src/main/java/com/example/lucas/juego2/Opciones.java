@@ -12,15 +12,20 @@ import android.view.MotionEvent;
 import android.view.View;
 
 public class Opciones extends Pantalla {
-    private String selNave,opciones,txtMusica,txtSi,txtNo;
+    private String selNave,opciones,txtMusica,txtSi,txtNo,txtVibracion;
     private Bitmap n,n1,n2,imgVolver;
     private int anchoSelectNave;
     private Rect selectNave;
+    private int alturaBoton,espacioTextoBoton,altoTexto;
     private int naveSeleccionada;
-    private Boton nave,nave1,nave2,back,siMusica,noMusica;
+    private Boton nave,nave1,nave2,back,siMusica,noMusica,siVibracion,noVibracion;
     private SharedPreferences.Editor editorPreferencias;
+    private boolean vibracion;
     public Opciones(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
         super(contexto, idPantalla, anchoPantalla, altoPantalla);
+        alturaBoton=altoPantalla/11;
+        altoTexto=altoPantalla/15;
+        espacioTextoBoton=altoPantalla/75;
         //----------------ARCHIVO DE CONFIGURACION--------------
         editorPreferencias=preferencias.edit();
 
@@ -51,6 +56,7 @@ public class Opciones extends Pantalla {
         txtMusica=contexto.getString(R.string.musica);
         txtSi=contexto.getString(R.string.si);
         txtNo=contexto.getString(R.string.no);
+        txtVibracion=contexto.getString(R.string.vibracion);
         //para obtener el ancho de la cadena seleccionar nave
         pTexto.getTextBounds(selNave, 0, selNave.length(), selectNave);
         //ancho seleccionar nave
@@ -75,16 +81,27 @@ public class Opciones extends Pantalla {
         //--------------MUSICA--------------
         musica=preferencias.getBoolean("musica",true);
         configuraMusica(R.raw.musica);
-        siMusica=new Boton((anchoPantalla-anchoSelectNave)/2,altoPantalla/2-altoPantalla/30,
-                anchoPantalla/2,altoPantalla/2-altoPantalla/25+altoPantalla/10, Color.TRANSPARENT);
-        siMusica.setTexto(txtSi,altoPantalla/15, Color.BLACK);
-        noMusica=new Boton(anchoPantalla/2,altoPantalla/2-altoPantalla/30,
+        siMusica=new Boton((anchoPantalla-anchoSelectNave)/2,altoPantalla/2-altoPantalla/20+espacioTextoBoton,
+                anchoPantalla/2,altoPantalla/2-altoPantalla/20+espacioTextoBoton+alturaBoton, Color.TRANSPARENT);
+        siMusica.setTexto(txtSi,altoTexto, Color.BLACK);
+        noMusica=new Boton(anchoPantalla/2,altoPantalla/2-altoPantalla/20+espacioTextoBoton,
                 anchoPantalla-(anchoPantalla-anchoSelectNave)/2,
-                altoPantalla/2-altoPantalla/25+altoPantalla/10, Color.TRANSPARENT);
-        noMusica.setTexto(txtNo,altoPantalla/15, Color.BLACK);
+                altoPantalla/2-altoPantalla/20+espacioTextoBoton+alturaBoton, Color.TRANSPARENT);
+        noMusica.setTexto(txtNo,altoTexto, Color.BLACK);
         actualizaMusica();
 
+        //--------------BOTONES SI O NO VIBRACION--------------
+        siVibracion=new Boton((anchoPantalla-anchoSelectNave)/2,altoPantalla/2-altoPantalla/25+altoPantalla/10+altoPantalla/15+espacioTextoBoton,
+                anchoPantalla/2,altoPantalla/2-altoPantalla/25+altoPantalla/10+altoPantalla/15+espacioTextoBoton+alturaBoton,Color.RED);
+        siVibracion.setTexto(txtSi,altoTexto,Color.BLACK);
 
+        noVibracion=new Boton(anchoPantalla/2,altoPantalla/2-altoPantalla/25+altoPantalla/10+altoPantalla/15+espacioTextoBoton,
+                anchoPantalla-(anchoPantalla-anchoSelectNave)/2,altoPantalla/2-altoPantalla/25+altoPantalla/10+altoPantalla/15+espacioTextoBoton+alturaBoton, Color.RED);
+        noVibracion.setTexto(txtNo,altoTexto,Color.BLACK);
+
+        //--------------BOOLEAN VIBRACION--------------
+        vibracion=preferencias.getBoolean("vibracion",true);
+        actualizaVibracion();
     }
 
     @Override
@@ -115,8 +132,16 @@ public class Opciones extends Pantalla {
 
             //dibujo el texto musica
             c.drawText(txtMusica,anchoPantalla/2,altoPantalla/2-altoPantalla/20,pTexto);
+            //dibujo los botones de la musica
             siMusica.dibujar(c);
             noMusica.dibujar(c);
+
+            //dibujo el texto vibracion
+            c.drawText(txtVibracion,anchoPantalla/2,
+                    altoPantalla/2-altoPantalla/25+altoPantalla/10+altoPantalla/15,pTexto);
+
+            siVibracion.dibujar(c);
+            noVibracion.dibujar(c);
         }catch (Exception e){
 
         }
@@ -132,6 +157,14 @@ public class Opciones extends Pantalla {
         int accion = event.getActionMasked();             //Obtenemos el tipo de pulsación
         switch (accion) {
             case MotionEvent.ACTION_DOWN:           // Primer dedo toca
+                //si pulso en si vibracion
+                if(pulsa(siVibracion.getRectangulo(),event)){
+                    siVibracion.setBandera(true);
+                }
+                //si pulso en no vibracion
+                if(pulsa(noVibracion.getRectangulo(),event)){
+                    noVibracion.setBandera(true);
+                }
                 //si pulso el si musica
                 if(pulsa(siMusica.getRectangulo(),event)){
                     siMusica.setBandera(true);
@@ -163,6 +196,17 @@ public class Opciones extends Pantalla {
                 break;
 
             case MotionEvent.ACTION_UP:                     // Al levantar el último dedo
+                //si he pulsado si vibracion
+
+                if(pulsa(siVibracion.getRectangulo(),event)&&siVibracion.getBandera()){
+                    vibracion=true;
+                    actualizaVibracion();
+                }
+                //si he pulsado no vibracion
+                if(pulsa(noVibracion.getRectangulo(),event)&&noVibracion.getBandera()){
+                    vibracion=false;
+                    actualizaVibracion();
+                }
                 //si he pulsado si musica
                 if(pulsa(siMusica.getRectangulo(),event)&&siMusica.getBandera()){
                     musica=true;
@@ -248,6 +292,19 @@ public class Opciones extends Pantalla {
             paraMusica();
             siMusica.setColor(Color.DKGRAY);
             noMusica.setColor(Color.LTGRAY);
+        }
+    }
+    public void actualizaVibracion(){
+        if(vibracion){
+            editorPreferencias.putBoolean("vibracion",true);
+            editorPreferencias.commit();
+            siVibracion.setColor(Color.LTGRAY);
+            noVibracion.setColor(Color.DKGRAY);
+        }else{
+            editorPreferencias.putBoolean("vibracion",false);
+            editorPreferencias.commit();
+            siVibracion.setColor(Color.DKGRAY);
+            noVibracion.setColor(Color.LTGRAY);
         }
     }
 }

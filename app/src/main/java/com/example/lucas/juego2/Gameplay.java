@@ -42,6 +42,7 @@ public class Gameplay extends Pantalla {
     private int altoMenuPausa;
     private SharedPreferences.Editor editorPreferencias;
     private SharedPreferences preferencias;
+    boolean vibracion;
     private String txtContinuar, txtSalir,txtAccion;
     //------------------------CONSTRUCTOR------------------------
     public Gameplay(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
@@ -61,6 +62,8 @@ public class Gameplay extends Pantalla {
         preferencias = contexto.getSharedPreferences("preferencias", Context.MODE_PRIVATE);
         editorPreferencias=preferencias.edit();
 
+        //--------------BOOLEAN VIBRACION--------------
+        vibracion=preferencias.getBoolean("vibracion",true);
         //----------------BOTON PAUSA----------------
         btnPausa = new Boton(anchoPantalla - anchoPantalla / 10, 0,
                 anchoPantalla, anchoPantalla / 10, Color.TRANSPARENT);
@@ -388,7 +391,10 @@ public class Gameplay extends Pantalla {
             //si choca con la nave
             if (balasMarcianos.get(i).getContenedor().intersect(miNave.getContenedor())) {
                 //vibra el dispositivo
-                vibrar();
+                if(vibracion){
+
+                    vibrar();
+                }
                 //perdi
                 acabaMusica();
                 perdi = true;
