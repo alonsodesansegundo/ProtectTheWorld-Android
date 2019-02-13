@@ -9,6 +9,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.VibrationEffect;
 import android.support.annotation.ColorRes;
@@ -21,6 +23,9 @@ import java.util.Timer;
 
 public class Gameplay extends Pantalla {
     //------------------------PROPIEDADES GAMEPLAY------------------------
+    private MediaPlayer mediaPlayer;
+    private AudioManager audioManager;
+
     private int nivel, filas, columnas, puntuacionGlobal;
     private Bitmap imgMarciano1, imgMarciano2, imgNave;
     private float primeraX, primeraY, tamañoPuntuacion;
@@ -32,23 +37,24 @@ public class Gameplay extends Pantalla {
     private ArrayList<BalaMarciano> balasMarcianos;
     private Paint pPunutacion;
     private int tiempoVibracion;
-    private Boton btnPausa, btnReanudar, btnSalir;
-    private Bitmap imgPausa, imgPlay;
+    private Boton btnPausa, btnReanudar, btnSalir,btnMusica;
+    private Bitmap imgPausa, imgPlay,imgMusicaOn,imgMusicaOff;
     private int codNave;
     private int margenLateralPausa;
+    private boolean musica;
     private int altoMenuPausa;
+    private SharedPreferences.Editor editorPreferencias;
     private SharedPreferences preferencias;
     private String txtContinuar, txtSalir,txtAccion;
-
     //------------------------CONSTRUCTOR------------------------
     public Gameplay(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
         super(contexto, idPantalla, anchoPantalla, altoPantalla);
-
 
         //----------------STRINGS----------------
         txtContinuar = contexto.getString(R.string.continuar);
         txtSalir = contexto.getString(R.string.salir);
         txtAccion=contexto.getString(R.string.accion);
+
 
         //-----------------MENU PAUSA----------------
         margenLateralPausa = anchoPantalla / 20;
@@ -56,17 +62,52 @@ public class Gameplay extends Pantalla {
 
         //----------------ARCHIVO CONFIGURACIÓN--------------
         preferencias = contexto.getSharedPreferences("preferencias", Context.MODE_PRIVATE);
+        editorPreferencias=preferencias.edit();
 
         //----------------BOTON PAUSA----------------
         btnPausa = new Boton(anchoPantalla - anchoPantalla / 10, 0,
-                anchoPantalla, anchoPantalla / 10, Color.RED);
+                anchoPantalla, anchoPantalla / 10, Color.TRANSPARENT);
+
+        //----------------IMAGEN PAUSA----------------
         imgPausa = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.pause);
         imgPausa = Bitmap.createScaledBitmap(imgPausa, anchoPantalla / 10, anchoPantalla / 10, true);
+
+        //----------------SET IMAGEN PAUSA----------------
         btnPausa.setImg(imgPausa);
 
         //----------------IMAGEN PLAY----------------
         imgPlay = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.play);
         imgPlay = Bitmap.createScaledBitmap(imgPlay, anchoPantalla / 10, anchoPantalla / 10, true);
+
+
+        //----------------BOTON MÚSICA----------------
+        btnMusica=new Boton(anchoPantalla-anchoPantalla / 10*2,0,
+                anchoPantalla-anchoPantalla/10,anchoPantalla/10, Color.TRANSPARENT);
+
+        //----------------IMAGEN MUSICA ON----------------
+        imgMusicaOn=BitmapFactory.decodeResource(contexto.getResources(), R.drawable.musica);
+        imgMusicaOn=Bitmap.createScaledBitmap(imgMusicaOn, anchoPantalla / 10, anchoPantalla / 10, true);
+
+        //----------------IMAGEN MUSICA OFF----------------
+        imgMusicaOff=BitmapFactory.decodeResource(contexto.getResources(), R.drawable.musicano);
+        imgMusicaOff=Bitmap.createScaledBitmap(imgMusicaOff, anchoPantalla / 10, anchoPantalla / 10, true);
+
+        //DEPENDIENDO DE LA CONFIGURACIÓN, UNA IMAGEN U OTRA
+       musica= preferencias.getBoolean("musica",true);
+        //----------------MUSICA----------------
+        mediaPlayer= MediaPlayer.create(contexto, R.raw.spectre);
+        audioManager=(AudioManager)contexto.getSystemService(Context.AUDIO_SERVICE);
+        int v= audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+        mediaPlayer.setVolume(v/2,v/2);
+
+        mediaPlayer.start();
+        if(musica){
+            btnMusica.setImg(imgMusicaOff);
+        }else{
+            mediaPlayer.pause();
+            btnMusica.setImg(imgMusicaOn);
+        }
+
 
         //----------------MILISEGUNDOS VIBRACIÓN----------------
         tiempoVibracion = 1000;
@@ -179,6 +220,9 @@ btnReanudar.setTexto(txtContinuar,altoPantalla/30, Color.BLACK);
             c.drawColor(Color.BLACK);
             //dibujo el btnPausa
             btnPausa.dibujar(c);
+
+            //dibujo el btn sonido
+            btnMusica.dibujar(c);
             //dibujo los marcianos del array bidimensional (marcianos)
             for (int i = 0; i < marcianos.length; i++) {
                 for (int j = 0; j < marcianos[0].length; j++) {
@@ -356,6 +400,7 @@ btnReanudar.setTexto(txtContinuar,altoPantalla/30, Color.BLACK);
                 //vibra el dispositivo
                 vibrar();
                 //perdi
+                mediaPlayer.pause();
                 perdi = true;
             } else {
                 //si no ha chocado con la nave
@@ -442,8 +487,12 @@ btnReanudar.setTexto(txtContinuar,altoPantalla/30, Color.BLACK);
         int pointerID = event.getPointerId(pointerIndex); //Obtenemos el Id del pointer asociado a la acción
         int accion = event.getActionMasked();             //Obtenemos el tipo de pulsación
         switch (accion) {
-            case MotionEvent.ACTION_DOWN:
-                // Primer dedo toca
+            case MotionEvent.ACTION_DOWN:// Primer dedo toca
+                //si pulso el btn musica
+                if(pulsa(btnMusica.getRectangulo(),event)){
+                    btnMusica.setBandera(true);
+                }
+
                 //si pulso el btn pausa
                 if (pulsa(btnPausa.getRectangulo(), event)) {
                     btnPausa.setBandera(true);
@@ -462,6 +511,11 @@ btnReanudar.setTexto(txtContinuar,altoPantalla/30, Color.BLACK);
             case MotionEvent.ACTION_UP:                     // Al levantar el último dedo
                 mueveNave = false;
             case MotionEvent.ACTION_POINTER_UP:  // Al levantar un dedo que no es el último
+                //si levanto el dedo en el btn musica
+                if(pulsa(btnMusica.getRectangulo(),event)&&btnMusica.getBandera()&&!pausa){
+                    cambiaBtnMusica();
+                }
+
                 //si pulso la opcion pausa
                 if (pulsa(btnPausa.getRectangulo(), event) && btnPausa.getBandera()) {
                     //pongo la bandera del propio boton a false
@@ -470,8 +524,10 @@ btnReanudar.setTexto(txtContinuar,altoPantalla/30, Color.BLACK);
                     //muestro pantallaPausa, reanudar o salir
                     pausa = !pausa;
                     if (pausa) {
+                        mediaPlayer.pause();
                         btnPausa.setImg(imgPlay);
                     } else {
+                        mediaPlayer.start();
                         btnPausa.setImg(imgPausa);
                     }
                 }
@@ -483,12 +539,14 @@ btnReanudar.setTexto(txtContinuar,altoPantalla/30, Color.BLACK);
                 if(pulsa(btnReanudar.getRectangulo(),event)&&btnReanudar.getBandera()){
                     //reanudo el gameplay
                     pausa=false;
+                    mediaPlayer.start();
                     btnPausa.setImg(imgPausa);
                 }
-                //pongo las banderas reanudr y salir a false
-                btnReanudar.setBandera(false);
+                //pongo las banderas de todos lso botones a false
+                btnMusica.setBandera(false);
                 btnSalir.setBandera(false);
                 btnPausa.setBandera(false);
+                btnReanudar.setBandera(false);
                 break;
 
             case MotionEvent.ACTION_MOVE: // Se mueve alguno de los dedos
@@ -501,5 +559,17 @@ btnReanudar.setTexto(txtContinuar,altoPantalla/30, Color.BLACK);
                 Log.i("Otra acción", "Acción no definida: " + accion);
         }
         return idPantalla;
+    }
+    public void cambiaBtnMusica(){
+        if(musica){
+            mediaPlayer.start();
+            btnMusica.setImg(imgMusicaOff);
+        }else{
+            mediaPlayer.pause();
+            btnMusica.setImg(imgMusicaOn);
+        }
+        musica=!musica;
+        editorPreferencias.putBoolean("musica",musica);
+        editorPreferencias.commit();
     }
 }

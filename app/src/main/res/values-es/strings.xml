@@ -9,4 +9,7 @@
     <string name="continuar">Continuar</string>
     <string name="salir">Salir</string>
     <string name="accion">¿Acción?</string>
+    <string name="musica">Música</string>
+    <string name="si">Si</string>
+    <string name="no">No</string>
 </resources>

@@ -12,34 +12,38 @@ import android.view.MotionEvent;
 import android.view.View;
 
 public class Opciones extends Pantalla {
-    String selNave,opciones;
-    Bitmap n,n1,n2,imgVolver;
-    int anchoSelectNave;
-    Rect selectNave;
-    int naveSeleccionada;
-    Boton nave,nave1,nave2,back;
-    SharedPreferences preferencias;
-    SharedPreferences.Editor editorPreferencias;
+    private String selNave,opciones,txtMusica,txtSi,txtNo;
+    private Bitmap n,n1,n2,imgVolver;
+    private int anchoSelectNave;
+    private Rect selectNave;
+    private boolean musica;
+    private int naveSeleccionada;
+    private Boton nave,nave1,nave2,back,siMusica,noMusica;
+    private SharedPreferences preferencias;
+    private SharedPreferences.Editor editorPreferencias;
     public Opciones(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
         super(contexto, idPantalla, anchoPantalla, altoPantalla);
-        //----------------archivo configuración--------------
+        //----------------ARCHIVO DE CONFIGURACION--------------
         preferencias=contexto.getSharedPreferences("preferencias",Context.MODE_PRIVATE);
         editorPreferencias=preferencias.edit();
 
-        //---------------- nave seleccionada---------------------
+        //---------------------BOOLEAN MUSICA---------------------
+        musica=preferencias.getBoolean("musica",true);
+        //----------------NAVE SELECCIONADA---------------------
         naveSeleccionada=preferencias.getInt("idNave",0);
-        //----------------boton volver--------------
+        //----------------BTN VOLVER--------------
         selectNave=new Rect();
         back=new Boton(anchoPantalla-anchoPantalla/10,0,anchoPantalla,anchoPantalla/10, Color.TRANSPARENT);
         imgVolver=BitmapFactory.decodeResource(contexto.getResources(), R.drawable.back);
         imgVolver = Bitmap.createScaledBitmap(imgVolver, anchoPantalla/10, anchoPantalla/10, true);
         back.setImg(imgVolver);
-        //imagenes nave
+
+        //--------------IMAGENES NAVE--------------
         n=fondo = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.nave);
         n1=fondo = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.nave1);
         n2=fondo = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.nave2);
 
-        //escalado de las imagenes de las naves
+        //--------------ESCALADO IMAGENES NAVE--------------
         n = Bitmap.createScaledBitmap(n, anchoPantalla / 8, altoPantalla / 15, true);
         n1 = Bitmap.createScaledBitmap(n1, anchoPantalla / 8, altoPantalla / 15, true);
         n2 = Bitmap.createScaledBitmap(n2, anchoPantalla / 8, altoPantalla / 15, true);
@@ -47,6 +51,9 @@ public class Opciones extends Pantalla {
         //----------------STRINGS---------------
         opciones=contexto.getString(R.string.opciones);
         selNave=contexto.getString(R.string.escogerNave);
+        txtMusica=contexto.getString(R.string.musica);
+        txtSi=contexto.getString(R.string.si);
+        txtNo=contexto.getString(R.string.no);
         //para obtener el ancho de la cadena seleccionar nave
         pTexto.getTextBounds(selNave, 0, selNave.length(), selectNave);
         //ancho seleccionar nave
@@ -65,8 +72,18 @@ public class Opciones extends Pantalla {
                 anchoPantalla-n2.getWidth()-(anchoPantalla-anchoSelectNave)/2+n2.getWidth(),altoPantalla/3+altoPantalla/20+n2.getHeight(), Color.TRANSPARENT);
         nave2.setImg(n2);
 
-        //marco la nave seleccionada
+        //--------------MARCO LA NAVE SELECCIONADA--------------
         actualizaNaveSeleccionada();
+
+        //--------------BOTONES SELECCIONAR MUSICA--------------
+        siMusica=new Boton((anchoPantalla-anchoSelectNave)/2,altoPantalla/2+altoPantalla/10,
+                anchoPantalla/2,altoPantalla/2+altoPantalla/10*2, Color.TRANSPARENT);
+        siMusica.setTexto(txtSi,altoPantalla/15, Color.BLACK);
+        noMusica=new Boton(anchoPantalla/2,altoPantalla/2+altoPantalla/10,
+                anchoPantalla-(anchoPantalla-anchoSelectNave)/2,
+                altoPantalla/2+altoPantalla/10*2, Color.TRANSPARENT);
+        noMusica.setTexto(txtNo,altoPantalla/15, Color.BLACK);
+        actualizaMusica();
     }
 
     @Override
@@ -74,21 +91,31 @@ public class Opciones extends Pantalla {
         try{
             //dibujo el fondo
             c.drawColor(Color.BLACK);
+
             //tamaño texto opciones
             pTexto.setTextSize(altoPantalla/10);
+
             //dibujo el texto opciones
             c.drawText(opciones,anchoPantalla/2,altoPantalla/5,pTexto);
+
             //dibujo el boton para volver hacia atras
             back.dibujar(c);
+
             //tamaño texto seleccionar nave
             pTexto.setTextSize(altoPantalla/20);
+
             //dibujo el texto seleccionar nave
             c.drawText(selNave,anchoPantalla/2,altoPantalla/3,pTexto);
-            //dibujo los botones de las diferentes imagenes
+
+            //dibujo los botones de las diferentes naves
             nave.dibujar(c);
             nave1.dibujar(c);
             nave2.dibujar(c);
 
+            //dibujo el texto musica
+            c.drawText(txtMusica,anchoPantalla/2,altoPantalla/2+altoPantalla/20,pTexto);
+            siMusica.dibujar(c);
+            noMusica.dibujar(c);
         }catch (Exception e){
 
         }
@@ -104,6 +131,15 @@ public class Opciones extends Pantalla {
         int accion = event.getActionMasked();             //Obtenemos el tipo de pulsación
         switch (accion) {
             case MotionEvent.ACTION_DOWN:           // Primer dedo toca
+                //si pulso el si musica
+                if(pulsa(siMusica.getRectangulo(),event)){
+                    siMusica.setBandera(true);
+                }
+
+                //si pulso el no musica
+                if(pulsa(noMusica.getRectangulo(),event)){
+                    noMusica.setBandera(true);
+                }
                 //si pulso el btn volver
                 if (pulsa(back.getRectangulo(), event)) {
                     //pongo su bandera a true
@@ -127,6 +163,19 @@ public class Opciones extends Pantalla {
 
             case MotionEvent.ACTION_UP:                     // Al levantar el último dedo
             case MotionEvent.ACTION_POINTER_UP:  // Al levantar un dedo que no es el último
+                //si he pulsado si musica
+                if(pulsa(siMusica.getRectangulo(),event)&&siMusica.getBandera()){
+                    musica=true;
+                    editorPreferencias.putBoolean("musica",true);
+                    editorPreferencias.commit();
+                    actualizaMusica();
+                }
+                if(pulsa(noMusica.getRectangulo(),event)&&noMusica.getBandera()){
+                    musica=false;
+                    editorPreferencias.putBoolean("musica",false);
+                    editorPreferencias.commit();
+                    actualizaMusica();
+                }
                 //si pulso la opcion jugar
                 if (pulsa(back.getRectangulo(), event)&&back.getBandera()) {
                     //vuelvo al menu
@@ -156,6 +205,8 @@ public class Opciones extends Pantalla {
                 nave.setBandera(false);
                 nave1.setBandera(false);
                 nave2.setBandera(false);
+                siMusica.setBandera(false);
+                noMusica.setBandera(false);
                 break;
 
             case MotionEvent.ACTION_MOVE: // Se mueve alguno de los dedos
@@ -183,6 +234,15 @@ public class Opciones extends Pantalla {
                 nave1.setColor(Color.TRANSPARENT);
                 nave2.setColor(Color.LTGRAY);
                 break;
+        }
+    }
+    public void actualizaMusica(){
+        if(musica){
+            siMusica.setColor(Color.LTGRAY);
+            noMusica.setColor(Color.DKGRAY);
+        }else{
+            siMusica.setColor(Color.DKGRAY);
+            noMusica.setColor(Color.LTGRAY);
         }
     }
 }

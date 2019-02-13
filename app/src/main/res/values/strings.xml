@@ -8,4 +8,7 @@
     <string name="continuar">Continue</string>
     <string name="salir">Exit</string>
     <string name="accion">Action?</string>
+    <string name="musica">Music</string>
+    <string name="si">Yes</string>
+    <string name="no">No</string>
 </resources>
