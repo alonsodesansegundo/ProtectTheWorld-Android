@@ -36,6 +36,10 @@ public class Nave {
         return hayBala;
     }
 
+    public void setImagen(Bitmap imagen) {
+        this.imagen = imagen;
+    }
+
     public Bitmap getImagen() {
         return imagen;
     }

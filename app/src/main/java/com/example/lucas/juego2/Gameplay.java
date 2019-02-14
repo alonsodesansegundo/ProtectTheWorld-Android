@@ -25,7 +25,7 @@ public class Gameplay extends Pantalla {
     //------------------------PROPIEDADES GAMEPLAY------------------------
     private boolean empece;
     private int nivel, filas, columnas, puntuacionGlobal;
-    private Bitmap imgMarciano1, imgMarciano2, imgNave,proyectilMarciano,balaNave;
+    private Bitmap imgMarciano1, imgMarciano2, imgNave,proyectilMarciano,balaNave,explosion;
     private float primeraX, primeraY, tamañoPuntuacion;
     private double vMarciano;
     private Marciano marcianos[][];
@@ -35,7 +35,7 @@ public class Gameplay extends Pantalla {
     private ArrayList<BalaMarciano> balasMarcianos;
     private Paint pPunutacion;
     private int tiempoVibracion;
-    private Boton btnPausa, btnReanudar, btnSalir,btnMusica;
+    private Boton btnPausa, btnReanudar, btnSalir,btnMusica,btnJugar;
     private Bitmap imgPausa, imgPlay,imgMusicaOn,imgMusicaOff;
     private int codNave;
     private int margenLateralPausa;
@@ -44,7 +44,7 @@ public class Gameplay extends Pantalla {
     private SharedPreferences.Editor editorPreferencias;
     private SharedPreferences preferencias;
     boolean vibracion;
-    private String txtContinuar, txtSalir,txtAccion;
+    private String txtContinuar, txtSalir,txtAccion,txtEmpezar,txtSi;
     //------------------------CONSTRUCTOR------------------------
     public Gameplay(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
         super(contexto, idPantalla, anchoPantalla, altoPantalla);
@@ -53,7 +53,8 @@ public class Gameplay extends Pantalla {
         txtContinuar = contexto.getString(R.string.continuar);
         txtSalir = contexto.getString(R.string.salir);
         txtAccion=contexto.getString(R.string.accion);
-
+txtEmpezar=contexto.getString(R.string.listo);
+txtSi=contexto.getString(R.string.si);
 
         //-----------------MENU PAUSA----------------
         margenLateralPausa = anchoPantalla / 20;
@@ -168,7 +169,8 @@ public class Gameplay extends Pantalla {
                 imgNave = Bitmap.createScaledBitmap(imgNave, anchoPantalla / 10, altoPantalla / 15, true);
         }
 
-
+        explosion = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.explosion);
+        explosion = Bitmap.createScaledBitmap(explosion, anchoPantalla / 10, altoPantalla / 15, true);
         //creo el objeto nave
         miNave = new Nave(imgNave, anchoPantalla / 2 - imgNave.getWidth() / 2, altoPantalla - imgNave.getHeight(),
                 10,balaNave);
@@ -190,6 +192,11 @@ public class Gameplay extends Pantalla {
                 anchoPantalla-margenLateralPausa*2,
                 altoPantalla / 2 + altoMenuPausa / 2-margenLateralPausa, Color.RED);
         btnSalir.setTexto(txtSalir,altoPantalla/30, Color.BLACK);
+
+        //----------------BTN PARA EMPEZAR A JUGAR----------------
+        btnJugar=new Boton(anchoPantalla/2-anchoPantalla/8,altoPantalla/2,
+                anchoPantalla/2+anchoPantalla/8,altoPantalla/2+altoPantalla/11, Color.GREEN);
+        btnJugar.setTexto(txtSi,altoPantalla/15, Color.BLACK);
     }
 
     // Actualizamos la física de los elementos en pantalla
@@ -245,14 +252,11 @@ public class Gameplay extends Pantalla {
                 //dibujo la puntuacion
                 c.drawText(Integer.toString(puntuacionGlobal), anchoPantalla / 2, altoPantalla / 20, pPunutacion);
             }else{
-                c.drawText("Toca para empezar",anchoPantalla/2,altoPantalla/2,pPunutacion);
+                c.drawText(txtEmpezar,anchoPantalla/2,altoPantalla/2-tamañoPuntuacion/2,pPunutacion);
+                btnJugar.dibujar(c);
             }
-
-
-
             //si he pulsado el boton de pausa
             if (pausa) {
-
                 //fondo
                 Paint a = new Paint();
                 a.setColor(Color.LTGRAY);
@@ -404,6 +408,8 @@ public class Gameplay extends Pantalla {
             balasMarcianos.get(i).bajar();
             //si choca con la nave
             if (balasMarcianos.get(i).getContenedor().intersect(miNave.getContenedor())) {
+
+                miNave.setImagen(explosion);
                 //vibra el dispositivo
                 if(vibracion){
 
@@ -498,74 +504,84 @@ public class Gameplay extends Pantalla {
         int accion = event.getActionMasked();             //Obtenemos el tipo de pulsación
         switch (accion) {
             case MotionEvent.ACTION_DOWN:// Primer dedo toca
-                //si pulso el btn musica
-                if(pulsa(btnMusica.getRectangulo(),event)){
-                    btnMusica.setBandera(true);
+
+                if(empece){
+                    //si pulso el btn musica
+                    if(pulsa(btnMusica.getRectangulo(),event)){
+                        btnMusica.setBandera(true);
+                    }
+                    //si pulso el btn pausa
+                    if (pulsa(btnPausa.getRectangulo(), event)) {
+                        btnPausa.setBandera(true);
+                    }
+                    //si pulso el btn salir
+                    if(pulsa(btnSalir.getRectangulo(),event)){
+                        btnSalir.setBandera(true);
+                    }
+                    //si pulso el btn reanudar
+                    if(pulsa(btnReanudar.getRectangulo(),event)){
+                        btnReanudar.setBandera(true);
+                    }
+                }else{
+                    if(pulsa(btnJugar.getRectangulo(),event)){
+                        btnJugar.setBandera(true);
+                    }
                 }
 
-                //si pulso el btn pausa
-                if (pulsa(btnPausa.getRectangulo(), event)) {
-                    btnPausa.setBandera(true);
-                }
-                //si pulso el btn salir
-                if(pulsa(btnSalir.getRectangulo(),event)){
-                    btnSalir.setBandera(true);
-                }
-                //si pulso el btn reanudar
-                //si pulso el btn salir
-                if(pulsa(btnReanudar.getRectangulo(),event)){
-                    btnReanudar.setBandera(true);
-                }
             case MotionEvent.ACTION_POINTER_DOWN:  // Segundo y siguientes tocan
                 break;
             case MotionEvent.ACTION_UP:                     // Al levantar el último dedo
                 mueveNave = false;
-                if(!empece){
+                if(pulsa(btnJugar.getRectangulo(),event)&&btnJugar.getBandera()){
                     empece=true;
                 }
-                //si levanto el dedo en el btn musica
-                if(pulsa(btnMusica.getRectangulo(),event)&&btnMusica.getBandera()&&!pausa){
-                    cambiaBtnMusica();
-                }
+                btnJugar.setBandera(false);
+                if(empece){
+                    //si levanto el dedo en el btn musica
+                    if(pulsa(btnMusica.getRectangulo(),event)&&btnMusica.getBandera()&&!pausa){
+                        cambiaBtnMusica();
+                    }
 
-                //si pulso la opcion pausa
-                if (pulsa(btnPausa.getRectangulo(), event) && btnPausa.getBandera()) {
-                    //pongo la bandera del propio boton a false
-                    btnPausa.setBandera(false);
+                    //si pulso la opcion pausa
+                    if (pulsa(btnPausa.getRectangulo(), event) && btnPausa.getBandera()) {
+                        //pongo la bandera del propio boton a false
+                        btnPausa.setBandera(false);
 
-                    //muestro pantallaPausa, reanudar o salir
-                    pausa = !pausa;
-                    if (pausa) {
-                        paraMusica();
-                        btnPausa.setImg(imgPlay);
-                    } else {
+                        //muestro pantallaPausa, reanudar o salir
+                        pausa = !pausa;
+                        if (pausa) {
+                            paraMusica();
+                            btnPausa.setImg(imgPlay);
+                        } else {
+                            suenaMusica();
+                            btnPausa.setImg(imgPausa);
+                        }
+                    }
+                    //si he pulsado la opcion salir
+                    if(pulsa(btnSalir.getRectangulo(),event)&&btnSalir.getBandera()){
+                        //vuelvo al menu
+                        acabaMusica();
+                        return 0;
+                    }
+                    if(pulsa(btnReanudar.getRectangulo(),event)&&btnReanudar.getBandera()){
+                        //reanudo el gameplay
+                        pausa=false;
                         suenaMusica();
                         btnPausa.setImg(imgPausa);
                     }
+                    //pongo las banderas de todos lso botones a false
+                    btnMusica.setBandera(false);
+                    btnSalir.setBandera(false);
+                    btnPausa.setBandera(false);
+                    btnReanudar.setBandera(false);
                 }
-                //si he pulsado la opcion salir
-                if(pulsa(btnSalir.getRectangulo(),event)&&btnSalir.getBandera()){
-                    //vuelvo al menu
-                    acabaMusica();
-                    return 0;
-                }
-                if(pulsa(btnReanudar.getRectangulo(),event)&&btnReanudar.getBandera()){
-                    //reanudo el gameplay
-                    pausa=false;
-                    suenaMusica();
-                    btnPausa.setImg(imgPausa);
-                }
-                //pongo las banderas de todos lso botones a false
-                btnMusica.setBandera(false);
-                btnSalir.setBandera(false);
-                btnPausa.setBandera(false);
-                btnReanudar.setBandera(false);
+
             case MotionEvent.ACTION_POINTER_UP:  // Al levantar un dedo que no es el último
 
                 break;
 
             case MotionEvent.ACTION_MOVE: // Se mueve alguno de los dedos
-                if (!pausa&&(event.getX() > miNave.getContenedor().left && event.getX() < miNave.getContenedor().right) || mueveNave) {
+                if (empece&&!pausa&&(event.getX() > miNave.getContenedor().left && event.getX() < miNave.getContenedor().right) || mueveNave) {
                     mueveNave = true;
                     miNave.moverNave(event.getX());
                 }
