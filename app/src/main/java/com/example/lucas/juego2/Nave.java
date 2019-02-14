@@ -17,16 +17,17 @@ public class Nave {
     private boolean hayBala;
     private RectF bala;
     private Paint p;
+    private Bitmap imgBala;
     private float vBala;
     //------------------------CONSTRUCTOR------------------------
-    public Nave(Bitmap imagen,float x,float y,float velocidadBala) {
+    public Nave(Bitmap imagen,float x,float y,float velocidadBala,Bitmap imgBala) {
         this.pos=new PointF(x,y);
         this.imagen = imagen;
         this.hayBala=false;
         this.vBala=velocidadBala;
+        this.imgBala=imgBala;
         this.p=new Paint();
         p.setColor(Color.DKGRAY);
-
         contenedor=new RectF(pos.x,pos.y,pos.x+imagen.getWidth(),pos.y+imagen.getWidth());
     }
 
@@ -63,7 +64,7 @@ public class Nave {
     public boolean disparar(){
         if(!hayBala){
             //genero el proyectil a traves de la posicion de la nave
-            bala=new RectF(pos.x,pos.y-50,pos.x+imagen.getWidth(),pos.y);
+            bala=new RectF(contenedor.centerX()-imgBala.getWidth()/2,pos.y-imgBala.getHeight(),contenedor.centerX()+imgBala.getWidth()/2,pos.y);
             hayBala=true;
             return true;
         }
@@ -85,6 +86,7 @@ public class Nave {
         if(hayBala){
             //dibujo la bala
             c.drawRect(this.bala,p);
+            c.drawBitmap(imgBala,bala.centerX()-imgBala.getWidth()/2,bala.top,null);
         }
         c.drawRect(contenedor,p);
         c.drawBitmap(imagen,pos.x,pos.y,null);

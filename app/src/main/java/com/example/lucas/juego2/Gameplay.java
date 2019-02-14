@@ -23,8 +23,9 @@ import java.util.Timer;
 
 public class Gameplay extends Pantalla {
     //------------------------PROPIEDADES GAMEPLAY------------------------
+    private boolean empece;
     private int nivel, filas, columnas, puntuacionGlobal;
-    private Bitmap imgMarciano1, imgMarciano2, imgNave;
+    private Bitmap imgMarciano1, imgMarciano2, imgNave,proyectilMarciano,balaNave;
     private float primeraX, primeraY, tamañoPuntuacion;
     private double vMarciano;
     private Marciano marcianos[][];
@@ -47,7 +48,7 @@ public class Gameplay extends Pantalla {
     //------------------------CONSTRUCTOR------------------------
     public Gameplay(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
         super(contexto, idPantalla, anchoPantalla, altoPantalla);
-
+        empece=false;
         //----------------STRINGS----------------
         txtContinuar = contexto.getString(R.string.continuar);
         txtSalir = contexto.getString(R.string.salir);
@@ -142,6 +143,12 @@ public class Gameplay extends Pantalla {
         imgMarciano2 = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.marciano2);
         imgMarciano2 = Bitmap.createScaledBitmap(imgMarciano2, anchoPantalla / 20, altoPantalla / 30, true);
 
+        proyectilMarciano=BitmapFactory.decodeResource(contexto.getResources(), R.drawable.bombamarciano);
+        proyectilMarciano =  Bitmap.createScaledBitmap(proyectilMarciano, anchoPantalla / 20, altoPantalla / 30, true);
+
+
+        balaNave=BitmapFactory.decodeResource(contexto.getResources(), R.drawable.proyectilnave);
+        balaNave =  Bitmap.createScaledBitmap(balaNave, anchoPantalla / 30, altoPantalla / 20, true);
         //llenar de marcianos el array bidimensional
         rellenaMarcianos();
 
@@ -163,7 +170,8 @@ public class Gameplay extends Pantalla {
 
 
         //creo el objeto nave
-        miNave = new Nave(imgNave, anchoPantalla / 2 - imgNave.getWidth() / 2, altoPantalla - imgNave.getHeight(), 10);
+        miNave = new Nave(imgNave, anchoPantalla / 2 - imgNave.getWidth() / 2, altoPantalla - imgNave.getHeight(),
+                10,balaNave);
 
         //arraylist con las balas generadas por los marcianos
         balasMarcianos = new ArrayList<BalaMarciano>();
@@ -187,7 +195,7 @@ public class Gameplay extends Pantalla {
     // Actualizamos la física de los elementos en pantalla
     public void actualizarFisica() {
         //si no he pausado, el gameplay continua
-        if (!pausa) {
+        if (!pausa&&empece) {
             //------------------------DISPARO DE LA NAVE------------------------
             disparaNave();
 
@@ -211,30 +219,36 @@ public class Gameplay extends Pantalla {
     public void dibujar(Canvas c) {
         try {
             c.drawColor(Color.BLACK);
-            //dibujo el btnPausa
-            btnPausa.dibujar(c);
+            if(empece){
+//dibujo el btnPausa
+                btnPausa.dibujar(c);
 
-            //dibujo el btn sonido
-            btnMusica.dibujar(c);
-            //dibujo los marcianos del array bidimensional (marcianos)
-            for (int i = 0; i < marcianos.length; i++) {
-                for (int j = 0; j < marcianos[0].length; j++) {
-                    if (marcianos[i][j] != null) {
-                        //dibujo a los marcianos y su contenedor
-                        marcianos[i][j].dibujar(c);
+                //dibujo el btn sonido
+                btnMusica.dibujar(c);
+                //dibujo los marcianos del array bidimensional (marcianos)
+                for (int i = 0; i < marcianos.length; i++) {
+                    for (int j = 0; j < marcianos[0].length; j++) {
+                        if (marcianos[i][j] != null) {
+                            //dibujo a los marcianos y su contenedor
+                            marcianos[i][j].dibujar(c);
+                        }
                     }
                 }
-            }
-            //dibujo todas las balas marcianos
-            for (int i = 0; i < balasMarcianos.size(); i++) {
-                balasMarcianos.get(i).dibujar(c);
+                //dibujo todas las balas marcianos
+                for (int i = 0; i < balasMarcianos.size(); i++) {
+                    balasMarcianos.get(i).dibujar(c);
+                }
+
+                //dibujo la nave y el proyectil que genera
+                miNave.dibujar(c);
+
+                //dibujo la puntuacion
+                c.drawText(Integer.toString(puntuacionGlobal), anchoPantalla / 2, altoPantalla / 20, pPunutacion);
+            }else{
+                c.drawText("Toca para empezar",anchoPantalla/2,altoPantalla/2,pPunutacion);
             }
 
-            //dibujo la nave y el proyectil que genera
-            miNave.dibujar(c);
 
-            //dibujo la puntuacion
-            c.drawText(Integer.toString(puntuacionGlobal), anchoPantalla / 2, altoPantalla / 20, pPunutacion);
 
             //si he pulsado el boton de pausa
             if (pausa) {
@@ -372,7 +386,7 @@ public class Gameplay extends Pantalla {
                         //genero una nueva bala marciano que añado a su array
                         balasMarcianos.add(new BalaMarciano((int) marcianos[i][j].getPos().x,
                                 (int) marcianos[i][j].getPos().y + marcianos[i][j].getImagen().getHeight(), marcianos[i][j].getImagen().getWidth(),
-                                marcianos[i][j].getImagen().getHeight()));
+                                marcianos[i][j].getImagen().getHeight(),proyectilMarciano));
                     }
                 }
             }
@@ -506,6 +520,9 @@ public class Gameplay extends Pantalla {
                 break;
             case MotionEvent.ACTION_UP:                     // Al levantar el último dedo
                 mueveNave = false;
+                if(!empece){
+                    empece=true;
+                }
                 //si levanto el dedo en el btn musica
                 if(pulsa(btnMusica.getRectangulo(),event)&&btnMusica.getBandera()&&!pausa){
                     cambiaBtnMusica();

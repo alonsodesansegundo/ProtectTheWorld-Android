@@ -7,6 +7,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.os.Build;
+import android.os.VibrationEffect;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -199,6 +201,9 @@ public class Opciones extends Pantalla {
                 //si he pulsado si vibracion
 
                 if(pulsa(siVibracion.getRectangulo(),event)&&siVibracion.getBandera()){
+                    if(vibracion==false){
+                        vibrar();
+                    }
                     vibracion=true;
                     actualizaVibracion();
                 }
@@ -305,6 +310,14 @@ public class Opciones extends Pantalla {
             editorPreferencias.commit();
             siVibracion.setColor(Color.DKGRAY);
             noVibracion.setColor(Color.LTGRAY);
+        }
+    }
+    //------------------------VIBRACIÓN DEL DISPOSITIVO------------------------
+    public void vibrar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            miVibrador.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+        } else {
+            miVibrador.vibrate(1000);
         }
     }
 }
