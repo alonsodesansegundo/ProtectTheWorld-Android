@@ -14,4 +14,5 @@
     <string name="no">No</string>
     <string name="vibracion">Vibración</string>
     <string name="listo">¿Estás listo?</string>
+    <string name="repetir">¿Otra partida?</string>
 </resources>

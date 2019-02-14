@@ -48,6 +48,10 @@ public class Juego  extends SurfaceView implements SurfaceHolder.Callback{
                         break;
                     case 4:
                         pantallaActual=new Ayuda(context,4,anchoPantalla,altoPantalla);
+                        break;
+                    case 5:
+                        pantallaActual=new Gameplay(context,1,anchoPantalla,altoPantalla);
+                        break;
                 }
             }
         }
@@ -102,20 +106,7 @@ public class Juego  extends SurfaceView implements SurfaceHolder.Callback{
 
                         pantallaActual.actualizarFisica();  // Movimiento de los elementos
                         pantallaActual.dibujar(c);              // Dibujamos los elementos
-                        //si estoy en el gameplay y he perdido
-                        if(pantallaActual.idPantalla==1){
-
-                            //perdi la partida por el motivo que sea
-                            if(pantallaActual.perdi){
-                                //espero 3 segundos
-                                hilo.sleep(1000);
-                                //vuelvo al menu
-                                pantallaActual=new Menu(context,0,anchoPantalla,altoPantalla);
-                            }
-                        }
                     }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
                 } finally {  // Haya o no excepción, hay que liberar el lienzo
                     if (c != null) {
                         surfaceHolder.unlockCanvasAndPost(c);

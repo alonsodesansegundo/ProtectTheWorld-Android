@@ -25,7 +25,7 @@ public class Gameplay extends Pantalla {
     //------------------------PROPIEDADES GAMEPLAY------------------------
     private boolean empece;
     private int nivel, filas, columnas, puntuacionGlobal;
-    private Bitmap imgMarciano1, imgMarciano2, imgNave,proyectilMarciano,balaNave,explosion;
+    private Bitmap imgMarciano1, imgMarciano2, imgNave, proyectilMarciano, balaNave, explosion;
     private float primeraX, primeraY, tamañoPuntuacion;
     private double vMarciano;
     private Marciano marcianos[][];
@@ -35,8 +35,8 @@ public class Gameplay extends Pantalla {
     private ArrayList<BalaMarciano> balasMarcianos;
     private Paint pPunutacion;
     private int tiempoVibracion;
-    private Boton btnPausa, btnReanudar, btnSalir,btnMusica,btnJugar;
-    private Bitmap imgPausa, imgPlay,imgMusicaOn,imgMusicaOff;
+    private Boton btnPausa, btnReanudar, btnSalir, btnMusica, btnJugar, btnSi, btnNo;
+    private Bitmap imgPausa, imgPlay, imgMusicaOn, imgMusicaOff;
     private int codNave;
     private int margenLateralPausa;
     private boolean musica;
@@ -44,17 +44,20 @@ public class Gameplay extends Pantalla {
     private SharedPreferences.Editor editorPreferencias;
     private SharedPreferences preferencias;
     boolean vibracion;
-    private String txtContinuar, txtSalir,txtAccion,txtEmpezar,txtSi;
+    private String txtContinuar, txtSalir, txtAccion, txtEmpezar, txtSi, txtRepetir, txtNo;
+
     //------------------------CONSTRUCTOR------------------------
     public Gameplay(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
         super(contexto, idPantalla, anchoPantalla, altoPantalla);
-        empece=false;
+        empece = false;
         //----------------STRINGS----------------
         txtContinuar = contexto.getString(R.string.continuar);
         txtSalir = contexto.getString(R.string.salir);
-        txtAccion=contexto.getString(R.string.accion);
-txtEmpezar=contexto.getString(R.string.listo);
-txtSi=contexto.getString(R.string.si);
+        txtAccion = contexto.getString(R.string.accion);
+        txtEmpezar = contexto.getString(R.string.listo);
+        txtSi = contexto.getString(R.string.si);
+        txtRepetir = contexto.getString(R.string.repetir);
+        txtNo = contexto.getString(R.string.no);
 
         //-----------------MENU PAUSA----------------
         margenLateralPausa = anchoPantalla / 20;
@@ -62,10 +65,10 @@ txtSi=contexto.getString(R.string.si);
 
         //----------------ARCHIVO CONFIGURACIÓN--------------
         preferencias = contexto.getSharedPreferences("preferencias", Context.MODE_PRIVATE);
-        editorPreferencias=preferencias.edit();
+        editorPreferencias = preferencias.edit();
 
         //--------------BOOLEAN VIBRACION--------------
-        vibracion=preferencias.getBoolean("vibracion",true);
+        vibracion = preferencias.getBoolean("vibracion", true);
         //----------------BOTON PAUSA----------------
         btnPausa = new Boton(anchoPantalla - anchoPantalla / 10, 0,
                 anchoPantalla, anchoPantalla / 10, Color.TRANSPARENT);
@@ -83,24 +86,24 @@ txtSi=contexto.getString(R.string.si);
 
 
         //----------------BOTON MÚSICA----------------
-        btnMusica=new Boton(anchoPantalla-anchoPantalla / 10*2,0,
-                anchoPantalla-anchoPantalla/10,anchoPantalla/10, Color.TRANSPARENT);
+        btnMusica = new Boton(anchoPantalla - anchoPantalla / 10 * 2, 0,
+                anchoPantalla - anchoPantalla / 10, anchoPantalla / 10, Color.TRANSPARENT);
 
         //----------------IMAGEN MUSICA ON----------------
-        imgMusicaOn=BitmapFactory.decodeResource(contexto.getResources(), R.drawable.musica);
-        imgMusicaOn=Bitmap.createScaledBitmap(imgMusicaOn, anchoPantalla / 10, anchoPantalla / 10, true);
+        imgMusicaOn = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.musica);
+        imgMusicaOn = Bitmap.createScaledBitmap(imgMusicaOn, anchoPantalla / 10, anchoPantalla / 10, true);
 
         //----------------IMAGEN MUSICA OFF----------------
-        imgMusicaOff=BitmapFactory.decodeResource(contexto.getResources(), R.drawable.musicano);
-        imgMusicaOff=Bitmap.createScaledBitmap(imgMusicaOff, anchoPantalla / 10, anchoPantalla / 10, true);
+        imgMusicaOff = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.musicano);
+        imgMusicaOff = Bitmap.createScaledBitmap(imgMusicaOff, anchoPantalla / 10, anchoPantalla / 10, true);
 
         //----------------MUSICA----------------
-        musica=preferencias.getBoolean("musica",true);
+        musica = preferencias.getBoolean("musica", true);
         configuraMusica(R.raw.spectre);
-        if(musica){
+        if (musica) {
             btnMusica.setImg(imgMusicaOff);
             suenaMusica();
-        }else {
+        } else {
             btnMusica.setImg(imgMusicaOn);
             paraMusica();
         }
@@ -144,12 +147,12 @@ txtSi=contexto.getString(R.string.si);
         imgMarciano2 = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.marciano2);
         imgMarciano2 = Bitmap.createScaledBitmap(imgMarciano2, anchoPantalla / 20, altoPantalla / 30, true);
 
-        proyectilMarciano=BitmapFactory.decodeResource(contexto.getResources(), R.drawable.bombamarciano);
-        proyectilMarciano =  Bitmap.createScaledBitmap(proyectilMarciano, anchoPantalla / 20, altoPantalla / 30, true);
+        proyectilMarciano = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.bombamarciano);
+        proyectilMarciano = Bitmap.createScaledBitmap(proyectilMarciano, anchoPantalla / 20, altoPantalla / 30, true);
 
 
-        balaNave=BitmapFactory.decodeResource(contexto.getResources(), R.drawable.proyectilnave);
-        balaNave =  Bitmap.createScaledBitmap(balaNave, anchoPantalla / 30, altoPantalla / 20, true);
+        balaNave = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.proyectilnave);
+        balaNave = Bitmap.createScaledBitmap(balaNave, anchoPantalla / 30, altoPantalla / 20, true);
         //llenar de marcianos el array bidimensional
         rellenaMarcianos();
 
@@ -173,7 +176,7 @@ txtSi=contexto.getString(R.string.si);
         explosion = Bitmap.createScaledBitmap(explosion, anchoPantalla / 10, altoPantalla / 15, true);
         //creo el objeto nave
         miNave = new Nave(imgNave, anchoPantalla / 2 - imgNave.getWidth() / 2, altoPantalla - imgNave.getHeight(),
-                10,balaNave);
+                10, balaNave);
 
         //arraylist con las balas generadas por los marcianos
         balasMarcianos = new ArrayList<BalaMarciano>();
@@ -182,27 +185,39 @@ txtSi=contexto.getString(R.string.si);
         misColumnas = new ArrayList();
 
         //----------------BTN REANUDAR----------------
-        btnReanudar=new Boton(margenLateralPausa*2,altoPantalla/2,
-                anchoPantalla/2-margenLateralPausa,
-                altoPantalla / 2 + altoMenuPausa / 2-margenLateralPausa, Color.GREEN);
-        btnReanudar.setTexto(txtContinuar,altoPantalla/30, Color.BLACK);
+        btnReanudar = new Boton(margenLateralPausa * 2, altoPantalla / 2,
+                anchoPantalla / 2 - margenLateralPausa,
+                altoPantalla / 2 + altoMenuPausa / 2 - margenLateralPausa, Color.GREEN);
+        btnReanudar.setTexto(txtContinuar, altoPantalla / 30, Color.BLACK);
 
         //----------------BTN SALIR----------------
-        btnSalir=new Boton(anchoPantalla/2+margenLateralPausa,altoPantalla/2,
-                anchoPantalla-margenLateralPausa*2,
-                altoPantalla / 2 + altoMenuPausa / 2-margenLateralPausa, Color.RED);
-        btnSalir.setTexto(txtSalir,altoPantalla/30, Color.BLACK);
+        btnSalir = new Boton(anchoPantalla / 2 + margenLateralPausa, altoPantalla / 2,
+                anchoPantalla - margenLateralPausa * 2,
+                altoPantalla / 2 + altoMenuPausa / 2 - margenLateralPausa, Color.RED);
+        btnSalir.setTexto(txtSalir, altoPantalla / 30, Color.BLACK);
 
         //----------------BTN PARA EMPEZAR A JUGAR----------------
-        btnJugar=new Boton(anchoPantalla/2-anchoPantalla/8,altoPantalla/2,
-                anchoPantalla/2+anchoPantalla/8,altoPantalla/2+altoPantalla/11, Color.GREEN);
-        btnJugar.setTexto(txtSi,altoPantalla/15, Color.BLACK);
+        btnJugar = new Boton(anchoPantalla / 2 - anchoPantalla / 8, altoPantalla / 2,
+                anchoPantalla / 2 + anchoPantalla / 8, altoPantalla / 2 + altoPantalla / 11, Color.GREEN);
+        btnJugar.setTexto(txtSi, altoPantalla / 15, Color.BLACK);
+
+        //----------------BTN PARA REPETIR O NO----------------
+        btnSi = new Boton(margenLateralPausa * 2, altoPantalla / 2,
+                anchoPantalla / 2 - margenLateralPausa,
+                altoPantalla / 2 + altoMenuPausa / 2 - margenLateralPausa, Color.GREEN);
+        btnSi.setTexto(txtSi, altoPantalla / 30, Color.BLACK);
+
+
+        btnNo = new Boton(anchoPantalla / 2 + margenLateralPausa, altoPantalla / 2,
+                anchoPantalla - margenLateralPausa * 2,
+                altoPantalla / 2 + altoMenuPausa / 2 - margenLateralPausa, Color.RED);
+        btnNo.setTexto(txtNo, altoPantalla / 30, Color.BLACK);
     }
 
     // Actualizamos la física de los elementos en pantalla
     public void actualizarFisica() {
         //si no he pausado, el gameplay continua
-        if (!pausa&&empece) {
+        if (!pausa && empece && !perdi) {
             //------------------------DISPARO DE LA NAVE------------------------
             disparaNave();
 
@@ -226,7 +241,7 @@ txtSi=contexto.getString(R.string.si);
     public void dibujar(Canvas c) {
         try {
             c.drawColor(Color.BLACK);
-            if(empece){
+            if (empece) {
 //dibujo el btnPausa
                 btnPausa.dibujar(c);
 
@@ -251,8 +266,8 @@ txtSi=contexto.getString(R.string.si);
 
                 //dibujo la puntuacion
                 c.drawText(Integer.toString(puntuacionGlobal), anchoPantalla / 2, altoPantalla / 20, pPunutacion);
-            }else{
-                c.drawText(txtEmpezar,anchoPantalla/2,altoPantalla/2-tamañoPuntuacion/2,pPunutacion);
+            } else {
+                c.drawText(txtEmpezar, anchoPantalla / 2, altoPantalla / 2 - tamañoPuntuacion / 2, pPunutacion);
                 btnJugar.dibujar(c);
             }
             //si he pulsado el boton de pausa
@@ -272,9 +287,28 @@ txtSi=contexto.getString(R.string.si);
 
                 //dibujo la pregunta
                 a.setColor(Color.BLACK);
-                a.setTextSize(altoPantalla/20);
+                a.setTextSize(altoPantalla / 20);
                 a.setTextAlign(Paint.Align.CENTER);
-                c.drawText(txtAccion,anchoPantalla/2,altoPantalla/2-altoMenuPausa/2+altoPantalla/20+margenLateralPausa,a);
+                c.drawText(txtAccion, anchoPantalla / 2, altoPantalla / 2 - altoMenuPausa / 2 + altoPantalla / 20 + margenLateralPausa, a);
+            }
+            if (perdi) {
+                //fondo
+                Paint a = new Paint();
+                a.setColor(Color.LTGRAY);
+                a.setAlpha(125);
+                c.drawRect(0, 0, anchoPantalla, altoPantalla, a);
+                a.setColor(Color.WHITE);
+                c.drawRect(margenLateralPausa, altoPantalla / 2 - altoMenuPausa / 2,
+                        anchoPantalla - margenLateralPausa, altoPantalla / 2 + altoMenuPausa / 2, a);
+
+                //dibujo los botones si y no
+                btnNo.dibujar(c);
+                btnSi.dibujar(c);
+                //dibujo la pregunta
+                a.setColor(Color.BLACK);
+                a.setTextSize(altoPantalla / 20);
+                a.setTextAlign(Paint.Align.CENTER);
+                c.drawText(txtRepetir, anchoPantalla / 2, altoPantalla / 2 - altoMenuPausa / 2 + altoPantalla / 20 + margenLateralPausa, a);
             }
         } catch (Exception e) {
             Log.i("Error al dibujar", e.getLocalizedMessage());
@@ -390,7 +424,7 @@ txtSi=contexto.getString(R.string.si);
                         //genero una nueva bala marciano que añado a su array
                         balasMarcianos.add(new BalaMarciano((int) marcianos[i][j].getPos().x,
                                 (int) marcianos[i][j].getPos().y + marcianos[i][j].getImagen().getHeight(), marcianos[i][j].getImagen().getWidth(),
-                                marcianos[i][j].getImagen().getHeight(),proyectilMarciano));
+                                marcianos[i][j].getImagen().getHeight(), proyectilMarciano));
                     }
                 }
             }
@@ -411,7 +445,7 @@ txtSi=contexto.getString(R.string.si);
 
                 miNave.setImagen(explosion);
                 //vibra el dispositivo
-                if(vibracion){
+                if (vibracion) {
 
                     vibrar();
                 }
@@ -504,10 +538,17 @@ txtSi=contexto.getString(R.string.si);
         int accion = event.getActionMasked();             //Obtenemos el tipo de pulsación
         switch (accion) {
             case MotionEvent.ACTION_DOWN:// Primer dedo toca
-
-                if(empece){
+                if (perdi) {
+                    if (pulsa(btnSi.getRectangulo(), event)) {
+                        btnSi.setBandera(true);
+                    }
+                    if (pulsa(btnNo.getRectangulo(), event)) {
+                        btnNo.setBandera(false);
+                    }
+                }
+                if (empece) {
                     //si pulso el btn musica
-                    if(pulsa(btnMusica.getRectangulo(),event)){
+                    if (pulsa(btnMusica.getRectangulo(), event)) {
                         btnMusica.setBandera(true);
                     }
                     //si pulso el btn pausa
@@ -515,15 +556,15 @@ txtSi=contexto.getString(R.string.si);
                         btnPausa.setBandera(true);
                     }
                     //si pulso el btn salir
-                    if(pulsa(btnSalir.getRectangulo(),event)){
+                    if (pulsa(btnSalir.getRectangulo(), event)) {
                         btnSalir.setBandera(true);
                     }
                     //si pulso el btn reanudar
-                    if(pulsa(btnReanudar.getRectangulo(),event)){
+                    if (pulsa(btnReanudar.getRectangulo(), event)) {
                         btnReanudar.setBandera(true);
                     }
-                }else{
-                    if(pulsa(btnJugar.getRectangulo(),event)){
+                } else {
+                    if (pulsa(btnJugar.getRectangulo(), event)) {
                         btnJugar.setBandera(true);
                     }
                 }
@@ -531,14 +572,25 @@ txtSi=contexto.getString(R.string.si);
             case MotionEvent.ACTION_POINTER_DOWN:  // Segundo y siguientes tocan
                 break;
             case MotionEvent.ACTION_UP:                     // Al levantar el último dedo
-                mueveNave = false;
-                if(pulsa(btnJugar.getRectangulo(),event)&&btnJugar.getBandera()){
-                    empece=true;
+
+                    mueveNave = false;
+                if (pulsa(btnJugar.getRectangulo(), event) && btnJugar.getBandera()) {
+                    empece = true;
+                }
+                if (perdi) {
+                    if (pulsa(btnSi.getRectangulo(), event) && btnSi.getBandera()) {
+                        return 5;
+                    }
+                    if (pulsa(btnNo.getRectangulo(), event) && btnNo.getBandera()) {
+                        return 0;
+                    }
+                    btnSi.setBandera(false);
+                    btnNo.setBandera(false);
                 }
                 btnJugar.setBandera(false);
-                if(empece){
+                if (empece) {
                     //si levanto el dedo en el btn musica
-                    if(pulsa(btnMusica.getRectangulo(),event)&&btnMusica.getBandera()&&!pausa){
+                    if (pulsa(btnMusica.getRectangulo(), event) && btnMusica.getBandera() && !pausa) {
                         cambiaBtnMusica();
                     }
 
@@ -558,14 +610,14 @@ txtSi=contexto.getString(R.string.si);
                         }
                     }
                     //si he pulsado la opcion salir
-                    if(pulsa(btnSalir.getRectangulo(),event)&&btnSalir.getBandera()){
+                    if (pulsa(btnSalir.getRectangulo(), event) && btnSalir.getBandera()) {
                         //vuelvo al menu
                         acabaMusica();
                         return 0;
                     }
-                    if(pulsa(btnReanudar.getRectangulo(),event)&&btnReanudar.getBandera()){
+                    if (pulsa(btnReanudar.getRectangulo(), event) && btnReanudar.getBandera()) {
                         //reanudo el gameplay
-                        pausa=false;
+                        pausa = false;
                         suenaMusica();
                         btnPausa.setImg(imgPausa);
                     }
@@ -581,7 +633,7 @@ txtSi=contexto.getString(R.string.si);
                 break;
 
             case MotionEvent.ACTION_MOVE: // Se mueve alguno de los dedos
-                if (empece&&!pausa&&(event.getX() > miNave.getContenedor().left && event.getX() < miNave.getContenedor().right) || mueveNave) {
+                if (!perdi && empece && !pausa && (event.getX() > miNave.getContenedor().left && event.getX() < miNave.getContenedor().right) || mueveNave) {
                     mueveNave = true;
                     miNave.moverNave(event.getX());
                 }
@@ -591,17 +643,18 @@ txtSi=contexto.getString(R.string.si);
         }
         return idPantalla;
     }
-    public void cambiaBtnMusica(){
 
-        musica=!musica;
-        if(musica){
+    public void cambiaBtnMusica() {
+
+        musica = !musica;
+        if (musica) {
             suenaMusica();
             btnMusica.setImg(imgMusicaOff);
-        }else{
+        } else {
             paraMusica();
             btnMusica.setImg(imgMusicaOn);
         }
-        editorPreferencias.putBoolean("musica",musica);
+        editorPreferencias.putBoolean("musica", musica);
         editorPreferencias.commit();
     }
 }
