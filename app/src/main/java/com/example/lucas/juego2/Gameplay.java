@@ -153,12 +153,20 @@ public class Gameplay extends Pantalla {
         vMarciano = 0.5;
 
         //imagen marcianos impacto 1
-        imgMarciano1 = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.marciano1);
+//        imgMarciano1 = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.marciano1);
+//        imgMarciano1 = Bitmap.createScaledBitmap(imgMarciano1, anchoPantalla / 20, altoPantalla / 30, true);
+
+        imgMarciano1 = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.mio1);
         imgMarciano1 = Bitmap.createScaledBitmap(imgMarciano1, anchoPantalla / 20, altoPantalla / 30, true);
 
+
         //imagen marcianos impacto 2
-        imgMarciano2 = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.marciano2);
+//        imgMarciano2 = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.marciano2);
+//        imgMarciano2 = Bitmap.createScaledBitmap(imgMarciano2, anchoPantalla / 20, altoPantalla / 30, true);
+
+        imgMarciano2 = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.mio2);
         imgMarciano2 = Bitmap.createScaledBitmap(imgMarciano2, anchoPantalla / 20, altoPantalla / 30, true);
+
 
         proyectilMarciano = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.bombamarciano);
         proyectilMarciano = Bitmap.createScaledBitmap(proyectilMarciano, anchoPantalla / 20, altoPantalla / 30, true);
@@ -589,7 +597,7 @@ public class Gameplay extends Pantalla {
         switch (accion) {
             case MotionEvent.ACTION_DOWN:// Primer dedo toca
 
-                if (empece) {
+                if (empece && !perdi) {
                     //si pulso el btn musica
                     if (pulsa(btnMusica.getRectangulo(), event)) {
                         btnMusica.setBandera(true);
@@ -626,7 +634,7 @@ public class Gameplay extends Pantalla {
                         btnAux = btnSi;
                     }
                     if (pulsa(btnNo.getRectangulo(), event)) {
-                        btnNo.setBandera(false);
+                        btnNo.setBandera(true);
                         btnAux = btnNo;
                     }
                 }
@@ -636,9 +644,9 @@ public class Gameplay extends Pantalla {
                 break;
             case MotionEvent.ACTION_UP:                     // Al levantar el último dedo
                 mueveNave = false;
-                if (empece) {
+                if (empece && !perdi) {
                     //si levanto el dedo en el btn musica
-                    if (pulsa(btnMusica.getRectangulo(), event) && btnMusica.getBandera() && !pausa) {
+                    if (pulsa(btnMusica.getRectangulo(), event) && btnMusica.getBandera() &&!pausa) {
                         cambiaBtnMusica();
                     }
                     //si pulso la opcion pausa
@@ -647,6 +655,9 @@ public class Gameplay extends Pantalla {
                         btnPausa.setBandera(false);
                         //muestro pantallaPausa, reanudar o salir
                         pausa = !pausa;
+                        if(!pausa && musica){
+                            suenaMusica();
+                        }
 
                     }
                 } else {
@@ -666,12 +677,14 @@ public class Gameplay extends Pantalla {
                     }
                     if (pulsa(btnReanudar.getRectangulo(), event) && btnReanudar.getBandera()) {
                         //reanudo el gameplay
-                        pausa = false;
-                        suenaMusica();
+
+                        if(musica){
+                            suenaMusica();
+                        }
                         btnPausa.setImg(imgPausa);
+                        pausa = false;
                     }
-                } else {
-                    suenaMusica();
+                }else{
                     btnPausa.setImg(imgPausa);
                 }
 

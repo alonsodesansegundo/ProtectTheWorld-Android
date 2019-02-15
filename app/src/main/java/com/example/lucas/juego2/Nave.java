@@ -89,10 +89,10 @@ public class Nave {
     public void dibujar(Canvas c){
         if(hayBala){
             //dibujo la bala
-            c.drawRect(this.bala,p);
+         //   c.drawRect(this.bala,p);
             c.drawBitmap(imgBala,bala.centerX()-imgBala.getWidth()/2,bala.top,null);
         }
-        c.drawRect(contenedor,p);
+       // c.drawRect(contenedor,p);
         c.drawBitmap(imagen,pos.x,pos.y,null);
     }
 
