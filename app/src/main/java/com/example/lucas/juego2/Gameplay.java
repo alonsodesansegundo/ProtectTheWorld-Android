@@ -38,7 +38,7 @@ public class Gameplay extends Pantalla {
     private ArrayList<BalaMarciano> balasMarcianos;
     private Paint pPunutacion;
     private int tiempoVibracion;
-    private Boton btnPausa, btnReanudar, btnSalir, btnMusica, btnJugar, btnSi, btnNo;
+    private Boton btnPausa, btnReanudar, btnSalir, btnMusica, btnJugar, btnSi, btnNo, btnAux;
     private Bitmap imgPausa, imgPlay, imgMusicaOn, imgMusicaOff;
     private int codNave;
     private int margenLateralPausa;
@@ -51,11 +51,11 @@ public class Gameplay extends Pantalla {
 
     //para la bd
     private int ultimoId;
-    private String consultaUltima,consultaId;
+    private String consultaUltima, consultaId;
     private BaseDeDatos bd;
-    private SQLiteDatabase db ;
+    private SQLiteDatabase db;
     private Cursor c;
-    private String txtContinuar, txtSalir, txtAccion, txtEmpezar, txtSi, txtRepetir, txtNo,txtSiglas;
+    private String txtContinuar, txtSalir, txtAccion, txtEmpezar, txtSi, txtRepetir, txtNo, txtSiglas;
 
     //------------------------CONSTRUCTOR------------------------
     public Gameplay(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
@@ -70,7 +70,7 @@ public class Gameplay extends Pantalla {
         txtSi = contexto.getString(R.string.si);
         txtRepetir = contexto.getString(R.string.repetir);
         txtNo = contexto.getString(R.string.no);
-        txtSiglas=contexto.getString(R.string.siglas);
+        txtSiglas = contexto.getString(R.string.siglas);
 
         //-----------------MENU PAUSA----------------
         margenLateralPausa = anchoPantalla / 20;
@@ -255,7 +255,7 @@ public class Gameplay extends Pantalla {
         try {
             c.drawColor(Color.BLACK);
             if (empece) {
-//dibujo el btnPausa
+                //dibujo el btnPausa
                 btnPausa.dibujar(c);
 
                 //dibujo el btn sonido
@@ -467,37 +467,37 @@ public class Gameplay extends Pantalla {
 
                 acabaMusica();
                 //----------------BASE DE DATOS----------------
-                bd= new BaseDeDatos(contexto,"puntuacionesJuego",null,1);
-                db= bd.getWritableDatabase();
-                consultaUltima="SELECT min(puntuacion) FROM puntuaciones";
+                bd = new BaseDeDatos(contexto, "puntuacionesJuego", null, 1);
+                db = bd.getWritableDatabase();
+                consultaUltima = "SELECT min(puntuacion) FROM puntuaciones";
                 //ejecuto la consultaUltima que me devuelve la ultima punutacion y la guardo en, ultimaPuntuacion
                 c = db.rawQuery(consultaUltima, null);
                 if (c.moveToFirst()) {
                     do {
-                        ultimaPuntuacion=c.getInt(0);
-                    } while(c.moveToNext());
+                        ultimaPuntuacion = c.getInt(0);
+                    } while (c.moveToNext());
                 }
                 c.close();
                 //si mi puntuacion es mayor que la ultima
-                if(puntuacionGlobal>ultimaPuntuacion){
+                if (puntuacionGlobal > ultimaPuntuacion) {
                     //obtengo el ultimo id para el orden de antiguedad
-                    consultaId="SELECT max(id )FROM puntuaciones";
+                    consultaId = "SELECT max(id )FROM puntuaciones";
                     c = db.rawQuery(consultaId, null);
                     if (c.moveToFirst()) {
                         do {
-                            ultimoId=c.getInt(0);
-                        } while(c.moveToNext());
+                            ultimoId = c.getInt(0);
+                        } while (c.moveToNext());
                     }
                     //ejecuto la consulta borrar
                     //BORRO LA MENOR PUNTUACION MAS NUEVA, CON EL ID MAS ALTO
-                    db.delete("puntuaciones","id=(SELECT id FROM puntuaciones WHERE puntuacion=" +
-                            "(SELECT min(puntuacion) FROM puntuaciones) ORDER BY id DESC LIMIT 1)",null);
+                    db.delete("puntuaciones", "id=(SELECT id FROM puntuaciones WHERE puntuacion=" +
+                            "(SELECT min(puntuacion) FROM puntuaciones) ORDER BY id DESC LIMIT 1)", null);
 
                     //ejecuto el insert
                     ContentValues fila = new ContentValues();
-                    fila.put("siglas","BBB");
-                    fila.put("id",ultimoId+1);
-                    fila.put("puntuacion",puntuacionGlobal);
+                    fila.put("siglas", "BBB");
+                    fila.put("id", ultimoId + 1);
+                    fila.put("puntuacion", puntuacionGlobal);
                     db.insert("puntuaciones", null, fila);
                 }
                 c.close();
@@ -588,77 +588,76 @@ public class Gameplay extends Pantalla {
         int accion = event.getActionMasked();             //Obtenemos el tipo de pulsación
         switch (accion) {
             case MotionEvent.ACTION_DOWN:// Primer dedo toca
-                if (perdi) {
-                    if (pulsa(btnSi.getRectangulo(), event)) {
-                        btnSi.setBandera(true);
-                    }
-                    if (pulsa(btnNo.getRectangulo(), event)) {
-                        btnNo.setBandera(false);
-                    }
-                }
+
                 if (empece) {
                     //si pulso el btn musica
                     if (pulsa(btnMusica.getRectangulo(), event)) {
                         btnMusica.setBandera(true);
+                        btnAux = btnMusica;
                     }
                     //si pulso el btn pausa
                     if (pulsa(btnPausa.getRectangulo(), event)) {
                         btnPausa.setBandera(true);
+                        btnAux = btnPausa;
                     }
+                } else {
+                    //si no empece y pulso el btn si a jugar
+                    if (pulsa(btnJugar.getRectangulo(), event)) {
+                        btnJugar.setBandera(true);
+                        btnAux = btnJugar;
+                    }
+                }
+                //si estoy en pausa
+                if (pausa) {
                     //si pulso el btn salir
                     if (pulsa(btnSalir.getRectangulo(), event)) {
                         btnSalir.setBandera(true);
+                        btnAux = btnSalir;
                     }
                     //si pulso el btn reanudar
                     if (pulsa(btnReanudar.getRectangulo(), event)) {
                         btnReanudar.setBandera(true);
-                    }
-                } else {
-                    if (pulsa(btnJugar.getRectangulo(), event)) {
-                        btnJugar.setBandera(true);
+                        btnAux = btnReanudar;
                     }
                 }
+                if (perdi) {
+                    if (pulsa(btnSi.getRectangulo(), event)) {
+                        btnSi.setBandera(true);
+                        btnAux = btnSi;
+                    }
+                    if (pulsa(btnNo.getRectangulo(), event)) {
+                        btnNo.setBandera(false);
+                        btnAux = btnNo;
+                    }
+                }
+
 
             case MotionEvent.ACTION_POINTER_DOWN:  // Segundo y siguientes tocan
                 break;
             case MotionEvent.ACTION_UP:                     // Al levantar el último dedo
-
-                    mueveNave = false;
-                if (pulsa(btnJugar.getRectangulo(), event) && btnJugar.getBandera()) {
-                    empece = true;
-                }
-                if (perdi) {
-                    if (pulsa(btnSi.getRectangulo(), event) && btnSi.getBandera()) {
-                        return 5;
-                    }
-                    if (pulsa(btnNo.getRectangulo(), event) && btnNo.getBandera()) {
-                        return 0;
-                    }
-                    btnSi.setBandera(false);
-                    btnNo.setBandera(false);
-                }
-                btnJugar.setBandera(false);
+                mueveNave = false;
                 if (empece) {
                     //si levanto el dedo en el btn musica
                     if (pulsa(btnMusica.getRectangulo(), event) && btnMusica.getBandera() && !pausa) {
                         cambiaBtnMusica();
                     }
-
                     //si pulso la opcion pausa
                     if (pulsa(btnPausa.getRectangulo(), event) && btnPausa.getBandera()) {
                         //pongo la bandera del propio boton a false
                         btnPausa.setBandera(false);
-
                         //muestro pantallaPausa, reanudar o salir
                         pausa = !pausa;
-                        if (pausa) {
-                            paraMusica();
-                            btnPausa.setImg(imgPlay);
-                        } else {
-                            suenaMusica();
-                            btnPausa.setImg(imgPausa);
-                        }
+
                     }
+                } else {
+                    if (pulsa(btnJugar.getRectangulo(), event) && btnJugar.getBandera()) {
+                        empece = true;
+                    }
+                }
+                if (pausa) {
+                    paraMusica();
+                    btnPausa.setImg(imgPlay);
+
                     //si he pulsado la opcion salir
                     if (pulsa(btnSalir.getRectangulo(), event) && btnSalir.getBandera()) {
                         //vuelvo al menu
@@ -671,13 +670,33 @@ public class Gameplay extends Pantalla {
                         suenaMusica();
                         btnPausa.setImg(imgPausa);
                     }
-                    //pongo las banderas de todos lso botones a false
-                    btnMusica.setBandera(false);
+                } else {
+                    suenaMusica();
+                    btnPausa.setImg(imgPausa);
+                }
+
+                if (perdi) {
+                    if (pulsa(btnSi.getRectangulo(), event) && btnSi.getBandera()) {
+                        return 5;
+                    }
+                    if (pulsa(btnNo.getRectangulo(), event) && btnNo.getBandera()) {
+                        return 0;
+                    }
+
+                }
+                //pongo las banderas de todos lso botones a false
+/*                    btnMusica.setBandera(false);
                     btnSalir.setBandera(false);
                     btnPausa.setBandera(false);
                     btnReanudar.setBandera(false);
-                }
+                btnSi.setBandera(false);
+                btnNo.setBandera(false);
+                btnJugar.setBandera(false);*/
 
+//pongo la bandera del btn que anteriormente puse a true a false
+                if (btnAux != null) {
+                    btnAux.setBandera(false);
+                }
             case MotionEvent.ACTION_POINTER_UP:  // Al levantar un dedo que no es el último
 
                 break;
