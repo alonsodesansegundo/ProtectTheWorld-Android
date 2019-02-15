@@ -50,11 +50,12 @@ public class Gameplay extends Pantalla {
     private boolean vibracion;
 
     //para la bd
-    private String consultaUltima,consultaBorrar,consultaInsert;
+    private int ultimoId;
+    private String consultaUltima,consultaId;
     private BaseDeDatos bd;
     private SQLiteDatabase db ;
     private Cursor c;
-    private String txtContinuar, txtSalir, txtAccion, txtEmpezar, txtSi, txtRepetir, txtNo;
+    private String txtContinuar, txtSalir, txtAccion, txtEmpezar, txtSi, txtRepetir, txtNo,txtSiglas;
 
     //------------------------CONSTRUCTOR------------------------
     public Gameplay(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
@@ -69,6 +70,7 @@ public class Gameplay extends Pantalla {
         txtSi = contexto.getString(R.string.si);
         txtRepetir = contexto.getString(R.string.repetir);
         txtNo = contexto.getString(R.string.no);
+        txtSiglas=contexto.getString(R.string.siglas);
 
         //-----------------MENU PAUSA----------------
         margenLateralPausa = anchoPantalla / 20;
@@ -475,16 +477,26 @@ public class Gameplay extends Pantalla {
                         ultimaPuntuacion=c.getInt(0);
                     } while(c.moveToNext());
                 }
+                c.close();
                 //si mi puntuacion es mayor que la ultima
                 if(puntuacionGlobal>ultimaPuntuacion){
-                    //borro la ultima puntuacion e inserto la mia
-
+                    //obtengo el ultimo id para el orden de antiguedad
+                    consultaId="SELECT max(id )FROM puntuaciones";
+                    c = db.rawQuery(consultaId, null);
+                    if (c.moveToFirst()) {
+                        do {
+                            ultimoId=c.getInt(0);
+                        } while(c.moveToNext());
+                    }
                     //ejecuto la consulta borrar
-                    db.delete("puntuaciones","puntuacion=(SELECT distinct puntuacion FROM puntuaciones order by puntuacion desc)",null);
+                    //BORRO LA MENOR PUNTUACION MAS NUEVA, CON EL ID MAS ALTO
+                    db.delete("puntuaciones","id=(SELECT id FROM puntuaciones WHERE puntuacion=" +
+                            "(SELECT min(puntuacion) FROM puntuaciones) ORDER BY id DESC LIMIT 1)",null);
 
                     //ejecuto el insert
                     ContentValues fila = new ContentValues();
-                    fila.put("siglas","AAA");
+                    fila.put("siglas","BBB");
+                    fila.put("id",ultimoId+1);
                     fila.put("puntuacion",puntuacionGlobal);
                     db.insert("puntuaciones", null, fila);
                 }

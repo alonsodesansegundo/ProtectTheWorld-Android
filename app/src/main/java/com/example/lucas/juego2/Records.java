@@ -42,16 +42,15 @@ public class Records extends Pantalla {
         back.setImg(imgVolver);
         bd= new BaseDeDatos(contexto,"puntuacionesJuego",null,1);
     db= bd.getWritableDatabase();
-    consulta="SELECT * FROM puntuaciones ORDER BY 2";
+    //ORDENO LAS PUNTUACIONES DE MAS A MENOS PUNTOS, Y DE MENOS ANTIGUO A MAS EN EL CASO DE COINCIDIR LA PUNTUACION
+    consulta="SELECT * FROM puntuaciones ORDER BY 3 desc, 1 ";
     //ejecuto la consulta
         c = db.rawQuery(consulta, null);
         contador=0;
         if (c.moveToFirst()) {
-            String s;
-            int p;
             do {
                 contador++;
-                aux=contador+".- "+c.getString(0)+" "+c.getInt(1);
+                aux=contador+".- "+c.getString(1)+" "+c.getInt(2);
                 texto.add(aux);
             } while(c.moveToNext());
         }
