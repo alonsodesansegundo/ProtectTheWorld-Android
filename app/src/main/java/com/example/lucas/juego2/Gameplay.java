@@ -1,7 +1,10 @@
 package com.example.lucas.juego2;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -41,15 +44,23 @@ public class Gameplay extends Pantalla {
     private int margenLateralPausa;
     private boolean musica;
     private int altoMenuPausa;
+    private int ultimaPuntuacion;
     private SharedPreferences.Editor editorPreferencias;
     private SharedPreferences preferencias;
-    boolean vibracion;
+    private boolean vibracion;
+
+    //para la bd
+    private String consultaUltima,consultaBorrar,consultaInsert;
+    private BaseDeDatos bd;
+    private SQLiteDatabase db ;
+    private Cursor c;
     private String txtContinuar, txtSalir, txtAccion, txtEmpezar, txtSi, txtRepetir, txtNo;
 
     //------------------------CONSTRUCTOR------------------------
     public Gameplay(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
         super(contexto, idPantalla, anchoPantalla, altoPantalla);
         empece = false;
+
         //----------------STRINGS----------------
         txtContinuar = contexto.getString(R.string.continuar);
         txtSalir = contexto.getString(R.string.salir);
@@ -450,7 +461,34 @@ public class Gameplay extends Pantalla {
                     vibrar();
                 }
                 //perdi
+                //veo que la puntuación sea mayor que la ultima!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
                 acabaMusica();
+                //----------------BASE DE DATOS----------------
+                bd= new BaseDeDatos(contexto,"puntuacionesJuego",null,1);
+                db= bd.getWritableDatabase();
+                consultaUltima="SELECT min(puntuacion) FROM puntuaciones";
+                //ejecuto la consultaUltima que me devuelve la ultima punutacion y la guardo en, ultimaPuntuacion
+                c = db.rawQuery(consultaUltima, null);
+                if (c.moveToFirst()) {
+                    do {
+                        ultimaPuntuacion=c.getInt(0);
+                    } while(c.moveToNext());
+                }
+                //si mi puntuacion es mayor que la ultima
+                if(puntuacionGlobal>ultimaPuntuacion){
+                    //borro la ultima puntuacion e inserto la mia
+
+                    //ejecuto la consulta borrar
+                    db.delete("puntuaciones","puntuacion=(SELECT distinct puntuacion FROM puntuaciones order by puntuacion desc)",null);
+
+                    //ejecuto el insert
+                    ContentValues fila = new ContentValues();
+                    fila.put("siglas","AAA");
+                    fila.put("puntuacion",puntuacionGlobal);
+                    db.insert("puntuaciones", null, fila);
+                }
+                c.close();
                 perdi = true;
             } else {
                 //si no ha chocado con la nave
