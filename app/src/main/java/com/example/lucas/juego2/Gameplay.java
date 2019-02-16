@@ -50,9 +50,10 @@ public class Gameplay extends Pantalla {
     private boolean vibracion;
 
     //para las siglas
+    private int pos;
     private int tamañoSiglas;
-    private char[] abecedario;
-    private boolean pideSiglas, tengoSiglas;
+    private ArrayList<Character> abecedario;
+    private boolean pideSiglas, tengoSiglas,hiceInsert;
     private char[] siglas;
     private int altoMenuIniciales;
     private Boton btnSiglaArriba, btnSiglaAbajo, btnSigla2Arriba,
@@ -71,6 +72,7 @@ public class Gameplay extends Pantalla {
     public Gameplay(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
         super(contexto, idPantalla, anchoPantalla, altoPantalla);
         empece = false;
+        hiceInsert=false;
         //----------------STRINGS----------------
         txtContinuar = contexto.getString(R.string.continuar);
         txtSalir = contexto.getString(R.string.salir);
@@ -83,16 +85,16 @@ public class Gameplay extends Pantalla {
         txtEnviar=contexto.getString(R.string.enviar);
 
         //----------------ABECEDARIO----------------
-        abecedario = new char[26];
+        abecedario = new ArrayList<Character>();
         for (int i = 0; i < 26; i++) {
-            abecedario[i] = (char) ('A' + i);
+            abecedario.add((char) ('A' + i));
         }
 
         //----------------SIGLAS INICIALES----------------
         siglas = new char[3];
-        siglas[0] = abecedario[0];
-        siglas[1] = abecedario[0];
-        siglas[2] = abecedario[0];
+        siglas[0] = abecedario.get(0);
+        siglas[1] = abecedario.get(0);
+        siglas[2] = abecedario.get(0);
 
         tamañoSiglas = altoPantalla / 12;
         //----------------BOTONES SIGLAS----------------
@@ -338,7 +340,7 @@ public class Gameplay extends Pantalla {
             mueveMarcianos();
         }
 
-        if (tengoSiglas) {
+        if (tengoSiglas&&!hiceInsert) {
             insertPuntuacion();
             perdi = true;
         }
@@ -363,7 +365,7 @@ public class Gameplay extends Pantalla {
             if (perdi) {
                 dibujaPerdi(c);
             }
-            if (pideSiglas) {
+            if (pideSiglas&&!tengoSiglas) {
                 dibujaPideSiglas(c);
             }
         } catch (Exception e) {
@@ -634,7 +636,33 @@ public class Gameplay extends Pantalla {
                 }
                 if (pideSiglas) {
                     if (pulsa(btnSiglaArriba.getRectangulo(), event)) {
-                        Log.i("SIIIIIIIIIII", "WTF");
+                       btnSiglaArriba.setBandera(true);
+                       btnAux=btnSiglaArriba;
+                    }
+                    if (pulsa(btnSigla2Arriba.getRectangulo(), event)) {
+                        btnSigla2Arriba.setBandera(true);
+                        btnAux=btnSigla2Arriba;
+                    }
+                    if (pulsa(btnSigla3Arriba.getRectangulo(), event)) {
+                        btnSigla3Arriba.setBandera(true);
+                        btnAux=btnSigla3Arriba;
+                    }
+
+                    if (pulsa(btnSiglaAbajo.getRectangulo(), event)) {
+                        btnSiglaAbajo.setBandera(true);
+                        btnAux=btnSiglaAbajo;
+                    }
+                    if (pulsa(btnSigla2Abajo.getRectangulo(), event)) {
+                        btnSigla2Abajo.setBandera(true);
+                        btnAux=btnSigla2Abajo;
+                    }
+                    if (pulsa(btnSigla3Abajo.getRectangulo(), event)) {
+                        btnSigla3Abajo.setBandera(true);
+                        btnAux=btnSigla3Abajo;
+                    }
+                    if(pulsa(btnEnviar.getRectangulo(),event)){
+                        btnEnviar.setBandera(true);
+                        btnAux=btnEnviar;
                     }
                 }
                 if (perdi) {
@@ -646,10 +674,6 @@ public class Gameplay extends Pantalla {
                         btnNo.setBandera(true);
                         btnAux = btnNo;
                     }
-                }
-                if (pideSiglas) {
-                    //gestiono la pulsacion de los botones arriba y abajo, y enviar
-
                 }
 
 
@@ -700,7 +724,30 @@ public class Gameplay extends Pantalla {
                 } else {
                     btnPausa.setImg(imgPausa);
                 }
+                if (pideSiglas) {
+                    if (pulsa(btnSiglaArriba.getRectangulo(), event)&& btnSiglaArriba.getBandera()) {
+                        siglas[0]=avanza(siglas[0]);
+                    }
+                    if (pulsa(btnSigla2Arriba.getRectangulo(), event)&&btnSigla2Arriba.getBandera()) {
+                        siglas[1]=avanza(siglas[1]);
+                    }
+                    if (pulsa(btnSigla3Arriba.getRectangulo(), event)&&btnSigla3Arriba.getBandera()) {
+                        siglas[2]=avanza(siglas[2]);
+                    }
 
+                    if (pulsa(btnSiglaAbajo.getRectangulo(), event)&&btnSiglaAbajo.getBandera()) {
+                        siglas[0]=retrocede(siglas[0]);
+                    }
+                    if (pulsa(btnSigla2Abajo.getRectangulo(), event)&&btnSigla2Abajo.getBandera()) {
+                        siglas[1]=retrocede(siglas[1]);
+                    }
+                    if (pulsa(btnSigla3Abajo.getRectangulo(), event)&&btnSigla3Abajo.getBandera()) {
+                        siglas[2]=retrocede(siglas[2]);
+                    }
+                    if(pulsa(btnEnviar.getRectangulo(),event)&&btnEnviar.getBandera()){
+                        tengoSiglas=true;
+                    }
+                }
                 if (perdi) {
                     if (pulsa(btnSi.getRectangulo(), event) && btnSi.getBandera()) {
                         return 5;
@@ -899,10 +946,34 @@ public class Gameplay extends Pantalla {
 
         //ejecuto el insert
         ContentValues fila = new ContentValues();
-        fila.put("siglas", siglas[0] + siglas[1] + siglas[2]);
+        fila.put("siglas", Character.toString(siglas[0]) + Character.toString(siglas[1]) + Character.toString(siglas[2]));
         fila.put("id", ultimoId + 1);
         fila.put("puntuacion", puntuacionGlobal);
         db.insert("puntuaciones", null, fila);
         c.close();
+        hiceInsert=true;
+        perdi=true;
     }
+
+    public char avanza(char letra){
+        pos=abecedario.indexOf(letra);
+        if(pos==abecedario.size()-1){
+            pos=0;
+        }else{
+            pos++;
+        }
+        letra=abecedario.get(pos);
+        return letra;
+    }
+    public char retrocede(char letra){
+        pos=abecedario.indexOf(letra);
+        if(pos==0){
+            pos=abecedario.size()-1;
+        }else{
+            pos--;
+        }
+        letra=abecedario.get(pos);
+        return letra;
+    }
+
 }
