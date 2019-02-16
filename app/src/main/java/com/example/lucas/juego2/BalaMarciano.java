@@ -30,7 +30,7 @@ public class BalaMarciano {
         this.contenedor.bottom+=vBalaMarciano;
     }
     public void dibujar(Canvas c){
-        c.drawRect(this.contenedor,p);
+       // c.drawRect(this.contenedor,p);
         c.drawBitmap(img,contenedor.left,contenedor.top,null);
     }
 }

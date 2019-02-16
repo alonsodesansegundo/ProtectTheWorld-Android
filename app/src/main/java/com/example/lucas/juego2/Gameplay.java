@@ -56,7 +56,6 @@ public class Gameplay extends Pantalla {
     private SQLiteDatabase db;
     private Cursor c;
     private String txtContinuar, txtSalir, txtAccion, txtEmpezar, txtSi, txtRepetir, txtNo, txtSiglas;
-
     //------------------------CONSTRUCTOR------------------------
     public Gameplay(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
         super(contexto, idPantalla, anchoPantalla, altoPantalla);
@@ -136,7 +135,7 @@ public class Gameplay extends Pantalla {
 
         //-----------------POSICIÓN PRIMER MARCIANO-----------------
         primeraX = 0;
-        primeraY = altoPantalla / 10;
+        primeraY = 0;
         //al comienzo los marcianos se moverán hacia la derecha
         voyIzquierda = false;
         //al comienzo los marcianos no irán hacia abajo ya
@@ -243,7 +242,10 @@ public class Gameplay extends Pantalla {
             disparaNave();
 
             //------------------------DISPARO DE LOS MARCIANOS------------------------
-            disparanMarcianos();
+            if((int) (Math.random() * 100) + 1<=5){
+
+                disparanMarcianos();
+            }
 
 
             //------------------------MOVER BALAS MARCIANOS (ARRAYLIST)------------------------
@@ -261,7 +263,7 @@ public class Gameplay extends Pantalla {
     // Rutina de dibujo en el lienzo. Se le llamará desde el hilo
     public void dibujar(Canvas c) {
         try {
-            c.drawColor(Color.BLACK);
+            c.drawColor(Color.BLUE);
             if (empece) {
                 //dibujo el btnPausa
                 btnPausa.dibujar(c);
@@ -443,9 +445,11 @@ public class Gameplay extends Pantalla {
                     //si se decide que el marciano dispare (porque sale x probabilidad)
                     if (marcianos[i][j].dispara()) {
                         //genero una nueva bala marciano que añado a su array
-                        balasMarcianos.add(new BalaMarciano((int) marcianos[i][j].getPos().x,
-                                (int) marcianos[i][j].getPos().y + marcianos[i][j].getImagen().getHeight(), marcianos[i][j].getImagen().getWidth(),
-                                marcianos[i][j].getImagen().getHeight(), proyectilMarciano));
+                        balasMarcianos.add(new BalaMarciano((int) marcianos[i][j].getContenedor().centerX()-
+                                proyectilMarciano.getWidth()/2,
+                                (int) marcianos[i][j].getPos().y + marcianos[i][j].getImagen().getHeight(),
+                                proyectilMarciano.getWidth(),
+                                proyectilMarciano.getHeight(), proyectilMarciano));
                     }
                 }
             }

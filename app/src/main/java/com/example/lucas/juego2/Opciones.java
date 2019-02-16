@@ -34,7 +34,7 @@ public class Opciones extends Pantalla {
         //---------------------BOOLEAN MUSICA---------------------
         musica=preferencias.getBoolean("musica",true);
         //----------------NAVE SELECCIONADA---------------------
-        naveSeleccionada=preferencias.getInt("idNave",0);
+        naveSeleccionada=preferencias.getInt("idNave",1);
         //----------------BTN VOLVER--------------
         selectNave=new Rect();
         back=new Boton(anchoPantalla-anchoPantalla/10,0,anchoPantalla,anchoPantalla/10, Color.TRANSPARENT);

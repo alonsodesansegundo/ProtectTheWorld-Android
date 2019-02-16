@@ -40,6 +40,10 @@ this.puntuacion=puntuacion;
         return puntuacion;
     }
 
+    public RectF getContenedor() {
+        return contenedor;
+    }
+
     public PointF getPos() {
         return pos;
     }
@@ -65,7 +69,7 @@ this.puntuacion=puntuacion;
     public void moverAbajo(boolean abajo) {
         if (abajo) {
             //aumento la posY el alto de la imagen
-            this.pos.y += imagen.getHeight();
+            this.pos.y += imagen.getHeight()/2;
             //actualizo el contenedor
             this.contenedor.top = this.pos.y;
             this.contenedor.bottom = this.pos.y + this.imagen.getHeight();
@@ -125,7 +129,7 @@ this.puntuacion=puntuacion;
     //------------------------DIBUJO EL MARCIANO (Y SU CONTENEDOR)------------------------
     public void dibujar(Canvas c) {
         //dibujo el contenedor
-        c.drawRect(contenedor, p);
+        //c.drawRect(contenedor, p);
         //dibujo la imagen marciano
         c.drawBitmap(imagen, pos.x, pos.y, null);
     }
@@ -134,6 +138,7 @@ this.puntuacion=puntuacion;
     public boolean dispara() {
         //probabilidad de disparo
         //numero aleatorio entre 1 y 10
+
         int numero = (int) (Math.random() * 100) + 1;
         if (numero <=1) {
             return true;
