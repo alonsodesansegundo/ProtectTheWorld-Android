@@ -26,6 +26,7 @@ import java.util.Timer;
 
 public class Gameplay extends Pantalla {
     //------------------------PROPIEDADES GAMEPLAY------------------------
+    private boolean estoyJugando;
     private boolean empece;
     private int nivel, filas, columnas, puntuacionGlobal;
     private Bitmap imgMarciano1, imgMarciano2, imgNave, proyectilMarciano, balaNave, explosion;
@@ -53,7 +54,7 @@ public class Gameplay extends Pantalla {
     private int pos;
     private int tamañoSiglas;
     private ArrayList<Character> abecedario;
-    private boolean pideSiglas, tengoSiglas,hiceInsert;
+    private boolean pideSiglas, tengoSiglas, hiceInsert;
     private char[] siglas;
     private int altoMenuIniciales;
     private Boton btnSiglaArriba, btnSiglaAbajo, btnSigla2Arriba,
@@ -66,16 +67,17 @@ public class Gameplay extends Pantalla {
     private BaseDeDatos bd;
     private SQLiteDatabase db;
     private Cursor c;
-    private String txtContinuar, txtSalir, txtAccion, txtEmpezar, txtSi, txtRepetir, txtNo, txtSiglas,txtEnviar;
+    private String txtContinuar, txtSalir, txtAccion, txtEmpezar, txtSi, txtRepetir, txtNo, txtSiglas, txtEnviar;
 
     //------------------------CONSTRUCTOR------------------------
     public Gameplay(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
         super(contexto, idPantalla, anchoPantalla, altoPantalla);
+        estoyJugando = false;
         empece = false;
-        pausa=false;
-        perdi=false;
-        pideSiglas=false;
-        hiceInsert=false;
+        pausa = false;
+        perdi = false;
+        pideSiglas = false;
+        hiceInsert = false;
         //----------------STRINGS----------------
         txtContinuar = contexto.getString(R.string.continuar);
         txtSalir = contexto.getString(R.string.salir);
@@ -85,7 +87,7 @@ public class Gameplay extends Pantalla {
         txtRepetir = contexto.getString(R.string.repetir);
         txtNo = contexto.getString(R.string.no);
         txtSiglas = contexto.getString(R.string.siglas);
-        txtEnviar=contexto.getString(R.string.enviar);
+        txtEnviar = contexto.getString(R.string.enviar);
 
         //----------------ABECEDARIO----------------
         abecedario = new ArrayList<Character>();
@@ -151,12 +153,12 @@ public class Gameplay extends Pantalla {
         altoMenuIniciales = altoPantalla / 3;
 
         //----------------BTN ENVIAR----------------
-        btnEnviar=new Boton(anchoPantalla/2-anchoPantalla/10,
-                altoPantalla/3*2+altoPantalla/20,
-                anchoPantalla/2+anchoPantalla/10,
-                altoPantalla/3*2+altoPantalla/20*2, Color.GREEN);
+        btnEnviar = new Boton(anchoPantalla / 2 - anchoPantalla / 10,
+                altoPantalla / 3 * 2 + altoPantalla / 20,
+                anchoPantalla / 2 + anchoPantalla / 10,
+                altoPantalla / 3 * 2 + altoPantalla / 20 * 2, Color.GREEN);
 
-        btnEnviar.setTexto(txtEnviar,altoPantalla/40, Color.BLACK);
+        btnEnviar.setTexto(txtEnviar, altoPantalla / 40, Color.BLACK);
         //-----------------MENU PAUSA----------------
         margenLateralPausa = anchoPantalla / 20;
         altoMenuPausa = altoPantalla / 4;
@@ -323,7 +325,7 @@ public class Gameplay extends Pantalla {
     // Actualizamos la física de los elementos en pantalla
     public void actualizarFisica() {
         //si no he pausado, el gameplay continua
-        if (!pausa && empece && !perdi && !pideSiglas) {
+        if (estoyJugando) {
             //------------------------DISPARO DE LA NAVE------------------------
             disparaNave();
 
@@ -343,7 +345,7 @@ public class Gameplay extends Pantalla {
             mueveMarcianos();
         }
 
-        if (tengoSiglas&&!hiceInsert) {
+        if (tengoSiglas && !hiceInsert) {
             insertPuntuacion();
             perdi = true;
         }
@@ -354,7 +356,7 @@ public class Gameplay extends Pantalla {
         try {
             c.drawColor(Color.BLUE);
             //si he empezado a jugar
-            if (empece) {
+            if (estoyJugando) {
                 dibujaJuego(c);
             } else {
                 //si aun no he empezado a jugar
@@ -368,7 +370,7 @@ public class Gameplay extends Pantalla {
             if (perdi) {
                 dibujaPerdi(c);
             }
-            if (pideSiglas&&!tengoSiglas) {
+            if (pideSiglas && !tengoSiglas) {
                 dibujaPideSiglas(c);
             }
         } catch (Exception e) {
@@ -519,6 +521,7 @@ public class Gameplay extends Pantalla {
                 } else {
                     perdi = true;
                 }
+                estoyJugando = false;
             } else {
                 //si no ha chocado con la nave
                 //veo si desaparece de la pantalla, si es así
@@ -579,6 +582,7 @@ public class Gameplay extends Pantalla {
                         //hago que el dispositivo vibre
                         vibrar();
                         perdi = true;
+                        estoyJugando = false;
                     }
                 }
             }
@@ -606,7 +610,7 @@ public class Gameplay extends Pantalla {
         switch (accion) {
             case MotionEvent.ACTION_DOWN:// Primer dedo toca
 
-                if (empece && !perdi && !pideSiglas) {
+                if (estoyJugando) {
                     //si pulso el btn musica
                     if (pulsa(btnMusica.getRectangulo(), event)) {
                         btnMusica.setBandera(true);
@@ -617,7 +621,8 @@ public class Gameplay extends Pantalla {
                         btnPausa.setBandera(true);
                         btnAux = btnPausa;
                     }
-                } else {
+                }
+                if (!empece) {
                     //si no empece y pulso el btn si a jugar
                     if (pulsa(btnJugar.getRectangulo(), event)) {
                         btnJugar.setBandera(true);
@@ -640,32 +645,32 @@ public class Gameplay extends Pantalla {
                 if (pideSiglas) {
                     if (pulsa(btnSiglaArriba.getRectangulo(), event)) {
                         btnSiglaArriba.setBandera(true);
-                        btnAux=btnSiglaArriba;
+                        btnAux = btnSiglaArriba;
                     }
                     if (pulsa(btnSigla2Arriba.getRectangulo(), event)) {
                         btnSigla2Arriba.setBandera(true);
-                        btnAux=btnSigla2Arriba;
+                        btnAux = btnSigla2Arriba;
                     }
                     if (pulsa(btnSigla3Arriba.getRectangulo(), event)) {
                         btnSigla3Arriba.setBandera(true);
-                        btnAux=btnSigla3Arriba;
+                        btnAux = btnSigla3Arriba;
                     }
 
                     if (pulsa(btnSiglaAbajo.getRectangulo(), event)) {
                         btnSiglaAbajo.setBandera(true);
-                        btnAux=btnSiglaAbajo;
+                        btnAux = btnSiglaAbajo;
                     }
                     if (pulsa(btnSigla2Abajo.getRectangulo(), event)) {
                         btnSigla2Abajo.setBandera(true);
-                        btnAux=btnSigla2Abajo;
+                        btnAux = btnSigla2Abajo;
                     }
                     if (pulsa(btnSigla3Abajo.getRectangulo(), event)) {
                         btnSigla3Abajo.setBandera(true);
-                        btnAux=btnSigla3Abajo;
+                        btnAux = btnSigla3Abajo;
                     }
-                    if(pulsa(btnEnviar.getRectangulo(),event)){
+                    if (pulsa(btnEnviar.getRectangulo(), event)) {
                         btnEnviar.setBandera(true);
-                        btnAux=btnEnviar;
+                        btnAux = btnEnviar;
                     }
                 }
                 if (perdi) {
@@ -684,15 +689,15 @@ public class Gameplay extends Pantalla {
                 break;
             case MotionEvent.ACTION_UP:                     // Al levantar el último dedo
 
-                if (empece && !perdi && !pideSiglas) {
+                //mientras estoy jugando
+                if (estoyJugando) {
                     //si levanto el dedo en el btn musica
-                    if (pulsa(btnMusica.getRectangulo(), event) && btnMusica.getBandera() && !pausa) {
+                    if (pulsa(btnMusica.getRectangulo(), event) && btnMusica.getBandera() && estoyJugando) {
                         cambiaBtnMusica();
                     }
                     //si pulso la opcion pausa
                     if (pulsa(btnPausa.getRectangulo(), event) && btnPausa.getBandera()) {
-                        //pongo la bandera del propio boton a false
-                        btnPausa.setBandera(false);
+
                         //muestro pantallaPausa, reanudar o salir
                         pausa = !pausa;
                         if (!pausa && musica) {
@@ -703,9 +708,11 @@ public class Gameplay extends Pantalla {
                 } else {
                     if (pulsa(btnJugar.getRectangulo(), event) && btnJugar.getBandera()) {
                         empece = true;
+                        estoyJugando = true;
                     }
                 }
                 if (pausa) {
+                    estoyJugando = false;
                     paraMusica();
                     btnPausa.setImg(imgPlay);
 
@@ -717,7 +724,7 @@ public class Gameplay extends Pantalla {
                     }
                     if (pulsa(btnReanudar.getRectangulo(), event) && btnReanudar.getBandera()) {
                         //reanudo el gameplay
-
+                        estoyJugando = true;
                         if (musica) {
                             suenaMusica();
                         }
@@ -728,27 +735,27 @@ public class Gameplay extends Pantalla {
                     btnPausa.setImg(imgPausa);
                 }
                 if (pideSiglas) {
-                    if (pulsa(btnSiglaArriba.getRectangulo(), event)&& btnSiglaArriba.getBandera()) {
-                        siglas[0]=retrocede(siglas[0]);
+                    if (pulsa(btnSiglaArriba.getRectangulo(), event) && btnSiglaArriba.getBandera()) {
+                        siglas[0] = retrocede(siglas[0]);
                     }
-                    if (pulsa(btnSigla2Arriba.getRectangulo(), event)&&btnSigla2Arriba.getBandera()) {
-                        siglas[1]=retrocede(siglas[1]);
+                    if (pulsa(btnSigla2Arriba.getRectangulo(), event) && btnSigla2Arriba.getBandera()) {
+                        siglas[1] = retrocede(siglas[1]);
                     }
-                    if (pulsa(btnSigla3Arriba.getRectangulo(), event)&&btnSigla3Arriba.getBandera()) {
-                        siglas[2]=retrocede(siglas[2]);
+                    if (pulsa(btnSigla3Arriba.getRectangulo(), event) && btnSigla3Arriba.getBandera()) {
+                        siglas[2] = retrocede(siglas[2]);
                     }
 
-                    if (pulsa(btnSiglaAbajo.getRectangulo(), event)&&btnSiglaAbajo.getBandera()) {
-                        siglas[0]=avanza(siglas[0]);
+                    if (pulsa(btnSiglaAbajo.getRectangulo(), event) && btnSiglaAbajo.getBandera()) {
+                        siglas[0] = avanza(siglas[0]);
                     }
-                    if (pulsa(btnSigla2Abajo.getRectangulo(), event)&&btnSigla2Abajo.getBandera()) {
-                        siglas[1]=avanza(siglas[1]);
+                    if (pulsa(btnSigla2Abajo.getRectangulo(), event) && btnSigla2Abajo.getBandera()) {
+                        siglas[1] = avanza(siglas[1]);
                     }
-                    if (pulsa(btnSigla3Abajo.getRectangulo(), event)&&btnSigla3Abajo.getBandera()) {
-                        siglas[2]=avanza(siglas[2]);
+                    if (pulsa(btnSigla3Abajo.getRectangulo(), event) && btnSigla3Abajo.getBandera()) {
+                        siglas[2] = avanza(siglas[2]);
                     }
-                    if(pulsa(btnEnviar.getRectangulo(),event)&&btnEnviar.getBandera()){
-                        tengoSiglas=true;
+                    if (pulsa(btnEnviar.getRectangulo(), event) && btnEnviar.getBandera()) {
+                        tengoSiglas = true;
                     }
                 }
                 if (perdi) {
@@ -773,8 +780,9 @@ public class Gameplay extends Pantalla {
                 if (btnAux != null) {
                     btnAux.setBandera(false);
                 }
-            case MotionEvent.ACTION_POINTER_UP:  // Al levantar un dedo que no es el último
                 mueveNave = false;
+            case MotionEvent.ACTION_POINTER_UP:  // Al levantar un dedo que no es el último
+
                 break;
 
             case MotionEvent.ACTION_MOVE: // Se mueve alguno de los dedos
@@ -954,28 +962,29 @@ public class Gameplay extends Pantalla {
         fila.put("puntuacion", puntuacionGlobal);
         db.insert("puntuaciones", null, fila);
         c.close();
-        hiceInsert=true;
-        perdi=true;
+        hiceInsert = true;
+        perdi = true;
     }
 
-    public char avanza(char letra){
-        pos=abecedario.indexOf(letra);
-        if(pos==abecedario.size()-1){
-            pos=0;
-        }else{
+    public char avanza(char letra) {
+        pos = abecedario.indexOf(letra);
+        if (pos == abecedario.size() - 1) {
+            pos = 0;
+        } else {
             pos++;
         }
-        letra=abecedario.get(pos);
+        letra = abecedario.get(pos);
         return letra;
     }
-    public char retrocede(char letra){
-        pos=abecedario.indexOf(letra);
-        if(pos==0){
-            pos=abecedario.size()-1;
-        }else{
+
+    public char retrocede(char letra) {
+        pos = abecedario.indexOf(letra);
+        if (pos == 0) {
+            pos = abecedario.size() - 1;
+        } else {
             pos--;
         }
-        letra=abecedario.get(pos);
+        letra = abecedario.get(pos);
         return letra;
     }
 
