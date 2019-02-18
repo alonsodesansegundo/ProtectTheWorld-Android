@@ -1,7 +1,6 @@
 package com.example.lucas.juego2;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -9,7 +8,7 @@ import android.graphics.RectF;
 
 public class BalaMarciano {
     private Bitmap img;
-   private RectF contenedor;
+    private RectF contenedor;
     private float vBalaMarciano;
     private Paint p;
     public BalaMarciano(int x,int y,int ancho,int alto,Bitmap img) {
@@ -30,7 +29,7 @@ public class BalaMarciano {
         this.contenedor.bottom+=vBalaMarciano;
     }
     public void dibujar(Canvas c){
-       // c.drawRect(this.contenedor,p);
+        // c.drawRect(this.contenedor,p);
         c.drawBitmap(img,contenedor.left,contenedor.top,null);
     }
 }

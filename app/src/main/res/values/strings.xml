@@ -12,4 +12,6 @@
     <string name="si">Yes</string>
     <string name="no">No</string>
     <string name="vibracion">Vibration</string>
+    <string name="enviar">Send</string>
+    <string name="siglas">Enter your initials</string>
 </resources>

@@ -16,4 +16,6 @@
     <string name="listo">¿Estás listo?</string>
     <string name="repetir">¿Otra partida?</string>
     <string name="empezar">Empezar</string>
+    <string name="enviar">Enviar</string>
+    <string name="siglas">Introduce tus siglas</string>
 </resources>
