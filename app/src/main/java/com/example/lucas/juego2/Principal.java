@@ -3,11 +3,12 @@ package com.example.lucas.juego2;
 import android.content.pm.ActivityInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 
 public class Principal extends AppCompatActivity {
-
+Juego pantalla,aux;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,7 +26,7 @@ public class Principal extends AppCompatActivity {
         //fijo la orientacion
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        Juego pantalla = new Juego(this);
+         pantalla = new Juego(this);
         pantalla.setKeepScreenOn(true);
         setContentView(pantalla);
     }
@@ -44,4 +45,36 @@ public class Principal extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
     }
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(pantalla.pantallaActual.musica){
+            pantalla.pantallaActual.paraMusica();
+        }
+        Log.i("HOLA","STOP");
+
+    }
+
+    @Override
+    protected void onPause() { //Another activity is taking focus (this activity is about to be "paused").
+        super.onPause();
+        if(pantalla.pantallaActual.musica){
+            pantalla.pantallaActual.paraMusica();
+
+        }
+        Log.i("HOLA","PAUSE");
+
+    }
+
+    @Override
+    protected void onDestroy() { // The activity is about to become visible.
+        super.onDestroy();
+        if(pantalla.pantallaActual.musica){
+            pantalla.pantallaActual.paraMusica();
+        }
+        Log.i("HOLA","DESTROY");
+    }
+
 }

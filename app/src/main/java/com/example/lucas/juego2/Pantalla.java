@@ -17,7 +17,6 @@ import android.view.SurfaceView;
 import android.view.SurfaceHolder;
 
 public class Pantalla {
-    int cancion;
     SharedPreferences preferencias;
     private MediaPlayer mediaPlayer;
     private AudioManager audioManager;
@@ -25,14 +24,13 @@ public class Pantalla {
     Context contexto;
     int idPantalla, altoPantalla, anchoPantalla;
     Bitmap fondo;
-    Boolean perdi,pausa;
+    Boolean perdi, pausa;
     Paint pTexto, pTexto2, pBoton;
     Vibrator miVibrador;
+
     public Pantalla(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
         preferencias = contexto.getSharedPreferences("preferencias", Context.MODE_PRIVATE);
-        pausa=false;
-        perdi=false;
-        miVibrador= (Vibrator) contexto.getSystemService(Context.VIBRATOR_SERVICE);
+        miVibrador = (Vibrator) contexto.getSystemService(Context.VIBRATOR_SERVICE);
         this.contexto = contexto;
         this.idPantalla = idPantalla;
         this.altoPantalla = altoPantalla;
@@ -95,67 +93,30 @@ public class Pantalla {
         if (boton.contains((int) evento.getX(), (int) evento.getY())) {
             return true;
         } else {
-
             return false;
         }
     }
 
-    public Context getContexto() {
-        return contexto;
-    }
-
-    public void setContexto(Context contexto) {
-        this.contexto = contexto;
-    }
-
-    public int getIdPantalla() {
-        return idPantalla;
-    }
-
-    public void setIdPantalla(int idPantalla) {
-        this.idPantalla = idPantalla;
-    }
-
-    public int getAltoPantalla() {
-        return altoPantalla;
-    }
-
-    public void setAltoPantalla(int altoPantalla) {
-        this.altoPantalla = altoPantalla;
-    }
-
-    public int getAnchoPantalla() {
-        return anchoPantalla;
-    }
-
-    public void setAnchoPantalla(int anchoPantalla) {
-        this.anchoPantalla = anchoPantalla;
-    }
-
-    public Bitmap getFondo() {
-        return fondo;
-    }
-
-    public void setFondo(Bitmap fondo) {
-        this.fondo = fondo;
-    }
-    public void configuraMusica(int cancion){
-        mediaPlayer= MediaPlayer.create(contexto, cancion);
-        audioManager=(AudioManager)contexto.getSystemService(Context.AUDIO_SERVICE);
-        int v= audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-        mediaPlayer.setVolume(v/2,v/2);
+    public void configuraMusica(int cancion) {
+        mediaPlayer = MediaPlayer.create(contexto, cancion);
+        audioManager = (AudioManager) contexto.getSystemService(Context.AUDIO_SERVICE);
+        int v = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+        mediaPlayer.setVolume(v / 2, v / 2);
 
         mediaPlayer.setLooping(true);
         suenaMusica();
         paraMusica();
     }
-    public void suenaMusica(){
+
+    public void suenaMusica() {
         mediaPlayer.start();
     }
-    public void paraMusica (){
+
+    public void paraMusica() {
         mediaPlayer.pause();
     }
-public void acabaMusica(){
-    mediaPlayer.release();
-}
+
+    public void acabaMusica() {
+        mediaPlayer.release();
+    }
 }

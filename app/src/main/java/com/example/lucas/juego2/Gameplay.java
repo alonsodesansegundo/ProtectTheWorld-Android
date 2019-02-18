@@ -72,6 +72,9 @@ public class Gameplay extends Pantalla {
     public Gameplay(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
         super(contexto, idPantalla, anchoPantalla, altoPantalla);
         empece = false;
+        pausa=false;
+        perdi=false;
+        pideSiglas=false;
         hiceInsert=false;
         //----------------STRINGS----------------
         txtContinuar = contexto.getString(R.string.continuar);
@@ -726,23 +729,23 @@ public class Gameplay extends Pantalla {
                 }
                 if (pideSiglas) {
                     if (pulsa(btnSiglaArriba.getRectangulo(), event)&& btnSiglaArriba.getBandera()) {
-                        siglas[0]=avanza(siglas[0]);
+                        siglas[0]=retrocede(siglas[0]);
                     }
                     if (pulsa(btnSigla2Arriba.getRectangulo(), event)&&btnSigla2Arriba.getBandera()) {
-                        siglas[1]=avanza(siglas[1]);
+                        siglas[1]=retrocede(siglas[1]);
                     }
                     if (pulsa(btnSigla3Arriba.getRectangulo(), event)&&btnSigla3Arriba.getBandera()) {
-                        siglas[2]=avanza(siglas[2]);
+                        siglas[2]=retrocede(siglas[2]);
                     }
 
                     if (pulsa(btnSiglaAbajo.getRectangulo(), event)&&btnSiglaAbajo.getBandera()) {
-                        siglas[0]=retrocede(siglas[0]);
+                        siglas[0]=avanza(siglas[0]);
                     }
                     if (pulsa(btnSigla2Abajo.getRectangulo(), event)&&btnSigla2Abajo.getBandera()) {
-                        siglas[1]=retrocede(siglas[1]);
+                        siglas[1]=avanza(siglas[1]);
                     }
                     if (pulsa(btnSigla3Abajo.getRectangulo(), event)&&btnSigla3Abajo.getBandera()) {
-                        siglas[2]=retrocede(siglas[2]);
+                        siglas[2]=avanza(siglas[2]);
                     }
                     if(pulsa(btnEnviar.getRectangulo(),event)&&btnEnviar.getBandera()){
                         tengoSiglas=true;
