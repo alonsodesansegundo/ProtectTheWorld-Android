@@ -607,9 +607,13 @@ public class Gameplay extends Pantalla {
         int pointerIndex = event.getActionIndex();        //Obtenemos el índice de la acción
         int pointerID = event.getPointerId(pointerIndex); //Obtenemos el Id del pointer asociado a la acción
         int accion = event.getActionMasked();             //Obtenemos el tipo de pulsación
+
+
         switch (accion) {
             case MotionEvent.ACTION_DOWN:// Primer dedo toca
-
+                if (pointerID==0&&estoyJugando && (event.getX() >= miNave.getContenedor().left && event.getX() <= miNave.getContenedor().right) || mueveNave) {
+                    mueveNave = true;
+                }
                 if (estoyJugando) {
                     //si pulso el btn musica
                     if (pulsa(btnMusica.getRectangulo(), event)) {
@@ -688,7 +692,9 @@ public class Gameplay extends Pantalla {
             case MotionEvent.ACTION_POINTER_DOWN:  // Segundo y siguientes tocan
                 break;
             case MotionEvent.ACTION_UP:                     // Al levantar el último dedo
-
+                if(mueveNave){
+                    mueveNave=false;
+                }
                 //mientras estoy jugando
                 if (estoyJugando) {
                     //si levanto el dedo en el btn musica
@@ -767,29 +773,19 @@ public class Gameplay extends Pantalla {
                     }
 
                 }
-                //pongo las banderas de todos lso botones a false
-/*                    btnMusica.setBandera(false);
-                    btnSalir.setBandera(false);
-                    btnPausa.setBandera(false);
-                    btnReanudar.setBandera(false);
-                btnSi.setBandera(false);
-                btnNo.setBandera(false);
-                btnJugar.setBandera(false);*/
-
-//pongo la bandera del btn que anteriormente puse a true a false
+                //pongo la bandera del btn que anteriormente puse a true a false
                 if (btnAux != null) {
                     btnAux.setBandera(false);
                 }
-                mueveNave = false;
-            case MotionEvent.ACTION_POINTER_UP:  // Al levantar un dedo que no es el último
 
+            case MotionEvent.ACTION_POINTER_UP:  // Al levantar un dedo que no es el último
                 break;
 
             case MotionEvent.ACTION_MOVE: // Se mueve alguno de los dedos
-                if (!pideSiglas && !perdi && empece && !pausa && (event.getX() > miNave.getContenedor().left && event.getX() < miNave.getContenedor().right) || mueveNave) {
-                    mueveNave = true;
-                    miNave.moverNave(event.getX());
-                }
+
+               if(mueveNave&&pointerID==0){
+                   miNave.moverNave(event.getX());
+               }
                 break;
             default:
                 Log.i("Otra acción", "Acción no definida: " + accion);
