@@ -38,7 +38,7 @@ public class Gameplay extends Pantalla {
     private ArrayList<BalaMarciano> balasMarcianos;
     private Paint pPunutacion;
     private int tiempoVibracion;
-    private Boton btnPausa, btnReanudar, btnSalir, btnMusica, btnJugar, btnSi, btnNo, btnAux;
+    private Boton btnPausa, btnReanudar, btnSalir, btnMusica, btnJugar, btnSi, btnNo;
     private Bitmap imgPausa, imgPlay, imgMusicaOn, imgMusicaOff;
     private int codNave;
     private int margenLateralPausa;
@@ -49,30 +49,18 @@ public class Gameplay extends Pantalla {
     private SharedPreferences preferencias;
     private boolean vibracion;
 
-    //para las siglas
-    private int pos;
-    private int tamañoSiglas;
-    private ArrayList<Character> abecedario;
-    private boolean pideSiglas, tengoSiglas,hiceInsert;
-    private char[] siglas;
-    private int altoMenuIniciales;
-    private Boton btnSiglaArriba, btnSiglaAbajo, btnSigla2Arriba,
-            btnSigla2Abajo, btnSigla3Arriba, btnSigla3Abajo, btnEnviar;
-    private Bitmap trianguloArriba, trianguloAbajo;
-
     //para la bd
-    private int ultimoId;
-    private String consultaUltima, consultaId;
+    private String consultaUltima,consultaBorrar,consultaInsert;
     private BaseDeDatos bd;
-    private SQLiteDatabase db;
+    private SQLiteDatabase db ;
     private Cursor c;
-    private String txtContinuar, txtSalir, txtAccion, txtEmpezar, txtSi, txtRepetir, txtNo, txtSiglas,txtEnviar;
+    private String txtContinuar, txtSalir, txtAccion, txtEmpezar, txtSi, txtRepetir, txtNo;
 
     //------------------------CONSTRUCTOR------------------------
     public Gameplay(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
         super(contexto, idPantalla, anchoPantalla, altoPantalla);
         empece = false;
-        hiceInsert=false;
+
         //----------------STRINGS----------------
         txtContinuar = contexto.getString(R.string.continuar);
         txtSalir = contexto.getString(R.string.salir);
@@ -81,79 +69,7 @@ public class Gameplay extends Pantalla {
         txtSi = contexto.getString(R.string.si);
         txtRepetir = contexto.getString(R.string.repetir);
         txtNo = contexto.getString(R.string.no);
-        txtSiglas = contexto.getString(R.string.siglas);
-        txtEnviar=contexto.getString(R.string.enviar);
 
-        //----------------ABECEDARIO----------------
-        abecedario = new ArrayList<Character>();
-        for (int i = 0; i < 26; i++) {
-            abecedario.add((char) ('A' + i));
-        }
-
-        //----------------SIGLAS INICIALES----------------
-        siglas = new char[3];
-        siglas[0] = abecedario.get(0);
-        siglas[1] = abecedario.get(0);
-        siglas[2] = abecedario.get(0);
-
-        tamañoSiglas = altoPantalla / 12;
-        //----------------BOTONES SIGLAS----------------
-
-        //----------------IMAGENES TRIANGULOS----------------
-        trianguloAbajo = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.triangulodown);
-        trianguloAbajo = Bitmap.createScaledBitmap(trianguloAbajo, anchoPantalla / 10, anchoPantalla / 10, true);
-
-        trianguloArriba = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.trianguloup);
-        trianguloArriba = Bitmap.createScaledBitmap(trianguloArriba, anchoPantalla / 10, anchoPantalla / 10, true);
-
-        //----------------BOTONES SIGLA 1----------------
-        btnSiglaArriba = new Boton(anchoPantalla / 20 + trianguloArriba.getWidth() / 2,
-                altoPantalla / 2 - altoPantalla / 50 - trianguloArriba.getHeight() / 2,
-                anchoPantalla / 20 + trianguloArriba.getWidth() + trianguloArriba.getWidth() / 2,
-                altoPantalla / 2 - altoPantalla / 50 + trianguloArriba.getHeight() / 2, Color.TRANSPARENT);
-        btnSiglaArriba.setImg(trianguloArriba);
-
-        btnSiglaAbajo = new Boton(anchoPantalla / 20 + trianguloArriba.getWidth() / 2,
-                altoPantalla / 3 * 2 - altoPantalla / 100 - trianguloArriba.getHeight(),
-                anchoPantalla / 20 + trianguloArriba.getWidth() + trianguloArriba.getWidth() / 2,
-                altoPantalla / 3 * 2 - altoPantalla / 100, Color.TRANSPARENT);
-        btnSiglaAbajo.setImg(trianguloAbajo);
-
-        //----------------BOTONES SIGLA 2----------------
-        btnSigla2Abajo = new Boton(anchoPantalla / 2 - trianguloArriba.getWidth() / 2,
-                altoPantalla / 3 * 2 - altoPantalla / 100 - trianguloArriba.getHeight(),
-                anchoPantalla / 2 + trianguloArriba.getWidth() / 2,
-                altoPantalla / 3 * 2 - altoPantalla / 100, Color.TRANSPARENT);
-        btnSigla2Abajo.setImg(trianguloAbajo);
-
-        btnSigla2Arriba = new Boton(anchoPantalla / 2 - trianguloArriba.getWidth() / 2,
-                altoPantalla / 2 - altoPantalla / 50 - trianguloArriba.getHeight() / 2,
-                anchoPantalla / 2 + trianguloArriba.getWidth() / 2,
-                altoPantalla / 2 - altoPantalla / 50 + trianguloArriba.getHeight() / 2, Color.TRANSPARENT);
-        btnSigla2Arriba.setImg(trianguloArriba);
-
-        //----------------BOTONES SIGLA 3----------------
-        btnSigla3Arriba = new Boton(anchoPantalla - trianguloArriba.getWidth() * 2,
-                altoPantalla / 2 - altoPantalla / 50 - trianguloArriba.getHeight() / 2,
-                anchoPantalla - trianguloArriba.getWidth(),
-                altoPantalla / 2 - altoPantalla / 50 + trianguloArriba.getHeight() / 2, Color.TRANSPARENT);
-        btnSigla3Arriba.setImg(trianguloArriba);
-
-        btnSigla3Abajo = new Boton(anchoPantalla - trianguloArriba.getWidth() * 2,
-                altoPantalla / 3 * 2 - altoPantalla / 100 - trianguloArriba.getHeight(),
-                anchoPantalla - trianguloArriba.getWidth(),
-                altoPantalla / 3 * 2 - altoPantalla / 100, Color.TRANSPARENT);
-        btnSigla3Abajo.setImg(trianguloAbajo);
-
-        altoMenuIniciales = altoPantalla / 3;
-
-        //----------------BTN ENVIAR----------------
-        btnEnviar=new Boton(anchoPantalla/2-anchoPantalla/10,
-                altoPantalla/3*2+altoPantalla/20,
-                anchoPantalla/2+anchoPantalla/10,
-                altoPantalla/3*2+altoPantalla/20*2, Color.GREEN);
-
-        btnEnviar.setTexto(txtEnviar,altoPantalla/40, Color.BLACK);
         //-----------------MENU PAUSA----------------
         margenLateralPausa = anchoPantalla / 20;
         altoMenuPausa = altoPantalla / 4;
@@ -218,7 +134,7 @@ public class Gameplay extends Pantalla {
 
         //-----------------POSICIÓN PRIMER MARCIANO-----------------
         primeraX = 0;
-        primeraY = 0;
+        primeraY = altoPantalla / 10;
         //al comienzo los marcianos se moverán hacia la derecha
         voyIzquierda = false;
         //al comienzo los marcianos no irán hacia abajo ya
@@ -235,20 +151,12 @@ public class Gameplay extends Pantalla {
         vMarciano = 0.5;
 
         //imagen marcianos impacto 1
-//        imgMarciano1 = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.marciano1);
-//        imgMarciano1 = Bitmap.createScaledBitmap(imgMarciano1, anchoPantalla / 20, altoPantalla / 30, true);
-
-        imgMarciano1 = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.mio1);
+        imgMarciano1 = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.marciano1);
         imgMarciano1 = Bitmap.createScaledBitmap(imgMarciano1, anchoPantalla / 20, altoPantalla / 30, true);
 
-
         //imagen marcianos impacto 2
-//        imgMarciano2 = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.marciano2);
-//        imgMarciano2 = Bitmap.createScaledBitmap(imgMarciano2, anchoPantalla / 20, altoPantalla / 30, true);
-
-        imgMarciano2 = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.mio2);
+        imgMarciano2 = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.marciano2);
         imgMarciano2 = Bitmap.createScaledBitmap(imgMarciano2, anchoPantalla / 20, altoPantalla / 30, true);
-
 
         proyectilMarciano = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.bombamarciano);
         proyectilMarciano = Bitmap.createScaledBitmap(proyectilMarciano, anchoPantalla / 20, altoPantalla / 30, true);
@@ -320,53 +228,98 @@ public class Gameplay extends Pantalla {
     // Actualizamos la física de los elementos en pantalla
     public void actualizarFisica() {
         //si no he pausado, el gameplay continua
-        if (!pausa && empece && !perdi && !pideSiglas) {
+        if (!pausa && empece && !perdi) {
             //------------------------DISPARO DE LA NAVE------------------------
             disparaNave();
 
             //------------------------DISPARO DE LOS MARCIANOS------------------------
-            if ((int) (Math.random() * 100) + 1 <= 5) {
-                disparanMarcianos();
-            }
+            disparanMarcianos();
+
+
             //------------------------MOVER BALAS MARCIANOS (ARRAYLIST)------------------------
             actualizaBalasMarcianos();
 
             //------------------------MOVIMIENTO VERTICAL Y HORIZONTAL DE LOS MARCIANOS------------------------
-
             //VEO EN QUE DIRECCIÓN SE TIENEN QUE MOVER Y SI DESCIENDEN UN NIVEL O NO Y ACTUALIZO LAS BANDERAS
             actualizaBanderasMovimiento();
 
             //MUEVO LOS MARCIANOS SEGÚN LAS BANDERAS
             mueveMarcianos();
         }
-
-        if (tengoSiglas&&!hiceInsert) {
-            insertPuntuacion();
-            perdi = true;
-        }
     }
 
     // Rutina de dibujo en el lienzo. Se le llamará desde el hilo
     public void dibujar(Canvas c) {
         try {
-            c.drawColor(Color.BLUE);
-            //si he empezado a jugar
+            c.drawColor(Color.BLACK);
             if (empece) {
-                dibujaJuego(c);
+//dibujo el btnPausa
+                btnPausa.dibujar(c);
+
+                //dibujo el btn sonido
+                btnMusica.dibujar(c);
+                //dibujo los marcianos del array bidimensional (marcianos)
+                for (int i = 0; i < marcianos.length; i++) {
+                    for (int j = 0; j < marcianos[0].length; j++) {
+                        if (marcianos[i][j] != null) {
+                            //dibujo a los marcianos y su contenedor
+                            marcianos[i][j].dibujar(c);
+                        }
+                    }
+                }
+                //dibujo todas las balas marcianos
+                for (int i = 0; i < balasMarcianos.size(); i++) {
+                    balasMarcianos.get(i).dibujar(c);
+                }
+
+                //dibujo la nave y el proyectil que genera
+                miNave.dibujar(c);
+
+                //dibujo la puntuacion
+                c.drawText(Integer.toString(puntuacionGlobal), anchoPantalla / 2, altoPantalla / 20, pPunutacion);
             } else {
-                //si aun no he empezado a jugar
-                dibujaInicio(c);
+                c.drawText(txtEmpezar, anchoPantalla / 2, altoPantalla / 2 - tamañoPuntuacion / 2, pPunutacion);
+                btnJugar.dibujar(c);
             }
             //si he pulsado el boton de pausa
             if (pausa) {
-                dibujaPausa(c);
+                //fondo
+                Paint a = new Paint();
+                a.setColor(Color.LTGRAY);
+                a.setAlpha(125);
+                c.drawRect(0, 0, anchoPantalla, altoPantalla, a);
+                a.setColor(Color.WHITE);
+                c.drawRect(margenLateralPausa, altoPantalla / 2 - altoMenuPausa / 2,
+                        anchoPantalla - margenLateralPausa, altoPantalla / 2 + altoMenuPausa / 2, a);
+
+                //dibujo los botones reanudar y salir
+                btnSalir.dibujar(c);
+                btnReanudar.dibujar(c);
+
+                //dibujo la pregunta
+                a.setColor(Color.BLACK);
+                a.setTextSize(altoPantalla / 20);
+                a.setTextAlign(Paint.Align.CENTER);
+                c.drawText(txtAccion, anchoPantalla / 2, altoPantalla / 2 - altoMenuPausa / 2 + altoPantalla / 20 + margenLateralPausa, a);
             }
-            //si he perdido
             if (perdi) {
-                dibujaPerdi(c);
-            }
-            if (pideSiglas&&!tengoSiglas) {
-                dibujaPideSiglas(c);
+                //fondo
+                Paint a = new Paint();
+                a.setColor(Color.LTGRAY);
+                a.setAlpha(125);
+                c.drawRect(0, 0, anchoPantalla, altoPantalla, a);
+                a.setColor(Color.WHITE);
+                c.drawRect(margenLateralPausa, altoPantalla / 2 - altoMenuPausa / 2,
+                        anchoPantalla - margenLateralPausa, altoPantalla / 2 + altoMenuPausa / 2, a);
+
+                //dibujo los botones si y no
+                btnNo.dibujar(c);
+                btnSi.dibujar(c);
+                //dibujo la pregunta
+                a.setColor(Color.BLACK);
+                a.setTextSize(altoPantalla / 20);
+                a.setTextAlign(Paint.Align.CENTER);
+                c.drawText(txtRepetir, anchoPantalla / 2, altoPantalla / 2 - altoMenuPausa / 2 + altoPantalla / 20 + margenLateralPausa, a);
             }
         } catch (Exception e) {
             Log.i("Error al dibujar", e.getLocalizedMessage());
@@ -480,11 +433,9 @@ public class Gameplay extends Pantalla {
                     //si se decide que el marciano dispare (porque sale x probabilidad)
                     if (marcianos[i][j].dispara()) {
                         //genero una nueva bala marciano que añado a su array
-                        balasMarcianos.add(new BalaMarciano((int) marcianos[i][j].getContenedor().centerX() -
-                                proyectilMarciano.getWidth() / 2,
-                                (int) marcianos[i][j].getPos().y + marcianos[i][j].getImagen().getHeight(),
-                                proyectilMarciano.getWidth(),
-                                proyectilMarciano.getHeight(), proyectilMarciano));
+                        balasMarcianos.add(new BalaMarciano((int) marcianos[i][j].getPos().x,
+                                (int) marcianos[i][j].getPos().y + marcianos[i][j].getImagen().getHeight(), marcianos[i][j].getImagen().getWidth(),
+                                marcianos[i][j].getImagen().getHeight(), proyectilMarciano));
                     }
                 }
             }
@@ -510,12 +461,35 @@ public class Gameplay extends Pantalla {
                     vibrar();
                 }
                 //perdi
+                //veo que la puntuación sea mayor que la ultima!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
                 acabaMusica();
-                if (mejoraPuntuacion()) {
-                    pideSiglas = true;
-                } else {
-                    perdi = true;
+                //----------------BASE DE DATOS----------------
+                bd= new BaseDeDatos(contexto,"puntuacionesJuego",null,1);
+                db= bd.getWritableDatabase();
+                consultaUltima="SELECT min(puntuacion) FROM puntuaciones";
+                //ejecuto la consultaUltima que me devuelve la ultima punutacion y la guardo en, ultimaPuntuacion
+                c = db.rawQuery(consultaUltima, null);
+                if (c.moveToFirst()) {
+                    do {
+                        ultimaPuntuacion=c.getInt(0);
+                    } while(c.moveToNext());
                 }
+                //si mi puntuacion es mayor que la ultima
+                if(puntuacionGlobal>ultimaPuntuacion){
+                    //borro la ultima puntuacion e inserto la mia
+
+                    //ejecuto la consulta borrar
+                    db.delete("puntuaciones","puntuacion=(SELECT distinct puntuacion FROM puntuaciones order by puntuacion desc)",null);
+
+                    //ejecuto el insert
+                    ContentValues fila = new ContentValues();
+                    fila.put("siglas","AAA");
+                    fila.put("puntuacion",puntuacionGlobal);
+                    db.insert("puntuaciones", null, fila);
+                }
+                c.close();
+                perdi = true;
             } else {
                 //si no ha chocado con la nave
                 //veo si desaparece de la pantalla, si es así
@@ -602,151 +576,44 @@ public class Gameplay extends Pantalla {
         int accion = event.getActionMasked();             //Obtenemos el tipo de pulsación
         switch (accion) {
             case MotionEvent.ACTION_DOWN:// Primer dedo toca
-
-                if (empece && !perdi && !pideSiglas) {
+                if (perdi) {
+                    if (pulsa(btnSi.getRectangulo(), event)) {
+                        btnSi.setBandera(true);
+                    }
+                    if (pulsa(btnNo.getRectangulo(), event)) {
+                        btnNo.setBandera(false);
+                    }
+                }
+                if (empece) {
                     //si pulso el btn musica
                     if (pulsa(btnMusica.getRectangulo(), event)) {
                         btnMusica.setBandera(true);
-                        btnAux = btnMusica;
                     }
                     //si pulso el btn pausa
                     if (pulsa(btnPausa.getRectangulo(), event)) {
                         btnPausa.setBandera(true);
-                        btnAux = btnPausa;
                     }
-                } else {
-                    //si no empece y pulso el btn si a jugar
-                    if (pulsa(btnJugar.getRectangulo(), event)) {
-                        btnJugar.setBandera(true);
-                        btnAux = btnJugar;
-                    }
-                }
-                //si estoy en pausa
-                if (pausa) {
                     //si pulso el btn salir
                     if (pulsa(btnSalir.getRectangulo(), event)) {
                         btnSalir.setBandera(true);
-                        btnAux = btnSalir;
                     }
                     //si pulso el btn reanudar
                     if (pulsa(btnReanudar.getRectangulo(), event)) {
                         btnReanudar.setBandera(true);
-                        btnAux = btnReanudar;
+                    }
+                } else {
+                    if (pulsa(btnJugar.getRectangulo(), event)) {
+                        btnJugar.setBandera(true);
                     }
                 }
-                if (pideSiglas) {
-                    if (pulsa(btnSiglaArriba.getRectangulo(), event)) {
-                       btnSiglaArriba.setBandera(true);
-                       btnAux=btnSiglaArriba;
-                    }
-                    if (pulsa(btnSigla2Arriba.getRectangulo(), event)) {
-                        btnSigla2Arriba.setBandera(true);
-                        btnAux=btnSigla2Arriba;
-                    }
-                    if (pulsa(btnSigla3Arriba.getRectangulo(), event)) {
-                        btnSigla3Arriba.setBandera(true);
-                        btnAux=btnSigla3Arriba;
-                    }
-
-                    if (pulsa(btnSiglaAbajo.getRectangulo(), event)) {
-                        btnSiglaAbajo.setBandera(true);
-                        btnAux=btnSiglaAbajo;
-                    }
-                    if (pulsa(btnSigla2Abajo.getRectangulo(), event)) {
-                        btnSigla2Abajo.setBandera(true);
-                        btnAux=btnSigla2Abajo;
-                    }
-                    if (pulsa(btnSigla3Abajo.getRectangulo(), event)) {
-                        btnSigla3Abajo.setBandera(true);
-                        btnAux=btnSigla3Abajo;
-                    }
-                    if(pulsa(btnEnviar.getRectangulo(),event)){
-                        btnEnviar.setBandera(true);
-                        btnAux=btnEnviar;
-                    }
-                }
-                if (perdi) {
-                    if (pulsa(btnSi.getRectangulo(), event)) {
-                        btnSi.setBandera(true);
-                        btnAux = btnSi;
-                    }
-                    if (pulsa(btnNo.getRectangulo(), event)) {
-                        btnNo.setBandera(true);
-                        btnAux = btnNo;
-                    }
-                }
-
 
             case MotionEvent.ACTION_POINTER_DOWN:  // Segundo y siguientes tocan
                 break;
             case MotionEvent.ACTION_UP:                     // Al levantar el último dedo
-                mueveNave = false;
-                if (empece && !perdi && !pideSiglas) {
-                    //si levanto el dedo en el btn musica
-                    if (pulsa(btnMusica.getRectangulo(), event) && btnMusica.getBandera() && !pausa) {
-                        cambiaBtnMusica();
-                    }
-                    //si pulso la opcion pausa
-                    if (pulsa(btnPausa.getRectangulo(), event) && btnPausa.getBandera()) {
-                        //pongo la bandera del propio boton a false
-                        btnPausa.setBandera(false);
-                        //muestro pantallaPausa, reanudar o salir
-                        pausa = !pausa;
-                        if (!pausa && musica) {
-                            suenaMusica();
-                        }
 
-                    }
-                } else {
-                    if (pulsa(btnJugar.getRectangulo(), event) && btnJugar.getBandera()) {
-                        empece = true;
-                    }
-                }
-                if (pausa) {
-                    paraMusica();
-                    btnPausa.setImg(imgPlay);
-
-                    //si he pulsado la opcion salir
-                    if (pulsa(btnSalir.getRectangulo(), event) && btnSalir.getBandera()) {
-                        //vuelvo al menu
-                        acabaMusica();
-                        return 0;
-                    }
-                    if (pulsa(btnReanudar.getRectangulo(), event) && btnReanudar.getBandera()) {
-                        //reanudo el gameplay
-
-                        if (musica) {
-                            suenaMusica();
-                        }
-                        btnPausa.setImg(imgPausa);
-                        pausa = false;
-                    }
-                } else {
-                    btnPausa.setImg(imgPausa);
-                }
-                if (pideSiglas) {
-                    if (pulsa(btnSiglaArriba.getRectangulo(), event)&& btnSiglaArriba.getBandera()) {
-                        siglas[0]=avanza(siglas[0]);
-                    }
-                    if (pulsa(btnSigla2Arriba.getRectangulo(), event)&&btnSigla2Arriba.getBandera()) {
-                        siglas[1]=avanza(siglas[1]);
-                    }
-                    if (pulsa(btnSigla3Arriba.getRectangulo(), event)&&btnSigla3Arriba.getBandera()) {
-                        siglas[2]=avanza(siglas[2]);
-                    }
-
-                    if (pulsa(btnSiglaAbajo.getRectangulo(), event)&&btnSiglaAbajo.getBandera()) {
-                        siglas[0]=retrocede(siglas[0]);
-                    }
-                    if (pulsa(btnSigla2Abajo.getRectangulo(), event)&&btnSigla2Abajo.getBandera()) {
-                        siglas[1]=retrocede(siglas[1]);
-                    }
-                    if (pulsa(btnSigla3Abajo.getRectangulo(), event)&&btnSigla3Abajo.getBandera()) {
-                        siglas[2]=retrocede(siglas[2]);
-                    }
-                    if(pulsa(btnEnviar.getRectangulo(),event)&&btnEnviar.getBandera()){
-                        tengoSiglas=true;
-                    }
+                    mueveNave = false;
+                if (pulsa(btnJugar.getRectangulo(), event) && btnJugar.getBandera()) {
+                    empece = true;
                 }
                 if (perdi) {
                     if (pulsa(btnSi.getRectangulo(), event) && btnSi.getBandera()) {
@@ -755,27 +622,56 @@ public class Gameplay extends Pantalla {
                     if (pulsa(btnNo.getRectangulo(), event) && btnNo.getBandera()) {
                         return 0;
                     }
-
+                    btnSi.setBandera(false);
+                    btnNo.setBandera(false);
                 }
-                //pongo las banderas de todos lso botones a false
-/*                    btnMusica.setBandera(false);
+                btnJugar.setBandera(false);
+                if (empece) {
+                    //si levanto el dedo en el btn musica
+                    if (pulsa(btnMusica.getRectangulo(), event) && btnMusica.getBandera() && !pausa) {
+                        cambiaBtnMusica();
+                    }
+
+                    //si pulso la opcion pausa
+                    if (pulsa(btnPausa.getRectangulo(), event) && btnPausa.getBandera()) {
+                        //pongo la bandera del propio boton a false
+                        btnPausa.setBandera(false);
+
+                        //muestro pantallaPausa, reanudar o salir
+                        pausa = !pausa;
+                        if (pausa) {
+                            paraMusica();
+                            btnPausa.setImg(imgPlay);
+                        } else {
+                            suenaMusica();
+                            btnPausa.setImg(imgPausa);
+                        }
+                    }
+                    //si he pulsado la opcion salir
+                    if (pulsa(btnSalir.getRectangulo(), event) && btnSalir.getBandera()) {
+                        //vuelvo al menu
+                        acabaMusica();
+                        return 0;
+                    }
+                    if (pulsa(btnReanudar.getRectangulo(), event) && btnReanudar.getBandera()) {
+                        //reanudo el gameplay
+                        pausa = false;
+                        suenaMusica();
+                        btnPausa.setImg(imgPausa);
+                    }
+                    //pongo las banderas de todos lso botones a false
+                    btnMusica.setBandera(false);
                     btnSalir.setBandera(false);
                     btnPausa.setBandera(false);
                     btnReanudar.setBandera(false);
-                btnSi.setBandera(false);
-                btnNo.setBandera(false);
-                btnJugar.setBandera(false);*/
-
-//pongo la bandera del btn que anteriormente puse a true a false
-                if (btnAux != null) {
-                    btnAux.setBandera(false);
                 }
+
             case MotionEvent.ACTION_POINTER_UP:  // Al levantar un dedo que no es el último
 
                 break;
 
             case MotionEvent.ACTION_MOVE: // Se mueve alguno de los dedos
-                if (!pideSiglas && !perdi && empece && !pausa && (event.getX() > miNave.getContenedor().left && event.getX() < miNave.getContenedor().right) || mueveNave) {
+                if (!perdi && empece && !pausa && (event.getX() > miNave.getContenedor().left && event.getX() < miNave.getContenedor().right) || mueveNave) {
                     mueveNave = true;
                     miNave.moverNave(event.getX());
                 }
@@ -786,9 +682,8 @@ public class Gameplay extends Pantalla {
         return idPantalla;
     }
 
-
-    //------------------------CUANDO PULSO EL BTN DE LA MÚSICA EN EL GAMEPLAY------------------------
     public void cambiaBtnMusica() {
+
         musica = !musica;
         if (musica) {
             suenaMusica();
@@ -800,180 +695,4 @@ public class Gameplay extends Pantalla {
         editorPreferencias.putBoolean("musica", musica);
         editorPreferencias.commit();
     }
-
-    //------------------------DIBUJAR LA PANTALLA------------------------
-
-    public void dibujaInicio(Canvas c) {
-        c.drawText(txtEmpezar, anchoPantalla / 2, altoPantalla / 2 - tamañoPuntuacion / 2, pPunutacion);
-        btnJugar.dibujar(c);
-    }
-
-    public void dibujaJuego(Canvas c) {
-        //dibujo el btnPausa
-        btnPausa.dibujar(c);
-
-        //dibujo el btn sonido
-        btnMusica.dibujar(c);
-        //dibujo los marcianos del array bidimensional (marcianos)
-        for (int i = 0; i < marcianos.length; i++) {
-            for (int j = 0; j < marcianos[0].length; j++) {
-                if (marcianos[i][j] != null) {
-                    //dibujo a los marcianos y su contenedor
-                    marcianos[i][j].dibujar(c);
-                }
-            }
-        }
-        //dibujo todas las balas marcianos
-        for (int i = 0; i < balasMarcianos.size(); i++) {
-            balasMarcianos.get(i).dibujar(c);
-        }
-
-        //dibujo la nave y el proyectil que genera
-        miNave.dibujar(c);
-
-        //dibujo la puntuacion
-        c.drawText(Integer.toString(puntuacionGlobal), anchoPantalla / 2, altoPantalla / 20, pPunutacion);
-    }
-
-    public void dibujaPausa(Canvas c) {
-        //fondo
-        Paint a = new Paint();
-        a.setColor(Color.LTGRAY);
-        a.setAlpha(125);
-        c.drawRect(0, 0, anchoPantalla, altoPantalla, a);
-        a.setColor(Color.WHITE);
-        c.drawRect(margenLateralPausa, altoPantalla / 2 - altoMenuPausa / 2,
-                anchoPantalla - margenLateralPausa, altoPantalla / 2 + altoMenuPausa / 2, a);
-
-        //dibujo los botones reanudar y salir
-        btnSalir.dibujar(c);
-        btnReanudar.dibujar(c);
-
-        //dibujo la pregunta
-        a.setColor(Color.BLACK);
-        a.setTextSize(altoPantalla / 20);
-        a.setTextAlign(Paint.Align.CENTER);
-        c.drawText(txtAccion, anchoPantalla / 2, altoPantalla / 2 - altoMenuPausa / 2 + altoPantalla / 20 + margenLateralPausa, a);
-    }
-
-    public void dibujaPerdi(Canvas c) {
-        //fondo
-        Paint a = new Paint();
-        a.setColor(Color.LTGRAY);
-        a.setAlpha(125);
-        c.drawRect(0, 0, anchoPantalla, altoPantalla, a);
-        a.setColor(Color.WHITE);
-        c.drawRect(margenLateralPausa, altoPantalla / 2 - altoMenuPausa / 2,
-                anchoPantalla - margenLateralPausa, altoPantalla / 2 + altoMenuPausa / 2, a);
-
-        //dibujo los botones si y no
-        btnNo.dibujar(c);
-        btnSi.dibujar(c);
-        //dibujo la pregunta
-        a.setColor(Color.BLACK);
-        a.setTextSize(altoPantalla / 20);
-        a.setTextAlign(Paint.Align.CENTER);
-        c.drawText(txtRepetir, anchoPantalla / 2, altoPantalla / 2 - altoMenuPausa / 2 + altoPantalla / 20 + margenLateralPausa, a);
-    }
-
-    public void dibujaPideSiglas(Canvas c) {
-        //fondo
-        Paint a = new Paint();
-        a.setColor(Color.LTGRAY);
-        a.setAlpha(125);
-        c.drawRect(0, 0, anchoPantalla, altoPantalla, a);
-        a.setColor(Color.WHITE);
-        c.drawRect(margenLateralPausa, altoPantalla / 2 - altoMenuIniciales / 2,
-                anchoPantalla - margenLateralPausa, altoPantalla / 2 + altoMenuIniciales / 2, a);
-
-        //dibujo los botones
-        btnSiglaArriba.dibujar(c);
-        btnSiglaAbajo.dibujar(c);
-        btnSigla2Arriba.dibujar(c);
-        btnSigla2Abajo.dibujar(c);
-        btnSigla3Arriba.dibujar(c);
-        btnSigla3Abajo.dibujar(c);
-        btnEnviar.dibujar(c);
-        //dibujo las siglas
-        a.setColor(Color.BLACK);
-        a.setTextSize(tamañoSiglas);
-        a.setTextAlign(Paint.Align.CENTER);
-        c.drawText(siglas[0] + "", margenLateralPausa * 3, altoPantalla / 2 + tamañoSiglas, a);
-        c.drawText(siglas[1] + "", anchoPantalla / 2, altoPantalla / 2 + altoPantalla / 12, a);
-        c.drawText(siglas[2] + "", anchoPantalla - margenLateralPausa * 3, altoPantalla / 2 + tamañoSiglas, a);
-
-        //dibujo la pregunta
-        a.setTextSize(altoPantalla / 20);
-        c.drawText(txtSiglas, anchoPantalla / 2,
-                altoPantalla / 2 - altoMenuIniciales / 2 + altoPantalla / 20 + margenLateralPausa, a);
-
-    }
-
-    public boolean mejoraPuntuacion() {
-        bd = new BaseDeDatos(contexto, "puntuacionesJuego", null, 1);
-        db = bd.getWritableDatabase();
-        consultaUltima = "SELECT min(puntuacion) FROM puntuaciones";
-        //ejecuto la consultaUltima que me devuelve la ultima punutacion y la guardo en, ultimaPuntuacion
-        c = db.rawQuery(consultaUltima, null);
-        if (c.moveToFirst()) {
-            do {
-                ultimaPuntuacion = c.getInt(0);
-            } while (c.moveToNext());
-        }
-        c.close();
-        //si mi puntuacion es mayor que la ultima
-        if (puntuacionGlobal > ultimaPuntuacion) {
-            return true;
-        }
-        return false;
-    }
-
-    public void insertPuntuacion() {
-        bd = new BaseDeDatos(contexto, "puntuacionesJuego", null, 1);
-        db = bd.getWritableDatabase();
-        //obtengo el ultimo id para el orden de antiguedad
-        consultaId = "SELECT max(id )FROM puntuaciones";
-        c = db.rawQuery(consultaId, null);
-        if (c.moveToFirst()) {
-            do {
-                ultimoId = c.getInt(0);
-            } while (c.moveToNext());
-        }
-        //ejecuto la consulta borrar
-        //BORRO LA MENOR PUNTUACION MAS NUEVA, CON EL ID MAS ALTO
-        db.delete("puntuaciones", "id=(SELECT id FROM puntuaciones WHERE puntuacion=" +
-                "(SELECT min(puntuacion) FROM puntuaciones) ORDER BY id DESC LIMIT 1)", null);
-
-        //ejecuto el insert
-        ContentValues fila = new ContentValues();
-        fila.put("siglas", Character.toString(siglas[0]) + Character.toString(siglas[1]) + Character.toString(siglas[2]));
-        fila.put("id", ultimoId + 1);
-        fila.put("puntuacion", puntuacionGlobal);
-        db.insert("puntuaciones", null, fila);
-        c.close();
-        hiceInsert=true;
-        perdi=true;
-    }
-
-    public char avanza(char letra){
-        pos=abecedario.indexOf(letra);
-        if(pos==abecedario.size()-1){
-            pos=0;
-        }else{
-            pos++;
-        }
-        letra=abecedario.get(pos);
-        return letra;
-    }
-    public char retrocede(char letra){
-        pos=abecedario.indexOf(letra);
-        if(pos==0){
-            pos=abecedario.size()-1;
-        }else{
-            pos--;
-        }
-        letra=abecedario.get(pos);
-        return letra;
-    }
-
 }
