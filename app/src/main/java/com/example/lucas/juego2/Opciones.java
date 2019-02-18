@@ -82,7 +82,7 @@ public class Opciones extends Pantalla {
 
         //--------------MUSICA--------------
         musica=preferencias.getBoolean("musica",true);
-        configuraMusica(R.raw.musica);
+        configuraMusica(R.raw.submenus);
         siMusica=new Boton((anchoPantalla-anchoSelectNave)/2,altoPantalla/2-altoPantalla/20+espacioTextoBoton,
                 anchoPantalla/2,altoPantalla/2-altoPantalla/20+espacioTextoBoton+alturaBoton, Color.TRANSPARENT);
         siMusica.setTexto(txtSi,altoTexto, Color.BLACK);

@@ -29,6 +29,13 @@ public class Records extends Pantalla {
     String txtRecords;
     public Records(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
         super(contexto, idPantalla, anchoPantalla, altoPantalla);
+        //--------------MUSICA--------------
+        musica=preferencias.getBoolean("musica",true);
+        configuraMusica(R.raw.submenus);
+        if(musica){
+            suenaMusica();
+        }
+
         pPuntuaciones=new Paint();
         pPuntuaciones.setTextSize(altoPantalla/20);
         pPuntuaciones.setColor(Color.WHITE);
@@ -89,6 +96,7 @@ public class Records extends Pantalla {
                 //si pulso la opcion jugar
                 if (pulsa(back.getRectangulo(), event)) {
                     //vuelvo al menu
+                    acabaMusica();
                     return 0;
                 }
             case MotionEvent.ACTION_POINTER_UP:  // Al levantar un dedo que no es el último

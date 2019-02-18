@@ -156,6 +156,6 @@ public class Pantalla {
         mediaPlayer.pause();
     }
 public void acabaMusica(){
-    mediaPlayer.stop();
+    mediaPlayer.release();
 }
 }

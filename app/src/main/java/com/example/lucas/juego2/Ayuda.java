@@ -12,8 +12,17 @@ import android.view.MotionEvent;
 public class Ayuda extends Pantalla {
     Bitmap imgVolver;
     Boton back;
+    private String txtAyuda;
     public Ayuda(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
         super(contexto, idPantalla, anchoPantalla, altoPantalla);
+        //--------------STRINGS--------------
+        txtAyuda=contexto.getString(R.string.ayuda);
+        //--------------MUSICA--------------
+        musica=preferencias.getBoolean("musica",true);
+        configuraMusica(R.raw.submenus);
+        if(musica){
+            suenaMusica();
+        }
         back=new Boton(anchoPantalla-anchoPantalla/10,0,anchoPantalla,anchoPantalla/10, Color.TRANSPARENT);
         imgVolver= BitmapFactory.decodeResource(contexto.getResources(), R.drawable.back);
         imgVolver = Bitmap.createScaledBitmap(imgVolver, anchoPantalla/10, anchoPantalla/10, true);
@@ -25,7 +34,7 @@ public class Ayuda extends Pantalla {
         try{
             c.drawColor(Color.BLACK);
             pTexto.setTextSize(altoPantalla/10);
-            c.drawText("Ayuda",anchoPantalla/2,altoPantalla/5,pTexto);
+            c.drawText(txtAyuda,anchoPantalla/2,altoPantalla/8,pTexto);
             back.dibujar(c);
         }catch (Exception e){
 
@@ -44,6 +53,7 @@ public class Ayuda extends Pantalla {
             case MotionEvent.ACTION_UP:                     // Al levantar el último dedo
                 //si pulso la opcion jugar
                 if (pulsa(back.getRectangulo(), event)) {
+                    acabaMusica();
                     return 0;
                 }
             case MotionEvent.ACTION_POINTER_UP:  // Al levantar un dedo que no es el último
