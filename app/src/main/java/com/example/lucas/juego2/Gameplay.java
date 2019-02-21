@@ -26,6 +26,7 @@ import java.util.Timer;
 
 public class Gameplay extends Pantalla {
     //------------------------PROPIEDADES GAMEPLAY------------------------
+    private int probabilidadDisparoMarcianos;
     private boolean estoyJugando;
     private boolean empece;
     private int nivel, filas, columnas, puntuacionGlobal;
@@ -48,7 +49,7 @@ public class Gameplay extends Pantalla {
     private int ultimaPuntuacion;
     private SharedPreferences.Editor editorPreferencias;
     private SharedPreferences preferencias;
-    private boolean vibracion;
+    private boolean vibracion,giroscopio;
 
     //para las siglas
     private int pos;
@@ -72,6 +73,7 @@ public class Gameplay extends Pantalla {
     //------------------------CONSTRUCTOR------------------------
     public Gameplay(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
         super(contexto, idPantalla, anchoPantalla, altoPantalla);
+        probabilidadDisparoMarcianos=5;
         estoyJugando = false;
         empece = false;
         pausa = false;
@@ -166,7 +168,8 @@ public class Gameplay extends Pantalla {
         //----------------ARCHIVO CONFIGURACIÓN--------------
         preferencias = contexto.getSharedPreferences("preferencias", Context.MODE_PRIVATE);
         editorPreferencias = preferencias.edit();
-
+        //--------------BOOLEAN GIROSCOPIO--------------
+        giroscopio=preferencias.getBoolean("giroscopio",false);
         //--------------BOOLEAN VIBRACION--------------
         vibracion = preferencias.getBoolean("vibracion", true);
         //----------------BOTON PAUSA----------------
@@ -330,9 +333,11 @@ public class Gameplay extends Pantalla {
             disparaNave();
 
             //------------------------DISPARO DE LOS MARCIANOS------------------------
-            if ((int) (Math.random() * 100) + 1 <= 5) {
+            if ((int) (Math.random() * 100) + 1 <= probabilidadDisparoMarcianos) {
                 disparanMarcianos();
             }
+
+            //disparanMarcianos();
             //------------------------MOVER BALAS MARCIANOS (ARRAYLIST)------------------------
             actualizaBalasMarcianos();
 
@@ -611,7 +616,8 @@ public class Gameplay extends Pantalla {
 
         switch (accion) {
             case MotionEvent.ACTION_DOWN:// Primer dedo toca
-                if (pointerID==0&&estoyJugando && (event.getX() >= miNave.getContenedor().left && event.getX() <= miNave.getContenedor().right) || mueveNave) {
+                //si estoy jugando con la opcion del giroscopio desactivada, y pulso en la pos x donde está la nave, puedo mover la nave
+                if (!giroscopio&&pointerID==0&&estoyJugando && (event.getX() >= miNave.getContenedor().left && event.getX() <= miNave.getContenedor().right) || mueveNave) {
                     mueveNave = true;
                 }
                 if (estoyJugando) {
@@ -783,6 +789,7 @@ public class Gameplay extends Pantalla {
 
             case MotionEvent.ACTION_MOVE: // Se mueve alguno de los dedos
 
+                //solo puedo poner mueve nave a true, cuando giroscopio está a false entre una de las condiciones
                if(mueveNave&&pointerID==0){
                    miNave.moverNave(event.getX());
                }

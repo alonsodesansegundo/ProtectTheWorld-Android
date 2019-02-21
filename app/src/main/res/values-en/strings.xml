@@ -15,4 +15,5 @@
     <string name="vibracion">Vibration</string>
     <string name="enviar">Send</string>
     <string name="siglas">"enter your initials "</string>
+    <string name="giroscopio">Gyroscope</string>
 </resources>
