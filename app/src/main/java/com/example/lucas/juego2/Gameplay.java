@@ -354,11 +354,9 @@ public class Gameplay extends Pantalla {
             disparaNave();
 
             //------------------------DISPARO DE LOS MARCIANOS------------------------
-//            if ((int) (Math.random() * 100) + 1 <= probabilidadDisparoMarcianos) {
-//                disparanMarcianos();
-//            }
+            //lo hago a traves del timer en el constructor
 
-            //disparanMarcianos();
+
             //------------------------MOVER BALAS MARCIANOS (ARRAYLIST)------------------------
             actualizaBalasMarcianos();
 
@@ -555,11 +553,24 @@ public class Gameplay extends Pantalla {
                 }
             } else {
                 //si no ha chocado con la nave
-                //veo si desaparece de la pantalla, si es así
-                if (balasMarcianos.get(i).getContenedor().top >= altoPantalla) {
-                    //la elimino para no mover balas que no se ven
+                //veo si ha chocado o no con la bala de la nave, si es asi, elimino ambas balas
+                if (balasMarcianos.get(i).getContenedor().intersect(miNave.getBala())){
+                    //elimino ambas balas
+                    //elimino la bala marciano
                     balasMarcianos.remove(i);
+
+                    //elimino la bala de la nave
+                    miNave.setHayBala(false);
+
+                    //si no choca con la nave ni con la bala de la nave
+                }else{
+                    //veo si desaparece de la pantalla, si es así
+                    if (balasMarcianos.get(i).getContenedor().top >= altoPantalla) {
+                        //la elimino para no mover balas que no se ven
+                        balasMarcianos.remove(i);
+                    }
                 }
+
             }
         }
     }
