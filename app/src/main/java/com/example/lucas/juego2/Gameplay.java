@@ -23,9 +23,11 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Timer;
+import java.util.TimerTask;
 
 public class Gameplay extends Pantalla {
     //------------------------PROPIEDADES GAMEPLAY------------------------
+
     private int probabilidadDisparoMarcianos;
     private boolean estoyJugando;
     private boolean empece;
@@ -69,12 +71,31 @@ public class Gameplay extends Pantalla {
     private SQLiteDatabase db;
     private Cursor c;
     private String txtContinuar, txtSalir, txtAccion, txtEmpezar, txtSi, txtRepetir, txtNo, txtSiglas, txtEnviar;
-
+    //timer para disparo marcianos
+    private TimerTask task;
+    private Timer miTimer;
     //------------------------CONSTRUCTOR------------------------
     public Gameplay(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
         super(contexto, idPantalla, anchoPantalla, altoPantalla);
-        probabilidadDisparoMarcianos=5;
+
+
         estoyJugando = false;
+        miTimer=new Timer();
+         task = new TimerTask() {
+
+            @Override
+            public void run()
+            {
+                if(estoyJugando){
+                    disparanMarcianos();
+                    Log.i("HOLA","DISPARAN MARCIANOS");
+                }
+            }
+        };
+        // Empezamos dentro de 10ms y luego lanzamos la tarea cada 1000ms
+        miTimer.schedule(task, 2000, 2000);
+
+        probabilidadDisparoMarcianos=33;
         empece = false;
         pausa = false;
         perdi = false;
@@ -333,9 +354,9 @@ public class Gameplay extends Pantalla {
             disparaNave();
 
             //------------------------DISPARO DE LOS MARCIANOS------------------------
-            if ((int) (Math.random() * 100) + 1 <= probabilidadDisparoMarcianos) {
-                disparanMarcianos();
-            }
+//            if ((int) (Math.random() * 100) + 1 <= probabilidadDisparoMarcianos) {
+//                disparanMarcianos();
+//            }
 
             //disparanMarcianos();
             //------------------------MOVER BALAS MARCIANOS (ARRAYLIST)------------------------
@@ -488,7 +509,7 @@ public class Gameplay extends Pantalla {
                     //añado la columna a mi arraylist
                     misColumnas.add(j);
                     //si se decide que el marciano dispare (porque sale x probabilidad)
-                    if (marcianos[i][j].dispara()) {
+                    if (marcianos[i][j].dispara(probabilidadDisparoMarcianos)) {
                         //genero una nueva bala marciano que añado a su array
                         balasMarcianos.add(new BalaMarciano((int) marcianos[i][j].getContenedor().centerX() -
                                 proyectilMarciano.getWidth() / 2,

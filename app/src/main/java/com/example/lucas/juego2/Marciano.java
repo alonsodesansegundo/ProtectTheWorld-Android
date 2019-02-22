@@ -135,12 +135,13 @@ this.puntuacion=puntuacion;
     }
 
     //------------------------PROBABILIDAD DISPARO MARCIANO------------------------
-    public boolean dispara() {
+    public boolean dispara(int probabilidad) {
         //probabilidad de disparo
         //numero aleatorio entre 1 y 10
 
         int numero = (int) (Math.random() * 100) + 1;
-        if (numero <=1) {
+        if (numero<=probabilidad) {
+            Log.i("NUMERO",numero+"");
             return true;
         }
         return false;
