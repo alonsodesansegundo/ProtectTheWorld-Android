@@ -81,7 +81,7 @@ public class Gameplay extends Pantalla {
 
         estoyJugando = false;
         miTimer=new Timer();
-         task = new TimerTask() {
+        task = new TimerTask() {
 
             @Override
             public void run()
@@ -390,13 +390,16 @@ public class Gameplay extends Pantalla {
             }
             //si he pulsado el boton de pausa
             if (pausa) {
+                dibujaJuego(c);
                 dibujaPausa(c);
             }
             //si he perdido
             if (perdi) {
+                dibujaJuego(c);
                 dibujaPerdi(c);
             }
             if (pideSiglas && !tengoSiglas) {
+                dibujaJuego(c);
                 dibujaPideSiglas(c);
             }
         } catch (Exception e) {
@@ -541,13 +544,15 @@ public class Gameplay extends Pantalla {
                     vibrar();
                 }
                 //perdi
+
+                estoyJugando = false;
+                mueveNave=false;
                 acabaMusica();
                 if (mejoraPuntuacion()) {
                     pideSiglas = true;
                 } else {
                     perdi = true;
                 }
-                estoyJugando = false;
             } else {
                 //si no ha chocado con la nave
                 //veo si desaparece de la pantalla, si es así
@@ -672,6 +677,11 @@ public class Gameplay extends Pantalla {
                         btnReanudar.setBandera(true);
                         btnAux = btnReanudar;
                     }
+
+                    if (pulsa(btnPausa.getRectangulo(), event)) {
+                        btnPausa.setBandera(true);
+                        btnAux = btnPausa;
+                    }
                 }
                 if (pideSiglas) {
                     if (pulsa(btnSiglaArriba.getRectangulo(), event)) {
@@ -725,17 +735,18 @@ public class Gameplay extends Pantalla {
                 //mientras estoy jugando
                 if (estoyJugando) {
                     //si levanto el dedo en el btn musica
-                    if (pulsa(btnMusica.getRectangulo(), event) && btnMusica.getBandera() && estoyJugando) {
+                    if (pulsa(btnMusica.getRectangulo(), event) && btnMusica.getBandera()) {
                         cambiaBtnMusica();
                     }
                     //si pulso la opcion pausa
                     if (pulsa(btnPausa.getRectangulo(), event) && btnPausa.getBandera()) {
 
                         //muestro pantallaPausa, reanudar o salir
-                        pausa = !pausa;
-                        if (!pausa && musica) {
-                            suenaMusica();
-                        }
+                        pausa = true;
+                        estoyJugando = false;
+
+                        paraMusica();
+                        btnPausa.setImg(imgPlay);
 
                     }
                 } else {
@@ -743,30 +754,27 @@ public class Gameplay extends Pantalla {
                         empece = true;
                         estoyJugando = true;
                     }
-                }
-                if (pausa) {
-                    estoyJugando = false;
-                    paraMusica();
-                    btnPausa.setImg(imgPlay);
+                    if (pausa) {
 
-                    //si he pulsado la opcion salir
-                    if (pulsa(btnSalir.getRectangulo(), event) && btnSalir.getBandera()) {
-                        //vuelvo al menu
-                        acabaMusica();
-                        return 0;
-                    }
-                    if (pulsa(btnReanudar.getRectangulo(), event) && btnReanudar.getBandera()) {
-                        //reanudo el gameplay
-                        estoyJugando = true;
-                        if (musica) {
-                            suenaMusica();
+                        //si he pulsado la opcion salir
+                        if (pulsa(btnSalir.getRectangulo(), event) && btnSalir.getBandera()) {
+                            //vuelvo al menu
+                            acabaMusica();
+                            return 0;
                         }
-                        btnPausa.setImg(imgPausa);
-                        pausa = false;
+                        if (pulsa(btnReanudar.getRectangulo(), event) && btnReanudar.getBandera()) {
+                            //reanudo el gameplay
+                            reanudaGame();
+                        }
+                        if (pulsa(btnPausa.getRectangulo(), event) && btnPausa.getBandera()) {
+                            //reanudo el gameplay
+                            reanudaGame();
+
+                        }
                     }
-                } else {
-                    btnPausa.setImg(imgPausa);
+
                 }
+
                 if (pideSiglas) {
                     if (pulsa(btnSiglaArriba.getRectangulo(), event) && btnSiglaArriba.getBandera()) {
                         siglas[0] = retrocede(siglas[0]);
@@ -811,9 +819,9 @@ public class Gameplay extends Pantalla {
             case MotionEvent.ACTION_MOVE: // Se mueve alguno de los dedos
 
                 //solo puedo poner mueve nave a true, cuando giroscopio está a false entre una de las condiciones
-               if(mueveNave&&pointerID==0){
-                   miNave.moverNave(event.getX());
-               }
+                if(mueveNave&&pointerID==0){
+                    miNave.moverNave(event.getX());
+                }
                 break;
             default:
                 Log.i("Otra acción", "Acción no definida: " + accion);
@@ -871,6 +879,7 @@ public class Gameplay extends Pantalla {
     }
 
     public void dibujaPausa(Canvas c) {
+
         //fondo
         Paint a = new Paint();
         a.setColor(Color.LTGRAY);
@@ -1012,4 +1021,13 @@ public class Gameplay extends Pantalla {
         return letra;
     }
 
+    public void reanudaGame(){
+        //reanudo el gameplay
+        estoyJugando = true;
+        if (musica) {
+            suenaMusica();
+        }
+        btnPausa.setImg(imgPausa);
+        pausa = false;
+    }
 }
