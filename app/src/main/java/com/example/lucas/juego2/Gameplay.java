@@ -840,6 +840,8 @@ public class Gameplay extends Pantalla {
                         estoyJugando = true;
                     }
                     if (pulsa(btnNoJugar.getRectangulo(), event) && btnNoJugar.getBandera()) {
+                        //vuelvo al menu
+                        acabaMusica();
                         return 0;
                     }
                     if (pausa) {
@@ -892,6 +894,8 @@ public class Gameplay extends Pantalla {
                         return 6;
                     }
                     if (pulsa(btnNo.getRectangulo(), event) && btnNo.getBandera()) {
+                        //vuelvo al menu
+                        acabaMusica();
                         return 0;
                     }
 
