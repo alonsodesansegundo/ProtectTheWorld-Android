@@ -49,9 +49,13 @@ public class Juego  extends SurfaceView implements SurfaceHolder.Callback{
                     case 4:
                         pantallaActual=new Ayuda(context,4,anchoPantalla,altoPantalla);
                         break;
-                    case 5:
+                    case 6:
                         pantallaActual=new Gameplay(context,1,anchoPantalla,altoPantalla);
                         break;
+                    case 5:
+                        pantallaActual=new Creditos(context,5,anchoPantalla,altoPantalla);
+                        break;
+
                 }
             }
         }

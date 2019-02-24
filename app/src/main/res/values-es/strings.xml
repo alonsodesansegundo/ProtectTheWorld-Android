@@ -21,4 +21,5 @@
     <string name="giroscopio">Giroscopio</string>
     <string name="noRecords">Borrar récords</string>
     <string name="seguro">¿Seguro?</string>
+    <string name="creditos">Créditos</string>
 </resources>

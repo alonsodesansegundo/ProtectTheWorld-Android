@@ -14,15 +14,15 @@ import android.view.MotionEvent;
 import java.util.ArrayList;
 
 public class Menu extends Pantalla {
-    private Boton jugar, ayuda, opciones, records;
+    private Boton jugar, ayuda, opciones, records,creditos;
     private int alto, ancho, espacio;
-    private String txtJugar,txtOpciones,txtAyuda,txtRecords;
+    private String txtCreditos,txtOpciones,txtAyuda,txtRecords;
 
     public Menu(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
         super(contexto, idPantalla, anchoPantalla, altoPantalla);
 
         //---------------------STRINGS-----------------
-        txtJugar=contexto.getString(R.string.jugar);
+        txtCreditos=contexto.getString(R.string.creditos);
         txtOpciones=contexto.getString(R.string.opciones);
         txtRecords=contexto.getString(R.string.records);
         txtAyuda=contexto.getString(R.string.ayuda);
@@ -35,20 +35,34 @@ public class Menu extends Pantalla {
         espacio = altoPantalla / 50;
 
         //-----------------BOTONES-----------------
-        jugar = new Boton(ancho, alto, ancho * 5, alto * 2, Color.BLACK);
-        jugar.setTexto(txtJugar,altoPantalla / 20, Color.WHITE);
+        jugar = new Boton(ancho, alto, anchoPantalla-ancho, alto * 2, Color.TRANSPARENT);
+        jugar.setTexto("Protect the World",altoPantalla / 20, Color.WHITE);
 
-        opciones = new Boton(ancho, alto * 2 + espacio, ancho * 5,
-                alto * 2 + espacio + alto, Color.BLACK);
+        opciones = new Boton(ancho,
+                alto * 2 + espacio,
+                ancho * 5,
+                alto * 2 + espacio + alto
+                , Color.TRANSPARENT);
         opciones.setTexto(txtOpciones,altoPantalla/20, Color.WHITE);
-
-        records = new Boton(ancho, alto * 2 + 2 * espacio + alto, ancho * 5,
-                alto * 2 + 2 * espacio + 2 * alto, Color.BLACK);
+        records = new Boton(anchoPantalla/2,
+                alto * 2 + espacio,
+                anchoPantalla-ancho,
+                alto * 2 + espacio + alto,
+                Color.TRANSPARENT);
         records.setTexto(txtRecords,altoPantalla/20, Color.WHITE);
-
-        ayuda = new Boton(ancho, alto * 2 + 3 * espacio + 2 * alto, ancho * 5,
-                alto * 2 + 3 * espacio + 3 * alto, Color.BLACK);
+        ayuda = new Boton(anchoPantalla/2,
+                alto * 2 + 2 * espacio + alto,
+                anchoPantalla-ancho,
+                alto * 2 + 2 * espacio + 2 * alto,
+                Color.BLACK);
         ayuda.setTexto(txtAyuda,altoPantalla/20, Color.WHITE);
+
+        creditos= new Boton(ancho,
+                alto * 2 + 2 * espacio + alto,
+                anchoPantalla/2,
+                alto * 2 + 2 * espacio + 2 * alto,
+                Color.BLUE);
+        creditos.setTexto(txtCreditos,altoPantalla/20, Color.WHITE);
 
         //-----------------MUSICA-----------------
         musica=preferencias.getBoolean("musica",true);
@@ -83,6 +97,8 @@ public class Menu extends Pantalla {
             //BOTON AYUDA
             ayuda.dibujar(c);
 
+            creditos.dibujar(c);
+
         } catch (Exception e) {
             Log.i("Error al dibujar", e.getLocalizedMessage());
         }
@@ -106,6 +122,9 @@ public class Menu extends Pantalla {
                 if (pulsa(ayuda.getRectangulo(), event)) {
                     ayuda.setBandera(true);
                 }
+                if(pulsa(creditos.getRectangulo(),event)){
+                    creditos.setBandera(true);
+                }
             case MotionEvent.ACTION_POINTER_DOWN:  // Segundo y siguientes tocan
                 break;
 
@@ -128,11 +147,16 @@ public class Menu extends Pantalla {
                     acabaMusica();
                     return 4;
                 }
+                if(pulsa(creditos.getRectangulo(),event)&&creditos.getBandera()){
+                    acabaMusica();
+                    return 5;
+                }
                 //pongo todas las banderas de los botones a false
                 jugar.setBandera(false);
                 opciones.setBandera(false);
                 ayuda.setBandera(false);
                 records.setBandera(false);
+                creditos.setBandera(false);
             case MotionEvent.ACTION_POINTER_UP:  // Al levantar un dedo que no es el último
 
                 break;

@@ -889,7 +889,7 @@ public class Gameplay extends Pantalla {
                 }
                 if (perdi) {
                     if (pulsa(btnSi.getRectangulo(), event) && btnSi.getBandera()) {
-                        return 5;
+                        return 6;
                     }
                     if (pulsa(btnNo.getRectangulo(), event) && btnNo.getBandera()) {
                         return 0;
