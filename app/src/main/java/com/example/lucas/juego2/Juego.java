@@ -97,6 +97,13 @@ public class Juego  extends SurfaceView implements SurfaceHolder.Callback{
 
         @Override
         public void run() {
+            long tiempoDormido = 0; //Tiempo que va a dormir el hilo
+            final int FPS = 50; // Nuestro objetivo
+            final int TPS = 1000000000; //Ticks en un segundo para la función usada nanoTime()
+            final int FRAGMENTO_TEMPORAL = TPS / FPS; // Espacio de tiempo en el que haremos todo de forma repetida
+            // Tomamos un tiempo de referencia actual en nanosegundos más preciso que currenTimeMillis()
+            long tiempoReferencia = System.nanoTime();
+
             while (funcionando) {
                 Canvas c = null; //Necesario repintar todo el lienzo
                 try {
@@ -112,6 +119,19 @@ public class Juego  extends SurfaceView implements SurfaceHolder.Callback{
                         surfaceHolder.unlockCanvasAndPost(c);
                     }
                 }
+                // Calculamos el siguiente instante temporal donde volveremos a actualizar y pintar
+                tiempoReferencia += FRAGMENTO_TEMPORAL;
+                // El tiempo que duerme será el siguiente menos el actual (Ya ha terminado de pintar y actualizar)
+                tiempoDormido = tiempoReferencia - System.nanoTime();
+                //Si tarda mucho, dormimos.
+                if (tiempoDormido > 0) {
+                    try {
+                        Thread.sleep(tiempoDormido / 1000000); //Convertimos a ms
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+
             }
         }
 
