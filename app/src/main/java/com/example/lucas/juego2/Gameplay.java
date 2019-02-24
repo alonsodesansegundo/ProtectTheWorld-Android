@@ -10,18 +10,13 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
-import android.graphics.RectF;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.os.Build;
 import android.os.VibrationEffect;
-import android.support.annotation.ColorRes;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Timer;
@@ -36,7 +31,7 @@ public class Gameplay extends Pantalla {
     private int nivel, filas, columnas, puntuacionGlobal;
     private Bitmap imgMarciano1, imgMarciano2, imgNave, proyectilMarciano, balaNave, explosion;
     private float primeraX, primeraY, tamañoPuntuacion;
-    private double vMarciano;
+    private double vMarciano,vBala,vBalaMarciano;
     private Marciano marcianos[][];
     private Nave miNave;
     private boolean voyIzquierda, voyAbajo, mueveNave;
@@ -85,6 +80,8 @@ public class Gameplay extends Pantalla {
     //------------------------CONSTRUCTOR------------------------
     public Gameplay(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
         super(contexto, idPantalla, anchoPantalla, altoPantalla);
+        vBala=altoPantalla*0.01;
+        vBalaMarciano=vBala/3;
         //efectos sonoros
         maxSonidosSimultaneos = 10;
         if ((android.os.Build.VERSION.SDK_INT) >= 21) {
@@ -280,8 +277,7 @@ public class Gameplay extends Pantalla {
         columnas = 6;
         marcianos = new Marciano[filas][columnas];  //cinco filas seis columnas de marcianos
         //velocidad de movimiento lateral de los marcianos al comienzo
-        vMarciano = 0.5;
-
+        vMarciano = anchoPantalla*0.001;
         //imagen marcianos impacto 1
 //        imgMarciano1 = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.marciano1);
 //        imgMarciano1 = Bitmap.createScaledBitmap(imgMarciano1, anchoPantalla / 20, altoPantalla / 30, true);
@@ -327,7 +323,7 @@ public class Gameplay extends Pantalla {
         explosion = Bitmap.createScaledBitmap(explosion, anchoPantalla / 10, altoPantalla / 15, true);
         //creo el objeto nave
         miNave = new Nave(imgNave, anchoPantalla / 2 - imgNave.getWidth() / 2, altoPantalla - imgNave.getHeight(),
-                10, balaNave);
+                vBala, balaNave);
 
         //arraylist con las balas generadas por los marcianos
         balasMarcianos = new ArrayList<BalaMarciano>();
@@ -470,6 +466,9 @@ public class Gameplay extends Pantalla {
         return false;
     }
 
+    public void vaciaBalas(){
+        balasMarcianos.clear();
+    }
     //------------------------DISPARO DE LA NAVE------------------------
     public void disparaNave() {
         //solo habrá una bala de la nave en la pantalla
@@ -510,6 +509,7 @@ public class Gameplay extends Pantalla {
                             //si no hay marcianos
                             //relleno el array segun el nivel, de ello se encarga rellena marcianos
                             if (!hayMarcianos()) {
+                                vaciaBalas();
                                 rellenaMarcianos();
                             }
                             //salgo del bucle porque no hace falta seguir recorriendo todos los marcianos, ya que solo es posible que haya un impacto
@@ -549,7 +549,7 @@ public class Gameplay extends Pantalla {
                                 proyectilMarciano.getWidth() / 2,
                                 (int) marcianos[i][j].getPos().y + marcianos[i][j].getImagen().getHeight(),
                                 proyectilMarciano.getWidth(),
-                                proyectilMarciano.getHeight(), proyectilMarciano));
+                                proyectilMarciano.getHeight(), proyectilMarciano,vBalaMarciano));
                     }
                 }
             }

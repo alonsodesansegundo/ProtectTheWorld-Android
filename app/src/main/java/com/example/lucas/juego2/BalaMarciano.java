@@ -9,11 +9,11 @@ import android.graphics.RectF;
 public class BalaMarciano {
     private Bitmap img;
     private RectF contenedor;
-    private float vBalaMarciano;
+    private double vBalaMarciano;
     private Paint p;
-    public BalaMarciano(int x,int y,int ancho,int alto,Bitmap img) {
+    public BalaMarciano(int x,int y,int ancho,int alto,Bitmap img,double vBalaMarciano) {
         this.contenedor = new RectF(x,y,x+ancho,y+alto);
-        vBalaMarciano=3;
+        this.vBalaMarciano=vBalaMarciano;
         p=new Paint();
         p.setColor(Color.RED);
 

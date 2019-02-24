@@ -18,9 +18,9 @@ public class Nave {
     private RectF bala;
     private Paint p;
     private Bitmap imgBala;
-    private float vBala;
+    private double vBala;
     //------------------------CONSTRUCTOR------------------------
-    public Nave(Bitmap imagen,float x,float y,float velocidadBala,Bitmap imgBala) {
+    public Nave(Bitmap imagen,float x,float y,double velocidadBala,Bitmap imgBala) {
         this.pos=new PointF(x,y);
         this.imagen = imagen;
         this.hayBala=false;
