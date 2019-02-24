@@ -24,14 +24,15 @@ import java.util.TimerTask;
 
 public class Gameplay extends Pantalla {
     //------------------------PROPIEDADES GAMEPLAY------------------------
-
+    private Fondo[] fondo;
+    private  Bitmap bitmapFondo;
     private int probabilidadDisparoMarcianos;
     private boolean estoyJugando;
     private boolean empece;
     private int nivel, filas, columnas, puntuacionGlobal;
     private Bitmap imgMarciano1, imgMarciano2, imgNave, proyectilMarciano, balaNave, explosion;
     private float primeraX, primeraY, tamañoPuntuacion;
-    private double vMarciano,vBala,vBalaMarciano;
+    private double vMarciano,vBala,vBalaMarciano,vFondo;
     private Marciano marcianos[][];
     private Nave miNave;
     private boolean voyIzquierda, voyAbajo, mueveNave;
@@ -39,7 +40,7 @@ public class Gameplay extends Pantalla {
     private ArrayList<BalaMarciano> balasMarcianos;
     private Paint pPunutacion;
     private int tiempoVibracion;
-    private Boton btnPausa, btnReanudar, btnSalir, btnMusica, btnJugar, btnSi, btnNo, btnAux;
+    private Boton btnPausa, btnReanudar, btnSalir, btnMusica, btnJugar,btnNoJugar, btnSi, btnNo, btnAux;
     private Bitmap imgPausa, imgPlay, imgMusicaOn, imgMusicaOff;
     private int codNave;
     private int margenLateralPausa;
@@ -80,6 +81,15 @@ public class Gameplay extends Pantalla {
     //------------------------CONSTRUCTOR------------------------
     public Gameplay(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
         super(contexto, idPantalla, anchoPantalla, altoPantalla);
+
+        bitmapFondo = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.universe2);
+        bitmapFondo = Bitmap.createScaledBitmap( bitmapFondo, anchoPantalla, bitmapFondo.getHeight(), true);
+        fondo = new Fondo[2];
+        fondo[0] = new Fondo(bitmapFondo, altoPantalla);
+        fondo[1] = new Fondo(bitmapFondo, 0, fondo[0].posicion.y - bitmapFondo.getHeight());
+
+
+    vFondo=altoPantalla*0.001;
         vBala=altoPantalla*0.01;
         vBalaMarciano=vBala/3;
         //efectos sonoros
@@ -344,9 +354,13 @@ public class Gameplay extends Pantalla {
         btnSalir.setTexto(txtSalir, altoPantalla / 30, Color.BLACK);
 
         //----------------BTN PARA EMPEZAR A JUGAR----------------
-        btnJugar = new Boton(anchoPantalla / 2 - anchoPantalla / 8, altoPantalla / 2,
-                anchoPantalla / 2 + anchoPantalla / 8, altoPantalla / 2 + altoPantalla / 11, Color.GREEN);
+        btnJugar = new Boton(anchoPantalla / 2 - anchoPantalla / 4, altoPantalla / 2,
+                anchoPantalla / 2 , altoPantalla / 2 + altoPantalla / 11, Color.GREEN);
         btnJugar.setTexto(txtSi, altoPantalla / 15, Color.BLACK);
+
+            btnNoJugar= new Boton(anchoPantalla / 2 , altoPantalla / 2,
+                    anchoPantalla / 2 + anchoPantalla / 4, altoPantalla / 2 + altoPantalla / 11, Color.RED);
+        btnNoJugar.setTexto(txtNo, altoPantalla / 15, Color.BLACK);
 
         //----------------BTN PARA REPETIR O NO----------------
         btnSi = new Boton(margenLateralPausa * 2, altoPantalla / 2,
@@ -363,6 +377,8 @@ public class Gameplay extends Pantalla {
 
     // Actualizamos la física de los elementos en pantalla
     public void actualizarFisica() {
+        mueveFondo();
+
         //si no he pausado, el gameplay continua
         if (estoyJugando) {
             //------------------------DISPARO DE LA NAVE------------------------
@@ -393,7 +409,7 @@ public class Gameplay extends Pantalla {
     // Rutina de dibujo en el lienzo. Se le llamará desde el hilo
     public void dibujar(Canvas c) {
         try {
-            c.drawColor(Color.BLUE);
+            dibujaFondo(c);
             //si he empezado a jugar
             if (estoyJugando) {
                 dibujaJuego(c);
@@ -468,6 +484,21 @@ public class Gameplay extends Pantalla {
 
     public void vaciaBalas(){
         balasMarcianos.clear();
+    }
+
+    public void mueveFondo(){
+        if(estoyJugando){
+            // Movemos
+            fondo[0].mover(vFondo);
+            fondo[1].mover(vFondo);
+// Comprobamos que se sobrepase la pantalla y reiniciamos
+            if (fondo[0].posicion.y > altoPantalla) {
+                fondo[0].posicion.y = fondo[1].posicion.y - fondo[0].imagen.getHeight();
+            }
+            if (fondo[1].posicion.y > altoPantalla) {
+                fondo[1].posicion.y = fondo[0].posicion.y - fondo[1].imagen.getHeight();
+            }
+        }
     }
     //------------------------DISPARO DE LA NAVE------------------------
     public void disparaNave() {
@@ -713,6 +744,11 @@ public class Gameplay extends Pantalla {
                         btnJugar.setBandera(true);
                         btnAux = btnJugar;
                     }
+                    if (pulsa(btnNoJugar.getRectangulo(), event)) {
+                        btnNoJugar.setBandera(true);
+                        btnAux = btnNoJugar;
+                    }
+
                 }
                 //si estoy en pausa
                 if (pausa) {
@@ -802,6 +838,9 @@ public class Gameplay extends Pantalla {
                     if (pulsa(btnJugar.getRectangulo(), event) && btnJugar.getBandera()) {
                         empece = true;
                         estoyJugando = true;
+                    }
+                    if (pulsa(btnNoJugar.getRectangulo(), event) && btnNoJugar.getBandera()) {
+                        return 0;
                     }
                     if (pausa) {
 
@@ -894,10 +933,17 @@ public class Gameplay extends Pantalla {
     }
 
     //------------------------DIBUJAR LA PANTALLA------------------------
-
+public void dibujaFondo(Canvas c){
+    if (!estoyJugando) c.drawBitmap(bitmapFondo, 0, 0, null); // Dibujamos el fondo
+    else {
+        c.drawBitmap(fondo[0].imagen, fondo[0].posicion.x, fondo[0].posicion.y, null);
+        c.drawBitmap(fondo[1].imagen, fondo[1].posicion.x, fondo[1].posicion.y, null);
+    }
+}
     public void dibujaInicio(Canvas c) {
         c.drawText(txtEmpezar, anchoPantalla / 2, altoPantalla / 2 - tamañoPuntuacion / 2, pPunutacion);
         btnJugar.dibujar(c);
+        btnNoJugar.dibujar(c);
     }
 
     public void dibujaJuego(Canvas c) {
