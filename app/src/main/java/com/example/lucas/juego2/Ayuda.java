@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -32,9 +33,11 @@ public class Ayuda extends Pantalla {
     @Override
     public void dibujar(Canvas c) {
         try{
+            //fondo
             c.drawColor(Color.BLACK);
-            pTexto.setTextSize(altoPantalla/10);
-            c.drawText(txtAyuda,anchoPantalla/2,altoPantalla/8,pTexto);
+            //titulo
+            c.drawText(txtAyuda,anchoPantalla/2,altoPantalla/8,pTitulo);
+            //boton volver
             back.dibujar(c);
         }catch (Exception e){
 

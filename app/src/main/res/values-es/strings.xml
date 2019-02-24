@@ -19,4 +19,6 @@
     <string name="enviar">Enviar</string>
     <string name="siglas">Introduce tus siglas</string>
     <string name="giroscopio">Giroscopio</string>
+    <string name="noRecords">Borrar récords</string>
+    <string name="seguro">¿Seguro?</string>
 </resources>

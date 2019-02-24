@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.VibrationEffect;
@@ -24,11 +25,16 @@ public class Opciones extends Pantalla {
     private Boton nave,nave1,nave2,back,siMusica,noMusica,siVibracion,noVibracion,noGiroscopio,siGiroscopio,btnAux;
     private SharedPreferences.Editor editorPreferencias;
     private boolean vibracion,giroscopio;
+    private Paint pTexto;
     public Opciones(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
         super(contexto, idPantalla, anchoPantalla, altoPantalla);
         alturaBoton=altoPantalla/11;
         altoTexto=altoPantalla/15;
         espacioTextoBoton=altoPantalla/75;
+        //--------------FONDO--------------
+        fondo = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.fondo2);
+        fondo = Bitmap.createScaledBitmap(fondo, anchoPantalla, altoPantalla, true);
+
         //----------------ARCHIVO DE CONFIGURACION--------------
         editorPreferencias=preferencias.edit();
 
@@ -44,9 +50,9 @@ public class Opciones extends Pantalla {
         back.setImg(imgVolver);
 
         //--------------IMAGENES NAVE--------------
-        n=fondo = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.nave);
-        n1=fondo = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.nave1);
-        n2=fondo = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.nave2);
+        n = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.nave);
+        n1 = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.nave1);
+        n2 = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.nave2);
 
         //--------------ESCALADO IMAGENES NAVE--------------
         n = Bitmap.createScaledBitmap(n, anchoPantalla / 8, altoPantalla / 15, true);
@@ -61,6 +67,11 @@ public class Opciones extends Pantalla {
         txtNo=contexto.getString(R.string.no);
         txtVibracion=contexto.getString(R.string.vibracion);
         txtGiroscopio=contexto.getString(R.string.giroscopio);
+
+        pTexto = new Paint();
+        pTexto.setColor(Color.LTGRAY);
+        pTexto.setTextAlign(Paint.Align.CENTER);
+        pTexto.setTextSize(altoPantalla / 20);
 
         //para obtener el ancho de la cadena seleccionar nave
         pTexto.getTextBounds(selNave, 0, selNave.length(), selectNave);
@@ -129,12 +140,12 @@ public class Opciones extends Pantalla {
         try{
             //dibujo el fondo
             c.drawColor(Color.BLACK);
+            c.drawBitmap(fondo, 0, 0, null);
 
-            //tamaño texto opciones
-            pTexto.setTextSize(altoPantalla/10);
+
 
             //dibujo el texto opciones
-            c.drawText(opciones,anchoPantalla/2,altoPantalla/8,pTexto);
+            c.drawText(opciones,anchoPantalla/2,altoPantalla/8,pTitulo);
 
             //dibujo el boton para volver hacia atras
             back.dibujar(c);

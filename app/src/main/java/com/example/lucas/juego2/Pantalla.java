@@ -25,7 +25,7 @@ public class Pantalla {
     int idPantalla, altoPantalla, anchoPantalla;
     Bitmap fondo;
     Boolean perdi, pausa;
-    Paint pTexto, pTexto2, pBoton;
+    Paint pTitulo;
     Vibrator miVibrador;
 
     public Pantalla(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
@@ -35,19 +35,10 @@ public class Pantalla {
         this.idPantalla = idPantalla;
         this.altoPantalla = altoPantalla;
         this.anchoPantalla = anchoPantalla;
-        pTexto = new Paint();
-        pTexto.setColor(Color.LTGRAY);
-        pTexto.setTextAlign(Paint.Align.CENTER);
-        pTexto.setTextSize(altoPantalla / 20);
-
-
-        pTexto2 = new Paint();
-        pTexto2.setColor(Color.WHITE);
-        pTexto2.setTextAlign(Paint.Align.CENTER);
-        pTexto2.setTextSize(altoPantalla / 20);
-
-        pBoton = new Paint();
-        pBoton.setColor(Color.DKGRAY);
+        pTitulo = new Paint();
+        pTitulo.setColor(Color.LTGRAY);
+        pTitulo.setTextAlign(Paint.Align.CENTER);
+        pTitulo.setTextSize(altoPantalla / 10);
 
 
     }
