@@ -52,6 +52,10 @@ public class Pantalla {
 
     }
 
+    public AudioManager getAudioManager() {
+        return audioManager;
+    }
+
     // Actualizamos la física de los elementos en pantalla
     public void actualizarFisica() {
 

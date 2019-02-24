@@ -12,8 +12,10 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.SoundPool;
 import android.os.Build;
 import android.os.VibrationEffect;
 import android.support.annotation.ColorRes;
@@ -46,12 +48,17 @@ public class Gameplay extends Pantalla {
     private Bitmap imgPausa, imgPlay, imgMusicaOn, imgMusicaOff;
     private int codNave;
     private int margenLateralPausa;
-    private boolean musica;
     private int altoMenuPausa;
     private int ultimaPuntuacion;
     private SharedPreferences.Editor editorPreferencias;
     private SharedPreferences preferencias;
-    private boolean vibracion,giroscopio;
+    private boolean vibracion, giroscopio;
+
+    //efectos sonoros
+    private SoundPool efectos;
+    private int sonidoDisparoNave, sonidoMuereMarciano, sonidoMuereNave;
+    private int maxSonidosSimultaneos;
+
 
     //para las siglas
     private int pos;
@@ -74,28 +81,40 @@ public class Gameplay extends Pantalla {
     //timer para disparo marcianos
     private TimerTask task;
     private Timer miTimer;
+
     //------------------------CONSTRUCTOR------------------------
     public Gameplay(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
         super(contexto, idPantalla, anchoPantalla, altoPantalla);
+        //efectos sonoros
+        maxSonidosSimultaneos = 10;
+        if ((android.os.Build.VERSION.SDK_INT) >= 21) {
+            SoundPool.Builder spb = new SoundPool.Builder();
+            spb.setAudioAttributes(new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_MEDIA)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).build());
+            spb.setMaxStreams(maxSonidosSimultaneos);
+            this.efectos = spb.build();
+        } else {
+            this.efectos = new SoundPool(maxSonidosSimultaneos, AudioManager.STREAM_MUSIC, 0);
+        }
 
-
+        sonidoMuereNave = efectos.load(contexto, R.raw.muerenave, 1);
+        sonidoDisparoNave = efectos.load(contexto, R.raw.shot, 1);
+        sonidoMuereMarciano = efectos.load(contexto, R.raw.mueremarciano, 1);
         estoyJugando = false;
-        miTimer=new Timer();
+        miTimer = new Timer();
         task = new TimerTask() {
 
             @Override
-            public void run()
-            {
-                if(estoyJugando){
+            public void run() {
+                if (estoyJugando) {
                     disparanMarcianos();
-                    Log.i("HOLA","DISPARAN MARCIANOS");
                 }
             }
         };
         // Empezamos dentro de 10ms y luego lanzamos la tarea cada 1000ms
         miTimer.schedule(task, 2000, 2000);
 
-        probabilidadDisparoMarcianos=33;
+        probabilidadDisparoMarcianos = 33;
         empece = false;
         pausa = false;
         perdi = false;
@@ -190,7 +209,7 @@ public class Gameplay extends Pantalla {
         preferencias = contexto.getSharedPreferences("preferencias", Context.MODE_PRIVATE);
         editorPreferencias = preferencias.edit();
         //--------------BOOLEAN GIROSCOPIO--------------
-        giroscopio=preferencias.getBoolean("giroscopio",false);
+        giroscopio = preferencias.getBoolean("giroscopio", false);
         //--------------BOOLEAN VIBRACION--------------
         vibracion = preferencias.getBoolean("vibracion", true);
         //----------------BOTON PAUSA----------------
@@ -469,6 +488,13 @@ public class Gameplay extends Pantalla {
                             marcianos[i][j].setSalud(marcianos[i][j].getSalud() - 1);
                             //si salud es cero
                             if (marcianos[i][j].getSalud() == 0) {
+                                //reproduzco el sonido de cuando muere un marciano
+                                if (musica) {
+                                    int v = getAudioManager().getStreamVolume(AudioManager.STREAM_MUSIC);
+                                    efectos.play(sonidoMuereMarciano, v, v, 1, 0, 1);
+                                }
+
+
                                 //sumo a mi puntuacion global los puntos del marciano
                                 puntuacionGlobal += marcianos[i][j].getPuntuacion();
                                 //elimino el marciano
@@ -495,6 +521,13 @@ public class Gameplay extends Pantalla {
         } else {
             //si no hay bala, la genero
             miNave.disparar();
+
+            //reproduzco el sonido del disparo nave
+            if (musica) {
+                int v = getAudioManager().getStreamVolume(AudioManager.STREAM_MUSIC);
+                efectos.play(sonidoDisparoNave, v, v, 2, 0, 1);
+            }
+
         }
     }
 
@@ -542,9 +575,13 @@ public class Gameplay extends Pantalla {
                     vibrar();
                 }
                 //perdi
-
+                //sonido explosion nave
+                if (musica) {
+                    int v = getAudioManager().getStreamVolume(AudioManager.STREAM_MUSIC);
+                    efectos.play(sonidoMuereNave, v, v, 1, 0, 1);
+                }
                 estoyJugando = false;
-                mueveNave=false;
+                mueveNave = false;
                 acabaMusica();
                 if (mejoraPuntuacion()) {
                     pideSiglas = true;
@@ -554,7 +591,8 @@ public class Gameplay extends Pantalla {
             } else {
                 //si no ha chocado con la nave
                 //veo si ha chocado o no con la bala de la nave, si es asi, elimino ambas balas
-                if (balasMarcianos.get(i).getContenedor().intersect(miNave.getBala())){
+                if (balasMarcianos.get(i).getContenedor().intersect(miNave.getBala())) {
+
                     //elimino ambas balas
                     //elimino la bala marciano
                     balasMarcianos.remove(i);
@@ -563,7 +601,7 @@ public class Gameplay extends Pantalla {
                     miNave.setHayBala(false);
 
                     //si no choca con la nave ni con la bala de la nave
-                }else{
+                } else {
                     //veo si desaparece de la pantalla, si es así
                     if (balasMarcianos.get(i).getContenedor().top >= altoPantalla) {
                         //la elimino para no mover balas que no se ven
@@ -654,7 +692,7 @@ public class Gameplay extends Pantalla {
         switch (accion) {
             case MotionEvent.ACTION_DOWN:// Primer dedo toca
                 //si estoy jugando con la opcion del giroscopio desactivada, y pulso en la pos x donde está la nave, puedo mover la nave
-                if (!giroscopio&&pointerID==0&&estoyJugando && (event.getX() >= miNave.getContenedor().left && event.getX() <= miNave.getContenedor().right) || mueveNave) {
+                if (!giroscopio && pointerID == 0 && estoyJugando && (event.getX() >= miNave.getContenedor().left && event.getX() <= miNave.getContenedor().right) || mueveNave) {
                     mueveNave = true;
                 }
                 if (estoyJugando) {
@@ -740,8 +778,8 @@ public class Gameplay extends Pantalla {
             case MotionEvent.ACTION_POINTER_DOWN:  // Segundo y siguientes tocan
                 break;
             case MotionEvent.ACTION_UP:                     // Al levantar el último dedo
-                if(mueveNave){
-                    mueveNave=false;
+                if (mueveNave) {
+                    mueveNave = false;
                 }
                 //mientras estoy jugando
                 if (estoyJugando) {
@@ -830,7 +868,7 @@ public class Gameplay extends Pantalla {
             case MotionEvent.ACTION_MOVE: // Se mueve alguno de los dedos
 
                 //solo puedo poner mueve nave a true, cuando giroscopio está a false entre una de las condiciones
-                if(mueveNave&&pointerID==0){
+                if (mueveNave && pointerID == 0) {
                     miNave.moverNave(event.getX());
                 }
                 break;
@@ -1032,7 +1070,7 @@ public class Gameplay extends Pantalla {
         return letra;
     }
 
-    public void reanudaGame(){
+    public void reanudaGame() {
         //reanudo el gameplay
         estoyJugando = true;
         if (musica) {

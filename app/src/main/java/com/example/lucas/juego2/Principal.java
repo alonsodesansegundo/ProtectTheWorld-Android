@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.Window;
 
 public class Principal extends AppCompatActivity {
-Juego pantalla,aux;
+Juego pantalla;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,30 +51,35 @@ Juego pantalla,aux;
     protected void onStop() {
         super.onStop();
         if(pantalla.pantallaActual.musica){
-            pantalla.pantallaActual.paraMusica();
-        }
-        Log.i("HOLA","STOP");
+            pantalla.pantallaActual.acabaMusica();
 
+            Log.i("HOLA","STOP");
+        }
+
+        Log.i("HOLA",pantalla.pantallaActual.musica+"");
     }
 
     @Override
     protected void onPause() { //Another activity is taking focus (this activity is about to be "paused").
         super.onPause();
         if(pantalla.pantallaActual.musica){
-            pantalla.pantallaActual.paraMusica();
+            pantalla.pantallaActual.acabaMusica();
 
+            Log.i("HOLA","PAUSE");
         }
-        Log.i("HOLA","PAUSE");
 
+        Log.i("HOLA",pantalla.pantallaActual.musica+"");
     }
 
     @Override
     protected void onDestroy() { // The activity is about to become visible.
         super.onDestroy();
         if(pantalla.pantallaActual.musica){
-            pantalla.pantallaActual.paraMusica();
+            pantalla.pantallaActual.acabaMusica();
+            Log.i("HOLA","DESTROY");
+
         }
-        Log.i("HOLA","DESTROY");
+        Log.i("HOLA",pantalla.pantallaActual.musica+"");
     }
 
 }

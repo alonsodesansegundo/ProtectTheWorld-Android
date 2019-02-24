@@ -23,7 +23,7 @@ public class Opciones extends Pantalla {
     private int naveSeleccionada;
     private Boton nave,nave1,nave2,back,siMusica,noMusica,siVibracion,noVibracion,noGiroscopio,siGiroscopio,btnAux;
     private SharedPreferences.Editor editorPreferencias;
-    private boolean vibracion,musica,giroscopio;
+    private boolean vibracion,giroscopio;
     public Opciones(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
         super(contexto, idPantalla, anchoPantalla, altoPantalla);
         alturaBoton=altoPantalla/11;
@@ -260,6 +260,8 @@ public class Opciones extends Pantalla {
                 //si he pulsado si musica
                 if(pulsa(siMusica.getRectangulo(),event)&&siMusica.getBandera()){
                     musica=true;
+
+                    Log.i("HOLA",musica+"eeeeeeeeeeeeeeeee");
                     actualizaMusica();
                 }
                 if(pulsa(noMusica.getRectangulo(),event)&&noMusica.getBandera()){
