@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.Window;
 
 public class Principal extends AppCompatActivity {
-Juego pantalla;
+Juego juego;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,9 +26,9 @@ Juego pantalla;
         //fijo la orientacion
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-         pantalla = new Juego(this);
-        pantalla.setKeepScreenOn(true);
-        setContentView(pantalla);
+        juego = new Juego(this);
+        juego.setKeepScreenOn(true);
+        setContentView(juego);
     }
 
     @Override
@@ -50,36 +50,31 @@ Juego pantalla;
     @Override
     protected void onStop() {
         super.onStop();
-        if(pantalla.pantallaActual.musica){
-            pantalla.pantallaActual.acabaMusica();
-
-            Log.i("HOLA","STOP");
+        if(juego.pantallaActual.musica){
+            juego.pantallaActual.paraMusica();
         }
+        Log.i("HOLA","STOP");
 
-        Log.i("HOLA",pantalla.pantallaActual.musica+"");
     }
 
     @Override
     protected void onPause() { //Another activity is taking focus (this activity is about to be "paused").
         super.onPause();
-        if(pantalla.pantallaActual.musica){
-            pantalla.pantallaActual.acabaMusica();
+        if(juego.pantallaActual.musica){
+            juego.pantallaActual.paraMusica();
 
-            Log.i("HOLA","PAUSE");
         }
+        Log.i("HOLA","PAUSE");
 
-        Log.i("HOLA",pantalla.pantallaActual.musica+"");
     }
 
     @Override
     protected void onDestroy() { // The activity is about to become visible.
         super.onDestroy();
-        if(pantalla.pantallaActual.musica){
-            pantalla.pantallaActual.acabaMusica();
-            Log.i("HOLA","DESTROY");
-
+        if(juego.pantallaActual.musica){
+            juego.pantallaActual.paraMusica();
         }
-        Log.i("HOLA",pantalla.pantallaActual.musica+"");
+        Log.i("HOLA","DESTROY");
     }
 
 }

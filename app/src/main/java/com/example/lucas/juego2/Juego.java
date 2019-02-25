@@ -8,6 +8,11 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 public class Juego  extends SurfaceView implements SurfaceHolder.Callback{
+    // control de tiempo de la aplicación
+    long last,now;
+    int timeXFrame;
+    int maxFrames;
+
     private SurfaceHolder surfaceHolder;      // Interfaz abstracta para manejar la superficie de dibujado
     private Context context;                  // Contexto de la aplicación
     Pantalla pantallaActual;
@@ -18,6 +23,12 @@ public class Juego  extends SurfaceView implements SurfaceHolder.Callback{
 
     public Juego(Context context) {
         super(context);
+        // control de tiempo de la aplicación
+        now=System.currentTimeMillis();
+        last=System.currentTimeMillis();
+        maxFrames=100;                 // Número máximo de frames por segundo
+        timeXFrame=1000/maxFrames;    // Tasa de tiempo para dibujar un frame
+
         this.surfaceHolder = getHolder();       // Se obtiene el holder
         this.surfaceHolder.addCallback(this);   // Se indica donde van las funciones callback
         this.context = context;                 // Obtenemos el contexto
@@ -91,13 +102,12 @@ public class Juego  extends SurfaceView implements SurfaceHolder.Callback{
             hilo.start(); // se arranca el hilo
         }
     }
-
-
     // Clase Hilo en la cual implementamos el método de dibujo (y física) para que se haga en paralelo con la gestión de la interfaz de usuario
     class Hilo extends Thread {
         public Hilo(){
 
         }
+
 
         @Override
         public void run() {
@@ -109,18 +119,27 @@ public class Juego  extends SurfaceView implements SurfaceHolder.Callback{
             long tiempoReferencia = System.nanoTime();
 
             while (funcionando) {
-                Canvas c = null; //Necesario repintar todo el lienzo
-                try {
-                    if (!surfaceHolder.getSurface().isValid()) continue; // si la superficie no está preparada repetimos
-                    c = surfaceHolder.lockCanvas(); // Obtenemos el lienzo.  La sincronización es necesaria por ser recurso común
-                    synchronized (surfaceHolder) {
-
-                        pantallaActual.actualizarFisica();  // Movimiento de los elementos
-                        pantallaActual.dibujar(c);              // Dibujamos los elementos
+                now=System.currentTimeMillis();
+                if (now-last>=timeXFrame){ // si ya paso el tiempo necesario, dibujo. Control de FramesxSegundo en funcion del tiempo
+                    last=now;
+                    Canvas c=null; //Necesario repintar _todo el lienzo
+                    try {
+                        if (!surfaceHolder.getSurface().isValid()) continue; // si la superficie no está preparada repetimos
+                        c=surfaceHolder.lockCanvas(); // Obtenemos y bloqueamos el lienzo. La  sincronización es necesaria por ser recurso común
+                        synchronized (surfaceHolder) {
+                            pantallaActual.actualizarFisica(); // solo actualizo la fisica si no hay un modal por encima
+                            pantallaActual.dibujar(c);
+                        }
+                    }catch (Exception e){
+                        e.getStackTrace();
+                    } finally { //haya o no excepción, hay que liberar el lienzo
+                        if (c != null) surfaceHolder.unlockCanvasAndPost(c);
                     }
-                } finally {  // Haya o no excepción, hay que liberar el lienzo
-                    if (c != null) {
-                        surfaceHolder.unlockCanvasAndPost(c);
+                } else {
+                    try {
+                        Thread.sleep((long)timeXFrame - (now - last)); // duermo el tiempo necesario para el siguiente frame
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
                 }
                 // Calculamos el siguiente instante temporal donde volveremos a actualizar y pintar
@@ -137,6 +156,25 @@ public class Juego  extends SurfaceView implements SurfaceHolder.Callback{
                 }
 
             }
+            System.exit(0);
+//        @Override
+//        public void run() {
+//            while (funcionando) {
+//                Canvas c = null; //Necesario repintar todo el lienzo
+//                try {
+//                    if (!surfaceHolder.getSurface().isValid()) continue; // si la superficie no está preparada repetimos
+//                    c = surfaceHolder.lockCanvas(); // Obtenemos el lienzo.  La sincronización es necesaria por ser recurso común
+//                    synchronized (surfaceHolder) {
+//
+//                        pantallaActual.actualizarFisica();  // Movimiento de los elementos
+//                        pantallaActual.dibujar(c);              // Dibujamos los elementos
+//                    }
+//                } finally {  // Haya o no excepción, hay que liberar el lienzo
+//                    if (c != null) {
+//                        surfaceHolder.unlockCanvasAndPost(c);
+//                    }
+//                }
+//            }
         }
 
         // Activa o desactiva el funcionamiento del hilo
