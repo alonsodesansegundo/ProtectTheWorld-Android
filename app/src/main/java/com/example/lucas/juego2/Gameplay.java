@@ -251,7 +251,7 @@ public class Gameplay extends Pantalla {
         configuraMusica(R.raw.spectre);
         if (musica) {
             btnMusica.setImg(imgMusicaOff);
-            suenaMusica();
+           // suenaMusica();
         } else {
             btnMusica.setImg(imgMusicaOn);
             paraMusica();

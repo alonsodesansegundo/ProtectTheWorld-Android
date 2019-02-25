@@ -95,8 +95,8 @@ public class Pantalla {
     public void configuraMusica(int cancion) {
         mediaPlayer = MediaPlayer.create(contexto, cancion);
         audioManager = (AudioManager) contexto.getSystemService(Context.AUDIO_SERVICE);
-        int v = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-        mediaPlayer.setVolume(v / 2, v / 2);
+       // int v = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+       // mediaPlayer.setVolume(v / 2, v / 2);
 
         mediaPlayer.setLooping(true);
         suenaMusica();

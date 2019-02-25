@@ -1,6 +1,7 @@
 package com.example.lucas.juego2;
 
 import android.content.pm.ActivityInfo;
+import android.media.AudioManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,6 +25,8 @@ Juego juego;
                 | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
         decorView.setSystemUiVisibility(opciones);
         //fijo la orientacion
+
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         juego = new Juego(this);
@@ -43,6 +46,7 @@ Juego juego;
                 | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
         decorView.setSystemUiVisibility(opciones);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
     }
 
