@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.Window;
 
 public class Principal extends AppCompatActivity {
-Juego juego;
+    Juego juego;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
