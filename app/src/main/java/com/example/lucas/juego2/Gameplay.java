@@ -10,6 +10,10 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.SoundPool;
@@ -19,8 +23,11 @@ import android.util.Log;
 import android.view.MotionEvent;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import static android.content.Context.SENSOR_SERVICE;
 
 public class Gameplay extends Pantalla {
     //------------------------PROPIEDADES GAMEPLAY------------------------
@@ -67,6 +74,10 @@ public class Gameplay extends Pantalla {
             btnSigla2Abajo, btnSigla3Arriba, btnSigla3Abajo, btnEnviar;
     private Bitmap trianguloArriba, trianguloAbajo;
 
+    //giroscopio
+    Sensor sensorGiroscopio;
+    SensorManager sensorManager;
+    SensorEventListener escuchaGiroscopio;
     //para la bd
     private int ultimoId;
     private String consultaUltima, consultaId;
@@ -79,19 +90,19 @@ public class Gameplay extends Pantalla {
     private Timer miTimer;
 
     //------------------------CONSTRUCTOR------------------------
-    public Gameplay(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
+    public Gameplay(Context contexto, int idPantalla, final int anchoPantalla, int altoPantalla) {
         super(contexto, idPantalla, anchoPantalla, altoPantalla);
 
         bitmapFondo = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.universe2);
-        bitmapFondo = Bitmap.createScaledBitmap( bitmapFondo, anchoPantalla, bitmapFondo.getHeight(), true);
+        bitmapFondo = Bitmap.createScaledBitmap(bitmapFondo, anchoPantalla, bitmapFondo.getHeight(), true);
         fondo = new Fondo[2];
         fondo[0] = new Fondo(bitmapFondo, altoPantalla);
         fondo[1] = new Fondo(bitmapFondo, 0, fondo[0].posicion.y - bitmapFondo.getHeight());
 
 
-        vFondo=altoPantalla*0.001;
-        vBala=altoPantalla*0.01;
-        vBalaMarciano=vBala/3;
+        vFondo = altoPantalla * 0.001;
+        vBala = altoPantalla * 0.01;
+        vBalaMarciano = vBala / 3;
         //efectos sonoros
         maxSonidosSimultaneos = 10;
         if ((android.os.Build.VERSION.SDK_INT) >= 21) {
@@ -216,6 +227,36 @@ public class Gameplay extends Pantalla {
         editorPreferencias = preferencias.edit();
         //--------------BOOLEAN GIROSCOPIO--------------
         giroscopio = preferencias.getBoolean("giroscopio", false);
+        if (giroscopio) {
+            Log.i("SENSOR","SI");
+            sensorManager=(SensorManager)contexto.getSystemService(Context.SENSOR_SERVICE);
+
+            sensorGiroscopio=sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
+            escuchaGiroscopio=new SensorEventListener() {
+                @Override
+                public void onSensorChanged(SensorEvent sensorEvent) {
+                    // More code goes here
+                    if(estoyJugando){
+                        float nuevaPos=anchoPantalla/2+sensorEvent.values[0]*100;
+                        if(nuevaPos>=miNave.getImagen().getWidth()/2&&nuevaPos <=anchoPantalla-miNave.getImagen().getWidth()/2){
+
+                            miNave.moverNave(nuevaPos);
+                        }
+                    }
+
+
+                }
+
+                @Override
+                public void onAccuracyChanged(Sensor sensor, int i) {
+                }
+            };
+
+// Register the listener
+            sensorManager.registerListener(escuchaGiroscopio,
+                    sensorGiroscopio, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+
         //--------------BOOLEAN VIBRACION--------------
         vibracion = preferencias.getBoolean("vibracion", true);
         //----------------BOTON PAUSA----------------
@@ -372,6 +413,7 @@ public class Gameplay extends Pantalla {
                 anchoPantalla - margenLateralPausa * 2,
                 altoPantalla / 2 + altoMenuPausa / 2 - margenLateralPausa, Color.RED);
         btnNo.setTexto(txtNo, altoPantalla / 30, Color.BLACK);
+        sensorGiroscopio = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
     }
 
     // Actualizamos la física de los elementos en pantalla
