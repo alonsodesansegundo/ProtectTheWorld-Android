@@ -721,7 +721,11 @@ public class Gameplay extends Pantalla {
                     if (marcianos[i][j].limiteAbajo(altoPantalla - miNave.getImagen().getHeight())) {
                         //hago que el dispositivo vibre
                         vibrar();
-                        perdi = true;
+                        if (mejoraPuntuacion()) {
+                            pideSiglas = true;
+                        } else {
+                            perdi = true;
+                        }
                         estoyJugando = false;
                     }
                 }
