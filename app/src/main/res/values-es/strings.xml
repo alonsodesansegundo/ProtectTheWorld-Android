@@ -5,7 +5,7 @@
     <string name="opciones">Opciones</string>
     <string name="records">Récords</string>
     <string name="ayuda">Ayuda</string>
-    <string name="escogerNave">Seleccionar nave</string>
+    <string name="escogerNave">Selecciona tú nave</string>
     <string name="continuar">Continuar</string>
     <string name="salir">Salir</string>
     <string name="accion">¿Acción?</string>
@@ -22,4 +22,12 @@
     <string name="noRecords">Borrar récords</string>
     <string name="seguro">¿Seguro?</string>
     <string name="creditos">Créditos</string>
+    <string name="finalidad">La finalidad de este juego es sobrevivir el mayor tiempo posible y eliminar todos los marcianos que podamos antes de que estos nos invadan o nos eliminen</string>
+    <string name="infoNave">Nuestra nave espacial disparará de manera continuada, de manera que habrá un proyectil en la pantalla. Nos moveremos con el dedo o moviendo el móvil.</string>
+    <string name="infoMarcianos">Contamos con dos tipos de marcianos: marcianos que son eliminados tras recibir un único impacto, y otros marcianos que son eliminados tras recibir dos impactos. Estos últimos, en el momento que reciben el primer impacto se convierten en un marciano de un impacto.</string>
+    <string name="btnFinalidad">Finalidad</string>
+    <string name="btnMarcianos">Marcianos</string>
+    <string name="btnNiveles">Niveles</string>
+    <string name="btnNave">Nave</string>
+    <string name="infoNiveles">Este juego contará con niveles infinitos, pero que irán aumentando en cuanto a dificultad. A medida que vayamos completando niveles, se cambiará una fila de marcianos de un impacto por marcianos de dos impactos. Una vez pasemos el nivel en el que solamente hay marcianos de dos impactos, volveremos al comienzo de los niveles, pero los marcianos se moverán más rápido.</string>
 </resources>

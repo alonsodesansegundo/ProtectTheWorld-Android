@@ -582,11 +582,6 @@ public class Gameplay extends Pantalla {
             //si no hay bala, la genero
             miNave.disparar();
 
-            //reproduzco el sonido del disparo nave
-            if (musica) {
-                suenaDisparoNave();
-            }
-
         }
     }
 
@@ -594,10 +589,6 @@ public class Gameplay extends Pantalla {
     public void suenaMuereNave(){
         int v = getAudioManager().getStreamVolume(AudioManager.STREAM_MUSIC);
         efectos.play(sonidoMuereNave, v, v, 1, 0, 1);
-    }
-    public void suenaDisparoNave(){
-        int v = getAudioManager().getStreamVolume(AudioManager.STREAM_MUSIC);
-        efectos.play(sonidoDisparoNave, v, v, 2, 0, 1);
     }
 
     //------------------------DISPARO DE LOS MARCIANOS------------------------

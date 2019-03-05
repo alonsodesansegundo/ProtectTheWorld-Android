@@ -5,7 +5,7 @@
     <string name="opciones">Options</string>
     <string name="records">Records</string>
     <string name="ayuda">Help</string>
-    <string name="escogerNave">Select spaceship</string>
+    <string name="escogerNave">Select your spaceship</string>
     <string name="continuar">Continue</string>
     <string name="salir">Exit</string>
     <string name="accion">Action?</string>
@@ -19,4 +19,12 @@
     <string name="noRecords">Delete records</string>
     <string name="seguro">Sure?</string>
     <string name="creditos">Credits</string>
+    <string name="finalidad">" The purpose of this game is to survive as long as possible and eliminate all the Martians we can before they invade us or eliminate us"</string>
+    <string name="infoNave">" Our spacecraft will fire continuously, so there will be a projectile on the screen. We will move with the finger or moving the mobile."</string>
+    <string name="infoMarcianos">" We have two types of Martians: Martians who are eliminated after receiving a single impact, and other Martians who are eliminated after receiving two impacts. The latter, at the moment they receive the first impact, become a Martian of an impact."</string>
+    <string name="btnFinalidad">Purpose</string>
+    <string name="btnMarcianos">Martians</string>
+    <string name="btnNiveles">Levels</string>
+    <string name="btnNave">Spaceship</string>
+    <string name="infoNiveles">"This game will have infinite levels, but they will increase in difficulty. As we complete levels, we will change a row of Martians from an impact by Martians from two impacts. Once we pass the level where there are only Martians of two impacts, we will return to the beginning of the levels, but the Martians will move faster. "</string>
 </resources>

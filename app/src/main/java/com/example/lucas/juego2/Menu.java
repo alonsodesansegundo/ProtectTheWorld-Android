@@ -54,14 +54,14 @@ public class Menu extends Pantalla {
                 alto * 2 + 2 * espacio + alto,
                 anchoPantalla-ancho,
                 alto * 2 + 2 * espacio + 2 * alto,
-                Color.BLACK);
+                Color.TRANSPARENT);
         ayuda.setTexto(txtAyuda,altoPantalla/20, Color.WHITE,getTypeFace());
 
         creditos= new Boton(ancho,
                 alto * 2 + 2 * espacio + alto,
                 anchoPantalla/2,
                 alto * 2 + 2 * espacio + 2 * alto,
-                Color.BLUE);
+                Color.TRANSPARENT);
         creditos.setTexto(txtCreditos,altoPantalla/20, Color.WHITE,getTypeFace());
 
         //-----------------MUSICA-----------------
