@@ -8,6 +8,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.VibrationEffect;
 import android.util.Log;
@@ -22,6 +24,8 @@ public class Opciones extends Pantalla {
     private Rect selectNave;
     private int alturaBoton,espacioTextoBoton,altoTexto;
     private int naveSeleccionada;
+    private SensorManager sensorManager;
+    private Sensor sensorGiroscopio;
     private Boton nave,nave1,nave2,back,siMusica,noMusica,siVibracion,noVibracion,noGiroscopio,siGiroscopio,btnAux;
     private SharedPreferences.Editor editorPreferencias;
     private boolean vibracion,giroscopio;
@@ -69,6 +73,7 @@ public class Opciones extends Pantalla {
         txtGiroscopio=contexto.getString(R.string.giroscopio);
 
         pTexto = new Paint();
+        pTexto.setTypeface(getTypeFace());
         pTexto.setColor(Color.LTGRAY);
         pTexto.setTextAlign(Paint.Align.CENTER);
         pTexto.setTextSize(altoPantalla / 20);
@@ -99,21 +104,21 @@ public class Opciones extends Pantalla {
         configuraMusica(R.raw.submenus);
         siMusica=new Boton((anchoPantalla-anchoSelectNave)/2,altoPantalla/2-altoPantalla/20+espacioTextoBoton,
                 anchoPantalla/2,altoPantalla/2-altoPantalla/20+espacioTextoBoton+alturaBoton, Color.TRANSPARENT);
-        siMusica.setTexto(txtSi,altoTexto, Color.BLACK);
+        siMusica.setTexto(txtSi,altoTexto, Color.BLACK,getTypeFace());
         noMusica=new Boton(anchoPantalla/2,altoPantalla/2-altoPantalla/20+espacioTextoBoton,
                 anchoPantalla-(anchoPantalla-anchoSelectNave)/2,
                 altoPantalla/2-altoPantalla/20+espacioTextoBoton+alturaBoton, Color.TRANSPARENT);
-        noMusica.setTexto(txtNo,altoTexto, Color.BLACK);
+        noMusica.setTexto(txtNo,altoTexto, Color.BLACK,getTypeFace());
         actualizaMusica();
 
         //--------------BOTONES SI O NO VIBRACION--------------
         siVibracion=new Boton((anchoPantalla-anchoSelectNave)/2,altoPantalla/2-altoPantalla/25+altoPantalla/10+altoPantalla/15+espacioTextoBoton,
                 anchoPantalla/2,altoPantalla/2-altoPantalla/25+altoPantalla/10+altoPantalla/15+espacioTextoBoton+alturaBoton,Color.RED);
-        siVibracion.setTexto(txtSi,altoTexto,Color.BLACK);
+        siVibracion.setTexto(txtSi,altoTexto,Color.BLACK,getTypeFace());
 
         noVibracion=new Boton(anchoPantalla/2,altoPantalla/2-altoPantalla/25+altoPantalla/10+altoPantalla/15+espacioTextoBoton,
                 anchoPantalla-(anchoPantalla-anchoSelectNave)/2,altoPantalla/2-altoPantalla/25+altoPantalla/10+altoPantalla/15+espacioTextoBoton+alturaBoton, Color.RED);
-        noVibracion.setTexto(txtNo,altoTexto,Color.BLACK);
+        noVibracion.setTexto(txtNo,altoTexto,Color.BLACK,getTypeFace());
 
         //--------------BOOLEAN VIBRACION--------------
         vibracion=preferencias.getBoolean("vibracion",true);
@@ -123,11 +128,11 @@ public class Opciones extends Pantalla {
 
         siGiroscopio=new Boton((anchoPantalla-anchoSelectNave)/2,altoPantalla-altoPantalla/4+espacioTextoBoton*5,
                 anchoPantalla/2,altoPantalla-altoPantalla/4+espacioTextoBoton*5+alturaBoton,Color.RED);
-        siGiroscopio.setTexto(txtSi,altoTexto,Color.BLACK);
+        siGiroscopio.setTexto(txtSi,altoTexto,Color.BLACK,getTypeFace());
 
         noGiroscopio=new Boton(anchoPantalla/2,altoPantalla-altoPantalla/4+espacioTextoBoton*5,
                 anchoPantalla-(anchoPantalla-anchoSelectNave)/2,altoPantalla-altoPantalla/4+espacioTextoBoton*5+alturaBoton, Color.RED);
-        noGiroscopio.setTexto(txtNo,altoTexto,Color.BLACK);
+        noGiroscopio.setTexto(txtNo,altoTexto,Color.BLACK,getTypeFace());
 
 
         //---------------------BOOLEAN GIROSCOPIO---------------------
@@ -141,8 +146,6 @@ public class Opciones extends Pantalla {
             //dibujo el fondo
             c.drawColor(Color.BLACK);
             c.drawBitmap(fondo, 0, 0, null);
-
-
 
             //dibujo el texto opciones
             c.drawText(opciones,anchoPantalla/2,altoPantalla/8,pTitulo);
@@ -375,6 +378,14 @@ public class Opciones extends Pantalla {
 
     }
     public void actualizaGiroscopio(){
+        if(giroscopio){
+            sensorManager = (SensorManager) contexto.getSystemService(Context.SENSOR_SERVICE);
+            sensorGiroscopio = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
+            if(sensorGiroscopio==null){
+                giroscopio=!giroscopio;
+                Toast.makeText(contexto,"No tienes dicho sensor",Toast.LENGTH_SHORT).show();
+            }
+        }
         if(giroscopio){
             siGiroscopio.setColor(Color.LTGRAY);
             noGiroscopio.setColor(Color.DKGRAY);

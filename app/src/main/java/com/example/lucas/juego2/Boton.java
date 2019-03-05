@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 
 public class Boton {
     private Paint p, pTextoBtn;
@@ -12,7 +13,6 @@ public class Boton {
     private boolean bandera;
     private Bitmap img;
     private String texto;
-
     public Boton(int left, int top, int right, int bottom, int color) {
         this.rectangulo = new Rect(left, top, right, bottom);
         bandera = false;
@@ -24,9 +24,10 @@ public class Boton {
         this.img = null;
     }
 
-    public void setTexto(String texto, int tamaño, int color) {
+    public void setTexto(String texto, int tamaño, int color,Typeface tf) {
         this.texto = texto;
         pTextoBtn.setColor(color);
+        pTextoBtn.setTypeface(tf);
         pTextoBtn.setTextSize(tamaño);
     }
 

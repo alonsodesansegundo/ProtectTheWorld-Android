@@ -8,6 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Vibrator;
@@ -17,6 +18,7 @@ import android.view.SurfaceView;
 import android.view.SurfaceHolder;
 
 public class Pantalla {
+    private String fuente;
     SharedPreferences preferencias;
     private MediaPlayer mediaPlayer;
     private AudioManager audioManager;
@@ -27,20 +29,27 @@ public class Pantalla {
     Boolean perdi, pausa;
     Paint pTitulo;
     Vibrator miVibrador;
-
+private Typeface typeFace;
     public Pantalla(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
         preferencias = contexto.getSharedPreferences("preferencias", Context.MODE_PRIVATE);
         miVibrador = (Vibrator) contexto.getSystemService(Context.VIBRATOR_SERVICE);
+        fuente="fuentes/miFuente.ttf";
+        typeFace= Typeface.createFromAsset(contexto.getAssets(),fuente);
         this.contexto = contexto;
         this.idPantalla = idPantalla;
         this.altoPantalla = altoPantalla;
         this.anchoPantalla = anchoPantalla;
         pTitulo = new Paint();
+        pTitulo.setTypeface(typeFace);
         pTitulo.setColor(Color.LTGRAY);
         pTitulo.setTextAlign(Paint.Align.CENTER);
         pTitulo.setTextSize(altoPantalla / 10);
 
 
+    }
+
+    public Typeface getTypeFace() {
+        return typeFace;
     }
 
     public AudioManager getAudioManager() {

@@ -217,7 +217,7 @@ public class Gameplay extends Pantalla {
                 anchoPantalla / 2 + anchoPantalla / 10,
                 altoPantalla / 3 * 2 + altoPantalla / 20 * 2, Color.GREEN);
 
-        btnEnviar.setTexto(txtEnviar, altoPantalla / 40, Color.BLACK);
+        btnEnviar.setTexto(txtEnviar, altoPantalla / 40, Color.BLACK,getTypeFace());
         //-----------------MENU PAUSA----------------
         margenLateralPausa = anchoPantalla / 20;
         altoMenuPausa = altoPantalla / 4;
@@ -228,33 +228,27 @@ public class Gameplay extends Pantalla {
         //--------------BOOLEAN GIROSCOPIO--------------
         giroscopio = preferencias.getBoolean("giroscopio", false);
         if (giroscopio) {
-            Log.i("SENSOR","SI");
-            sensorManager=(SensorManager)contexto.getSystemService(Context.SENSOR_SERVICE);
+            sensorManager = (SensorManager) contexto.getSystemService(Context.SENSOR_SERVICE);
 
-            sensorGiroscopio=sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
-            escuchaGiroscopio=new SensorEventListener() {
-                @Override
-                public void onSensorChanged(SensorEvent sensorEvent) {
-                    // More code goes here
-                    if(estoyJugando){
-                        float nuevaPos=anchoPantalla/2+sensorEvent.values[0]*100;
-                        if(nuevaPos>=miNave.getImagen().getWidth()/2&&nuevaPos <=anchoPantalla-miNave.getImagen().getWidth()/2){
-
-                            miNave.moverNave(nuevaPos);
+                sensorGiroscopio = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
+                escuchaGiroscopio=new SensorEventListener() {
+                    @Override
+                    public void onSensorChanged(SensorEvent sensorEvent) {
+                        // More code goes here
+                        if(estoyJugando){
+                            float nuevaPos=anchoPantalla/2+sensorEvent.values[0]*100;
+                            if(nuevaPos>=miNave.getImagen().getWidth()/2&&nuevaPos <=anchoPantalla-miNave.getImagen().getWidth()/2){
+                                miNave.moverNave(nuevaPos);
+                            }
                         }
                     }
-
-
-                }
-
-                @Override
-                public void onAccuracyChanged(Sensor sensor, int i) {
-                }
-            };
-
-// Register the listener
-            sensorManager.registerListener(escuchaGiroscopio,
-                    sensorGiroscopio, SensorManager.SENSOR_DELAY_NORMAL);
+                    @Override
+                    public void onAccuracyChanged(Sensor sensor, int i) {
+                    }
+                };
+                // Register the listener
+                sensorManager.registerListener(escuchaGiroscopio,
+                        sensorGiroscopio, SensorManager.SENSOR_DELAY_NORMAL);
         }
 
         //--------------BOOLEAN VIBRACION--------------
@@ -304,6 +298,7 @@ public class Gameplay extends Pantalla {
         tamañoPuntuacion = altoPantalla / 15;
         //-----------------PAINT PUNTUACIÓN-----------------
         pPunutacion = new Paint();
+        pPunutacion.setTypeface(getTypeFace());
         pPunutacion.setColor(Color.WHITE);
         pPunutacion.setTextAlign(Paint.Align.CENTER);
         pPunutacion.setTextSize(tamañoPuntuacion);
@@ -385,35 +380,34 @@ public class Gameplay extends Pantalla {
         btnReanudar = new Boton(margenLateralPausa * 2, altoPantalla / 2,
                 anchoPantalla / 2 - margenLateralPausa,
                 altoPantalla / 2 + altoMenuPausa / 2 - margenLateralPausa, Color.GREEN);
-        btnReanudar.setTexto(txtContinuar, altoPantalla / 30, Color.BLACK);
+        btnReanudar.setTexto(txtContinuar, altoPantalla / 30, Color.BLACK,getTypeFace());
 
         //----------------BTN SALIR----------------
         btnSalir = new Boton(anchoPantalla / 2 + margenLateralPausa, altoPantalla / 2,
                 anchoPantalla - margenLateralPausa * 2,
                 altoPantalla / 2 + altoMenuPausa / 2 - margenLateralPausa, Color.RED);
-        btnSalir.setTexto(txtSalir, altoPantalla / 30, Color.BLACK);
+        btnSalir.setTexto(txtSalir, altoPantalla / 30, Color.BLACK,getTypeFace());
 
         //----------------BTN PARA EMPEZAR A JUGAR----------------
         btnJugar = new Boton(anchoPantalla / 2 - anchoPantalla / 4, altoPantalla / 2,
                 anchoPantalla / 2 , altoPantalla / 2 + altoPantalla / 11, Color.GREEN);
-        btnJugar.setTexto(txtSi, altoPantalla / 15, Color.BLACK);
+        btnJugar.setTexto(txtSi, altoPantalla / 15, Color.BLACK,getTypeFace());
 
         btnNoJugar= new Boton(anchoPantalla / 2 , altoPantalla / 2,
                 anchoPantalla / 2 + anchoPantalla / 4, altoPantalla / 2 + altoPantalla / 11, Color.RED);
-        btnNoJugar.setTexto(txtNo, altoPantalla / 15, Color.BLACK);
+        btnNoJugar.setTexto(txtNo, altoPantalla / 15, Color.BLACK,getTypeFace());
 
         //----------------BTN PARA REPETIR O NO----------------
         btnSi = new Boton(margenLateralPausa * 2, altoPantalla / 2,
                 anchoPantalla / 2 - margenLateralPausa,
                 altoPantalla / 2 + altoMenuPausa / 2 - margenLateralPausa, Color.GREEN);
-        btnSi.setTexto(txtSi, altoPantalla / 30, Color.BLACK);
+        btnSi.setTexto(txtSi, altoPantalla / 30, Color.BLACK,getTypeFace());
 
 
         btnNo = new Boton(anchoPantalla / 2 + margenLateralPausa, altoPantalla / 2,
                 anchoPantalla - margenLateralPausa * 2,
                 altoPantalla / 2 + altoMenuPausa / 2 - margenLateralPausa, Color.RED);
-        btnNo.setTexto(txtNo, altoPantalla / 30, Color.BLACK);
-        sensorGiroscopio = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+        btnNo.setTexto(txtNo, altoPantalla / 30, Color.BLACK,getTypeFace());
     }
 
     // Actualizamos la física de los elementos en pantalla
@@ -1025,6 +1019,7 @@ public class Gameplay extends Pantalla {
 
         //fondo
         Paint a = new Paint();
+        a.setTypeface(getTypeFace());
         a.setColor(Color.LTGRAY);
         a.setAlpha(125);
         c.drawRect(0, 0, anchoPantalla, altoPantalla, a);
@@ -1046,6 +1041,7 @@ public class Gameplay extends Pantalla {
     public void dibujaPerdi(Canvas c) {
         //fondo
         Paint a = new Paint();
+        a.setTypeface(getTypeFace());
         a.setColor(Color.LTGRAY);
         a.setAlpha(125);
         c.drawRect(0, 0, anchoPantalla, altoPantalla, a);
@@ -1066,6 +1062,7 @@ public class Gameplay extends Pantalla {
     public void dibujaPideSiglas(Canvas c) {
         //fondo
         Paint a = new Paint();
+        a.setTypeface(getTypeFace());
         a.setColor(Color.LTGRAY);
         a.setAlpha(125);
         c.drawRect(0, 0, anchoPantalla, altoPantalla, a);

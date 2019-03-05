@@ -36,33 +36,33 @@ public class Menu extends Pantalla {
 
         //-----------------BOTONES-----------------
         jugar = new Boton(ancho, alto, anchoPantalla-ancho, alto * 2, Color.TRANSPARENT);
-        jugar.setTexto("Protect the World",altoPantalla / 20, Color.WHITE);
+        jugar.setTexto("PROTECT THE WORLD",altoPantalla / 20, Color.WHITE,getTypeFace());
 
         opciones = new Boton(ancho,
                 alto * 2 + espacio,
                 ancho * 5,
                 alto * 2 + espacio + alto
                 , Color.TRANSPARENT);
-        opciones.setTexto(txtOpciones,altoPantalla/20, Color.WHITE);
+        opciones.setTexto(txtOpciones,altoPantalla/20, Color.WHITE,getTypeFace());
         records = new Boton(anchoPantalla/2,
                 alto * 2 + espacio,
                 anchoPantalla-ancho,
                 alto * 2 + espacio + alto,
                 Color.TRANSPARENT);
-        records.setTexto(txtRecords,altoPantalla/20, Color.WHITE);
+        records.setTexto(txtRecords,altoPantalla/20, Color.WHITE,getTypeFace());
         ayuda = new Boton(anchoPantalla/2,
                 alto * 2 + 2 * espacio + alto,
                 anchoPantalla-ancho,
                 alto * 2 + 2 * espacio + 2 * alto,
                 Color.BLACK);
-        ayuda.setTexto(txtAyuda,altoPantalla/20, Color.WHITE);
+        ayuda.setTexto(txtAyuda,altoPantalla/20, Color.WHITE,getTypeFace());
 
         creditos= new Boton(ancho,
                 alto * 2 + 2 * espacio + alto,
                 anchoPantalla/2,
                 alto * 2 + 2 * espacio + 2 * alto,
                 Color.BLUE);
-        creditos.setTexto(txtCreditos,altoPantalla/20, Color.WHITE);
+        creditos.setTexto(txtCreditos,altoPantalla/20, Color.WHITE,getTypeFace());
 
         //-----------------MUSICA-----------------
         musica=preferencias.getBoolean("musica",true);

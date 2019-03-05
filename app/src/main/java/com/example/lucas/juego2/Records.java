@@ -48,13 +48,13 @@ txtSeguro=contexto.getString(R.string.seguro);
         btnSi = new Boton(margenMenu * 2, altoPantalla / 2,
                 anchoPantalla / 2 - margenMenu,
                 altoPantalla / 2 + altoMenu / 2 - margenMenu, Color.GREEN);
-        btnSi.setTexto(txtSi, altoPantalla / 30, Color.BLACK);
+        btnSi.setTexto(txtSi, altoPantalla / 30, Color.BLACK,getTypeFace());
 
         //----------------BTN NO----------------
         btnNo = new Boton(anchoPantalla / 2 + margenMenu, altoPantalla / 2,
                 anchoPantalla - margenMenu * 2,
                 altoPantalla / 2 + altoMenu / 2 - margenMenu, Color.RED);
-        btnNo.setTexto(txtNo, altoPantalla / 30, Color.BLACK);
+        btnNo.setTexto(txtNo, altoPantalla / 30, Color.BLACK,getTypeFace());
 
         fondo = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.fondo2);
         fondo = Bitmap.createScaledBitmap(fondo, anchoPantalla, altoPantalla, true);
@@ -63,7 +63,7 @@ txtSeguro=contexto.getString(R.string.seguro);
                 altoPantalla -altoPantalla/10,
                 anchoPantalla / 2 + anchoPantalla / 5,
                 altoPantalla-altoPantalla/100, Color.TRANSPARENT);
-        btnBorrarRecords.setTexto(txtRecords,altoPantalla / 40,Color.WHITE);
+        btnBorrarRecords.setTexto(txtRecords,altoPantalla / 40,Color.WHITE,getTypeFace());
         contador=0;
         altoTexto=altoPantalla/20;
         //--------------IMAGENES--------------
@@ -83,6 +83,7 @@ txtSeguro=contexto.getString(R.string.seguro);
         }
 
         pPuntuaciones=new Paint();
+        pPuntuaciones.setTypeface(getTypeFace());
         pPuntuaciones.setTextSize(altoTexto);
         pPuntuaciones.setColor(Color.WHITE);
         txtRecords=contexto.getString(R.string.records);
@@ -239,6 +240,7 @@ txtSeguro=contexto.getString(R.string.seguro);
 
         //fondo
          pMenu = new Paint();
+         pMenu.setTypeface(getTypeFace());
         pMenu.setColor(Color.WHITE);
         c.drawRect(margenMenu, altoPantalla / 2 - altoMenu / 2,
                 anchoPantalla - margenMenu, altoPantalla / 2 + altoMenu / 2, pMenu);
