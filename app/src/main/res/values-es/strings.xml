@@ -30,4 +30,6 @@
     <string name="btnNiveles">Niveles</string>
     <string name="btnNave">Nave</string>
     <string name="infoNiveles">Este juego contará con niveles infinitos, pero que irán aumentando en cuanto a dificultad. A medida que vayamos completando niveles, se cambiará una fila de marcianos de un impacto por marcianos de dos impactos. Una vez pasemos el nivel en el que solamente hay marcianos de dos impactos, volveremos al comienzo de los niveles, pero los marcianos se moverán más rápido.</string>
+    <string name="oneD">Un impacto</string>
+    <string name="twoD">Dos impactos</string>
 </resources>

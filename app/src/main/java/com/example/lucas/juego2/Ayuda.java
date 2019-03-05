@@ -17,7 +17,7 @@ public class Ayuda extends Pantalla {
     private Bitmap m1,m2;
     private float primeraY, contador, posX;
     private String[] finalidad, infoNave, infoNiveles, infoMarcianos;
-    private String txtAyuda, txtFinalidad, txtNave, txtNiveles, txtMarcianos, tFin, tNave, tNiveles, tMarcianos;
+    private String txtAyuda, txtFinalidad, txtNave, txtNiveles, txtMarcianos, tFin, tNave, tNiveles, tMarcianos,impacto1,impacto2;
     private Paint pTexto,pImpactos;
     private Boton btnFinalidad, btnNiveles, btnNave, btnMarcianos;
     private String modo;
@@ -26,7 +26,7 @@ public class Ayuda extends Pantalla {
     public Ayuda(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
         super(contexto, idPantalla, anchoPantalla, altoPantalla);
         pImpactos=new Paint();
-        pImpactos.setColor(color);
+        pImpactos.setColor(Color.WHITE);
         pImpactos.setTypeface(getTypeFace());
         pImpactos.setTextSize(altoPantalla/30);
         pImpactos.setTextAlign(Paint.Align.CENTER);
@@ -52,6 +52,8 @@ public class Ayuda extends Pantalla {
         tNave = contexto.getString(R.string.btnNave);
         tNiveles = contexto.getString(R.string.btnNiveles);
         tMarcianos = contexto.getString(R.string.btnMarcianos);
+        impacto1=contexto.getString(R.string.oneD);
+        impacto2=contexto.getString(R.string.twoD);
 
         finalidad = txtFinalidad.split(" ");
         infoNave = txtNave.split(" ");
@@ -151,7 +153,8 @@ public class Ayuda extends Pantalla {
 
         c.drawBitmap(m1, anchoPantalla/20+m1.getWidth(), altoPantalla-altoPantalla/4, null);
         c.drawBitmap(m2, anchoPantalla-m2.getWidth()*2-anchoPantalla/20,altoPantalla-altoPantalla/4 , null);
-        c.drawText("1 impacto",anchoPantalla/20+m1.getWidth()+m1.getWidth()/2,altoPantalla-altoPantalla/4+m1.getHeight(),pImpactos);
+        c.drawText(impacto1,anchoPantalla/20+m1.getWidth()+m1.getWidth()/2,altoPantalla-altoPantalla/4+m1.getHeight()*2,pImpactos);
+        c.drawText(impacto2,anchoPantalla-anchoPantalla/20-m2.getWidth()*2+m2.getWidth()/2,altoPantalla-altoPantalla/4+m1.getHeight()*2,pImpactos);
     }
 
     @Override

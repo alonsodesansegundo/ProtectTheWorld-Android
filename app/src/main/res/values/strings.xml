@@ -26,4 +26,6 @@
     <string name="btnNiveles">Levels</string>
     <string name="btnNave">Spaceship</string>
     <string name="infoNiveles">This game will have infinite levels, but they will increase in difficulty. As we complete levels, we will change a row of Martians from an impact by Martians from two impacts. Once we pass the level where there are only Martians of two impacts, we will return to the beginning of the levels, but the Martians will move faster.</string>
+    <string name="oneD">One shot</string>
+    <string name="twoD">Two shots</string>
 </resources>
