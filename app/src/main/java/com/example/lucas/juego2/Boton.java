@@ -38,15 +38,15 @@ public class Boton {
     /**
      * Método que se utilizará para introducir texto dentro del boton
      * @param texto Texto que queremos escribir
-     * @param tamaño Tamaño que tendrá nuestro texto
+     * @param tamanho tamanho que tendrá nuestro texto
      * @param color Entero que represente el color que tendrá nuestro texto
      * @param tf Objeto Typeface con el que cambiaremos la fuente
      */
-    public void setTexto(String texto, int tamaño, int color,Typeface tf) {
+    public void setTexto(String texto, int tamanho, int color,Typeface tf) {
         this.texto = texto;
         pTextoBtn.setColor(color);
         pTextoBtn.setTypeface(tf);
-        pTextoBtn.setTextSize(tamaño);
+        pTextoBtn.setTextSize(tamanho);
     }
 
     /**

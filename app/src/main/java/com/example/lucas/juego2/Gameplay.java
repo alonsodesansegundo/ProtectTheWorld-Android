@@ -41,7 +41,7 @@ public class Gameplay extends Pantalla {
     private boolean empece,perdi,pausa;
     private int nivel, filas, columnas, puntuacionGlobal;
     private Bitmap imgMarciano1, imgMarciano2, imgNave, proyectilMarciano, balaNave, explosion;
-    private float primeraX, primeraY, tamañoPuntuacion;
+    private float primeraX, primeraY, tamanhoPuntuacion;
     private double vMarciano,vBala,vBalaMarciano,vFondo;
     private Marciano marcianos[][];
     private Nave miNave;
@@ -68,7 +68,7 @@ public class Gameplay extends Pantalla {
 
     //para las siglas
     private int pos;
-    private int tamañoSiglas;
+    private int tamanhoSiglas;
     private ArrayList<Character> abecedario;
     private boolean pideSiglas, tengoSiglas, hiceInsert;
     private char[] siglas;
@@ -170,7 +170,7 @@ perdi=false;
         siglas[1] = abecedario.get(0);
         siglas[2] = abecedario.get(0);
 
-        tamañoSiglas = altoPantalla / 12;
+        tamanhoSiglas = altoPantalla / 12;
         //----------------BOTONES SIGLAS----------------
 
         //----------------IMAGENES TRIANGULOS----------------
@@ -305,13 +305,13 @@ perdi=false;
         tiempoVibracion = 1000;
 
         //----------------ALTO DE LA PUNTUACIÓN----------------
-        tamañoPuntuacion = altoPantalla / 15;
+        tamanhoPuntuacion = altoPantalla / 15;
         //-----------------PAINT PUNTUACIÓN-----------------
         pPunutacion = new Paint();
         pPunutacion.setTypeface(getTypeFace());
         pPunutacion.setColor(Color.WHITE);
         pPunutacion.setTextAlign(Paint.Align.CENTER);
-        pPunutacion.setTextSize(tamañoPuntuacion);
+        pPunutacion.setTextSize(tamanhoPuntuacion);
 
         //-----------------PUNTUACIÓN GLOBAL-----------------
         puntuacionGlobal = 0;
@@ -1054,7 +1054,7 @@ perdi=false;
      * @param c Objeto Canvas para poder dibujar
      */
     public void dibujaInicio(Canvas c) {
-        c.drawText(txtEmpezar, anchoPantalla / 2, altoPantalla / 2 - tamañoPuntuacion / 2, pPunutacion);
+        c.drawText(txtEmpezar, anchoPantalla / 2, altoPantalla / 2 - tamanhoPuntuacion / 2, pPunutacion);
         btnJugar.dibujar(c);
         btnNoJugar.dibujar(c);
     }
@@ -1166,11 +1166,11 @@ perdi=false;
         btnEnviar.dibujar(c);
         //dibujo las siglas
         a.setColor(Color.BLACK);
-        a.setTextSize(tamañoSiglas);
+        a.setTextSize(tamanhoSiglas);
         a.setTextAlign(Paint.Align.CENTER);
-        c.drawText(siglas[0] + "", margenLateralPausa * 3, altoPantalla / 2 + tamañoSiglas, a);
+        c.drawText(siglas[0] + "", margenLateralPausa * 3, altoPantalla / 2 + tamanhoSiglas, a);
         c.drawText(siglas[1] + "", anchoPantalla / 2, altoPantalla / 2 + altoPantalla / 12, a);
-        c.drawText(siglas[2] + "", anchoPantalla - margenLateralPausa * 3, altoPantalla / 2 + tamañoSiglas, a);
+        c.drawText(siglas[2] + "", anchoPantalla - margenLateralPausa * 3, altoPantalla / 2 + tamanhoSiglas, a);
 
         //dibujo la pregunta
         a.setTextSize(altoPantalla / 20);
