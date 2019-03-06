@@ -19,7 +19,7 @@ public class Creditos extends Pantalla {
     private int posY;
     private Bitmap imgVolver;
     private Boton back;
-    private String txtCreditos, txtMusica, txtFuente, txtImagenes, txtImg, txtImg2, txtMusic, txtFont, txtHecho, txtAyuda;
+    private String txtCreditos, txtMusica, txtFuente, txtImagenes, txtImg, txtImg2, txtMusic, txtFont, txtCanal,txtYotube,txtHecho, txtAyuda;
     private Paint pTexto, pTexto2;
 
     public Creditos(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
@@ -37,7 +37,7 @@ public class Creditos extends Pantalla {
         pTexto2.setTypeface(getTypeFace());
         pTexto2.setColor(Color.WHITE);
         pTexto2.setTextAlign(Paint.Align.CENTER);
-        pTexto2.setTextSize(altoPantalla / 25);
+        pTexto2.setTextSize(altoPantalla / 30);
         //--------------STRINGS--------------
         txtCreditos = contexto.getString(R.string.creditos);
         txtMusica = contexto.getString(R.string.musica);
@@ -49,7 +49,8 @@ public class Creditos extends Pantalla {
         txtFont = contexto.getString(R.string.font1);
         txtHecho = contexto.getString(R.string.hecho);
         txtAyuda = contexto.getString(R.string.conAyuda);
-
+txtYotube=contexto.getString(R.string.youtube);
+txtCanal=contexto.getString(R.string.canalYT);
         //-------------FONDO-------------
         fondo = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.fondo2);
         fondo = Bitmap.createScaledBitmap(fondo, anchoPantalla, altoPantalla, true);
@@ -78,6 +79,8 @@ public class Creditos extends Pantalla {
         //texto de agradecimientos
         c.drawText(txtMusica, anchoPantalla / 2, posY, pTexto);
         c.drawText(txtMusic, anchoPantalla / 2, posY + pTexto.getTextSize(), pTexto2);
+        c.drawText(txtYotube,anchoPantalla/2,posY+pTexto.getTextSize()+pTexto2.getTextSize(),pTexto2);
+        c.drawText(txtCanal,anchoPantalla/2,posY+pTexto.getTextSize()+pTexto2.getTextSize()*2,pTexto2);
     }
 
     public void dibujaFuente(Canvas c) {
