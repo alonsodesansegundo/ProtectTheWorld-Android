@@ -4,12 +4,27 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+/**
+ * Clase para poder realizar la conexión a la base de datos
+ */
 public class BaseDeDatos extends SQLiteOpenHelper {
     String sqlCreateTable=" CREATE TABLE puntuaciones ( id INTEGER,siglas TEXT, puntuacion INTEGER)";
+
+    /**
+     *
+     * @param context Objeto contexto
+     * @param name Nombre que tendrá la base de datos
+     * @param factory Objeto SQLiteDatabase.CursorFactory
+     * @param version Entero que representa la version
+     */
     public BaseDeDatos(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
     }
 
+    /**
+     * Este método se encarga de crear la tabla puntuaciones
+     * @param db Objeto SQLiteDatabase
+     */
     @Override
     public void onCreate(SQLiteDatabase db) {
         //cuando instalo la app en el movil
