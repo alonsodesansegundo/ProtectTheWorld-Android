@@ -20,7 +20,7 @@ public class Ayuda extends Pantalla {
     private Bitmap m1, m2;
     private float primeraY, contador, posX;
     private String[] finalidad, infoNave, infoNiveles, infoMarcianos;
-    private String txtAyuda, txtFinalidad, txtNave, txtNiveles, txtMarcianos, tFin, tNave, tNiveles, tMarcianos, impacto1, impacto2;
+    private String txtAyuda, txtFinalidad,txtP,txtP2, txtNave, txtNiveles, txtMarcianos, tFin, tNave, tNiveles, tMarcianos, impacto1, impacto2;
     private Paint pTexto, pImpactos;
     private Boton btnFinalidad, btnNiveles, btnNave, btnMarcianos;
     private String modo;
@@ -64,7 +64,8 @@ public class Ayuda extends Pantalla {
         tMarcianos = contexto.getString(R.string.btnMarcianos);
         impacto1 = contexto.getString(R.string.oneD);
         impacto2 = contexto.getString(R.string.twoD);
-
+txtP=contexto.getString(R.string.points);
+txtP2=contexto.getString(R.string.points2);
         finalidad = txtFinalidad.split(" ");
         infoNave = txtNave.split(" ");
         infoNiveles = txtNiveles.split(" ");
@@ -185,7 +186,11 @@ public class Ayuda extends Pantalla {
         c.drawBitmap(m1, anchoPantalla / 20 + m1.getWidth(), altoPantalla - altoPantalla / 4, null);
         c.drawBitmap(m2, anchoPantalla - m2.getWidth() * 2 - anchoPantalla / 20, altoPantalla - altoPantalla / 4, null);
         c.drawText(impacto1, anchoPantalla / 20 + m1.getWidth() + m1.getWidth() / 2, altoPantalla - altoPantalla / 4 + m1.getHeight() * 2, pImpactos);
+        c.drawText(txtP, anchoPantalla / 20 + m1.getWidth() + m1.getWidth() / 2, altoPantalla - altoPantalla / 4 + m1.getHeight() * 3, pImpactos);
+
         c.drawText(impacto2, anchoPantalla - anchoPantalla / 20 - m2.getWidth() * 2 + m2.getWidth() / 2, altoPantalla - altoPantalla / 4 + m1.getHeight() * 2, pImpactos);
+        c.drawText(txtP2, anchoPantalla - anchoPantalla / 20 - m2.getWidth() * 2 + m2.getWidth() / 2, altoPantalla - altoPantalla / 4 + m1.getHeight() * 3, pImpactos);
+
     }
 
     /**

@@ -40,4 +40,6 @@
     <string name="conAyuda">"With the help of "</string>
     <string name="youtube">https://www.youtube.com/</string>
     <string name="canalYT">Channel: Free Music for Commercial Use</string>
+    <string name="points">10 points</string>
+    <string name="points2">25 points</string>
 </resources>

@@ -35,14 +35,14 @@ import static android.content.Context.SENSOR_SERVICE;
 public class Gameplay extends Pantalla {
     //------------------------PROPIEDADES GAMEPLAY------------------------
     private Fondo[] fondo;
-    private  Bitmap bitmapFondo;
+    private Bitmap bitmapFondo;
     private int probabilidadDisparoMarcianos;
     private boolean estoyJugando;
-    private boolean empece,perdi,pausa;
+    private boolean empece, perdi, pausa;
     private int nivel, filas, columnas, puntuacionGlobal;
     private Bitmap imgMarciano1, imgMarciano2, imgNave, proyectilMarciano, balaNave, explosion;
     private float primeraX, primeraY, tamanhoPuntuacion;
-    private double vMarciano,vBala,vBalaMarciano,vFondo;
+    private double vMarciano, vBala, vBalaMarciano, vFondo;
     private Marciano marcianos[][];
     private Nave miNave;
     private boolean voyIzquierda, voyAbajo, mueveNave;
@@ -50,7 +50,7 @@ public class Gameplay extends Pantalla {
     private ArrayList<BalaMarciano> balasMarcianos;
     private Paint pPunutacion;
     private int tiempoVibracion;
-    private Boton btnPausa, btnReanudar, btnSalir, btnMusica, btnJugar,btnNoJugar, btnSi, btnNo, btnAux;
+    private Boton btnPausa, btnReanudar, btnSalir, btnMusica, btnJugar, btnNoJugar, btnSi, btnNo, btnAux;
     private Bitmap imgPausa, imgPlay, imgMusicaOn, imgMusicaOff;
     private int codNave;
     private int margenLateralPausa;
@@ -78,9 +78,9 @@ public class Gameplay extends Pantalla {
     private Bitmap trianguloArriba, trianguloAbajo;
 
     //giroscopio
-    Sensor sensorGiroscopio;
-    SensorManager sensorManager;
-    SensorEventListener escuchaGiroscopio;
+    private Sensor sensorGiroscopio;
+    private SensorManager sensorManager;
+    private SensorEventListener escuchaGiroscopio;
     //para la bd
     private int ultimoId;
     private String consultaUltima, consultaId;
@@ -95,15 +95,14 @@ public class Gameplay extends Pantalla {
     //------------------------CONSTRUCTOR------------------------
 
     /**
-     *
-     * @param contexto Objeto contexto
-     * @param idPantalla Entero que representa el id de esta pantalla
+     * @param contexto      Objeto contexto
+     * @param idPantalla    Entero que representa el id de esta pantalla
      * @param anchoPantalla Entero que representa el ancho de la pantalla
-     * @param altoPantalla Entero que representa el alto de la pantalla
+     * @param altoPantalla  Entero que representa el alto de la pantalla
      */
     public Gameplay(Context contexto, int idPantalla, final int anchoPantalla, int altoPantalla) {
         super(contexto, idPantalla, anchoPantalla, altoPantalla);
-perdi=false;
+        perdi = false;
         bitmapFondo = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.universe2);
         bitmapFondo = Bitmap.createScaledBitmap(bitmapFondo, anchoPantalla, bitmapFondo.getHeight(), true);
         fondo = new Fondo[2];
@@ -227,7 +226,7 @@ perdi=false;
                 anchoPantalla / 2 + anchoPantalla / 10,
                 altoPantalla / 3 * 2 + altoPantalla / 20 * 2, Color.GREEN);
 
-        btnEnviar.setTexto(txtEnviar, altoPantalla / 40, Color.BLACK,getTypeFace());
+        btnEnviar.setTexto(txtEnviar, altoPantalla / 40, Color.BLACK, getTypeFace());
         //-----------------MENU PAUSA----------------
         margenLateralPausa = anchoPantalla / 20;
         altoMenuPausa = altoPantalla / 4;
@@ -240,25 +239,26 @@ perdi=false;
         if (giroscopio) {
             sensorManager = (SensorManager) contexto.getSystemService(Context.SENSOR_SERVICE);
 
-                sensorGiroscopio = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
-                escuchaGiroscopio=new SensorEventListener() {
-                    @Override
-                    public void onSensorChanged(SensorEvent sensorEvent) {
-                        // More code goes here
-                        if(estoyJugando){
-                            float nuevaPos=anchoPantalla/2+sensorEvent.values[0]*100;
-                            if(nuevaPos>=miNave.getImagen().getWidth()/2&&nuevaPos <=anchoPantalla-miNave.getImagen().getWidth()/2){
-                                miNave.moverNave(nuevaPos);
-                            }
+            sensorGiroscopio = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
+            escuchaGiroscopio = new SensorEventListener() {
+                @Override
+                public void onSensorChanged(SensorEvent sensorEvent) {
+                    // More code goes here
+                    if (estoyJugando) {
+                        float nuevaPos = anchoPantalla / 2 + sensorEvent.values[0] * 100;
+                        if (nuevaPos >= 0 && nuevaPos <= anchoPantalla) {
+                            miNave.moverNave(nuevaPos);
                         }
                     }
-                    @Override
-                    public void onAccuracyChanged(Sensor sensor, int i) {
-                    }
-                };
-                // Register the listener
-                sensorManager.registerListener(escuchaGiroscopio,
-                        sensorGiroscopio, SensorManager.SENSOR_DELAY_NORMAL);
+                }
+
+                @Override
+                public void onAccuracyChanged(Sensor sensor, int i) {
+                }
+            };
+            // Register the listener
+            sensorManager.registerListener(escuchaGiroscopio,
+                    sensorGiroscopio, SensorManager.SENSOR_DELAY_NORMAL);
         }
 
         //--------------BOOLEAN VIBRACION--------------
@@ -332,7 +332,7 @@ perdi=false;
         columnas = 6;
         marcianos = new Marciano[filas][columnas];  //cinco filas seis columnas de marcianos
         //velocidad de movimiento lateral de los marcianos al comienzo
-        vMarciano = anchoPantalla*0.001;
+        vMarciano = anchoPantalla * 0.001;
         //imagen marcianos impacto 1
 //        imgMarciano1 = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.marciano1);
 //        imgMarciano1 = Bitmap.createScaledBitmap(imgMarciano1, anchoPantalla / 20, altoPantalla / 30, true);
@@ -390,34 +390,34 @@ perdi=false;
         btnReanudar = new Boton(margenLateralPausa * 2, altoPantalla / 2,
                 anchoPantalla / 2 - margenLateralPausa,
                 altoPantalla / 2 + altoMenuPausa / 2 - margenLateralPausa, Color.GREEN);
-        btnReanudar.setTexto(txtContinuar, altoPantalla / 30, Color.BLACK,getTypeFace());
+        btnReanudar.setTexto(txtContinuar, altoPantalla / 30, Color.BLACK, getTypeFace());
 
         //----------------BTN SALIR----------------
         btnSalir = new Boton(anchoPantalla / 2 + margenLateralPausa, altoPantalla / 2,
                 anchoPantalla - margenLateralPausa * 2,
                 altoPantalla / 2 + altoMenuPausa / 2 - margenLateralPausa, Color.RED);
-        btnSalir.setTexto(txtSalir, altoPantalla / 30, Color.BLACK,getTypeFace());
+        btnSalir.setTexto(txtSalir, altoPantalla / 30, Color.BLACK, getTypeFace());
 
         //----------------BTN PARA EMPEZAR A JUGAR----------------
         btnJugar = new Boton(anchoPantalla / 2 - anchoPantalla / 4, altoPantalla / 2,
-                anchoPantalla / 2 , altoPantalla / 2 + altoPantalla / 11, Color.GREEN);
-        btnJugar.setTexto(txtSi, altoPantalla / 15, Color.BLACK,getTypeFace());
+                anchoPantalla / 2, altoPantalla / 2 + altoPantalla / 11, Color.GREEN);
+        btnJugar.setTexto(txtSi, altoPantalla / 15, Color.BLACK, getTypeFace());
 
-        btnNoJugar= new Boton(anchoPantalla / 2 , altoPantalla / 2,
+        btnNoJugar = new Boton(anchoPantalla / 2, altoPantalla / 2,
                 anchoPantalla / 2 + anchoPantalla / 4, altoPantalla / 2 + altoPantalla / 11, Color.RED);
-        btnNoJugar.setTexto(txtNo, altoPantalla / 15, Color.BLACK,getTypeFace());
+        btnNoJugar.setTexto(txtNo, altoPantalla / 15, Color.BLACK, getTypeFace());
 
         //----------------BTN PARA REPETIR O NO----------------
         btnSi = new Boton(margenLateralPausa * 2, altoPantalla / 2,
                 anchoPantalla / 2 - margenLateralPausa,
                 altoPantalla / 2 + altoMenuPausa / 2 - margenLateralPausa, Color.GREEN);
-        btnSi.setTexto(txtSi, altoPantalla / 30, Color.BLACK,getTypeFace());
+        btnSi.setTexto(txtSi, altoPantalla / 30, Color.BLACK, getTypeFace());
 
 
         btnNo = new Boton(anchoPantalla / 2 + margenLateralPausa, altoPantalla / 2,
                 anchoPantalla - margenLateralPausa * 2,
                 altoPantalla / 2 + altoMenuPausa / 2 - margenLateralPausa, Color.RED);
-        btnNo.setTexto(txtNo, altoPantalla / 30, Color.BLACK,getTypeFace());
+        btnNo.setTexto(txtNo, altoPantalla / 30, Color.BLACK, getTypeFace());
     }
 
     /**
@@ -457,6 +457,7 @@ perdi=false;
 
     /**
      * Método encarga de dibujar los diferentes elementos con los que tiene el juego, dependiendo de la situacion actual
+     *
      * @param c Objeto Canvas para poder dibujar
      */
     public void dibujar(Canvas c) {
@@ -527,6 +528,7 @@ perdi=false;
 
     /**
      * Método que utilizaremos para saber si todavía hay marcianos en el arraybidimensional o no
+     *
      * @return True si todavía hay algún marciano. False en el caso de que no haya ningún marciano.
      */
     public boolean hayMarcianos() {
@@ -544,15 +546,15 @@ perdi=false;
     /**
      * Método que se encarga de vacíar el array en el que están las balas de los marcianos. Será llamado una vez no haya marcianos en el array bidimensional
      */
-    public void vaciaBalas(){
+    public void vaciaBalas() {
         balasMarcianos.clear();
     }
 
     /**
      * Método encargado de mover el fondo mientras estemos jugando
      */
-    public void mueveFondo(){
-        if(estoyJugando){
+    public void mueveFondo() {
+        if (estoyJugando) {
             // Movemos
             fondo[0].mover(vFondo);
             fondo[1].mover(vFondo);
@@ -624,7 +626,7 @@ perdi=false;
     /**
      * Método que se encarga de reproducir el sonido de explosión en el momento que somos eliminados
      */
-    public void suenaMuereNave(){
+    public void suenaMuereNave() {
         int v = getAudioManager().getStreamVolume(AudioManager.STREAM_MUSIC);
         efectos.play(sonidoMuereNave, v, v, 1, 0, 1);
     }
@@ -651,7 +653,7 @@ perdi=false;
                                 proyectilMarciano.getWidth() / 2,
                                 (int) marcianos[i][j].getPos().y + marcianos[i][j].getImagen().getHeight(),
                                 proyectilMarciano.getWidth(),
-                                proyectilMarciano.getHeight(), proyectilMarciano,vBalaMarciano));
+                                proyectilMarciano.getHeight(), proyectilMarciano, vBalaMarciano));
                     }
                 }
             }
@@ -805,6 +807,7 @@ perdi=false;
 
     /**
      * Este método se encarga de gestionar los movimientos que se producen en dicha pantalla
+     *
      * @param event Evento según el tipo de pulsación o movimiento en la pantalla
      * @return Devuelve un entero. En el caso de pulsar el boton de si salir, devuelve el entero que representa la pantalla de inicio, es decir, devuelve 0; si hemos pulsado el boton que nos permite repetir partida devuelve un entero que genera una nueva pantalla Gameplay.  De haber pulsado cualquier otra cosa que no fuera el boton de salir o repetir partida, devuelve el entero de la pantalla actual.
      */
@@ -1039,9 +1042,10 @@ perdi=false;
 
     /**
      * Método encargado de dibujar el fondo, dependiendo de si estoy jugando o no, dibujo de una manera u otra
+     *
      * @param c Objeto Canvas para poder dibujar
      */
-    public void dibujaFondo(Canvas c){
+    public void dibujaFondo(Canvas c) {
         if (!estoyJugando) c.drawBitmap(bitmapFondo, 0, 0, null); // Dibujamos el fondo
         else {
             c.drawBitmap(fondo[0].imagen, fondo[0].posicion.x, fondo[0].posicion.y, null);
@@ -1051,6 +1055,7 @@ perdi=false;
 
     /**
      * Método encargado de dibujar la pantalla de inicio del juego
+     *
      * @param c Objeto Canvas para poder dibujar
      */
     public void dibujaInicio(Canvas c) {
@@ -1061,6 +1066,7 @@ perdi=false;
 
     /**
      * Método encargado de dibujar el propio juego. Marcianos, nave, boton musica, boton pausa, puntuacion y balas.
+     *
      * @param c Objeto Canvas para poder dibujar
      */
     public void dibujaJuego(Canvas c) {
@@ -1092,6 +1098,7 @@ perdi=false;
 
     /**
      * Método encargado de dibujar el submenu pausa
+     *
      * @param c Objeto Canvas para poder dibujar
      */
     public void dibujaPausa(Canvas c) {
@@ -1118,6 +1125,7 @@ perdi=false;
 
     /**
      * Método encargado de dibujar el submenú cuando pierdes, preguntando si deseas repetir o no
+     *
      * @param c Objeto Canvas para poder dibujar
      */
     public void dibujaPerdi(Canvas c) {
@@ -1143,6 +1151,7 @@ perdi=false;
 
     /**
      * Método encargado de dibujar el submenu con el que podemos introducir nuestras siglas
+     *
      * @param c Objeto Canvas para poder dibujar
      */
     public void dibujaPideSiglas(Canvas c) {
@@ -1181,6 +1190,7 @@ perdi=false;
 
     /**
      * Método que comprueba si nuestra puntuación mejora la puntuación más baja que hay en la base de datos
+     *
      * @return True en el caso de que mi puntuación es mayor que la puntuación más baja. False si mi puntuación no es mayor que la puntuación más baja de la base de datos
      */
     public boolean mejoraPuntuacion() {
@@ -1234,6 +1244,7 @@ perdi=false;
 
     /**
      * Método que se encarga de avanzar las siglas
+     *
      * @param letra Char que representa la sigla actual
      * @return Char que representa la sigla siguiente
      */
@@ -1250,6 +1261,7 @@ perdi=false;
 
     /**
      * Método que se encarga de retroceder las siglas
+     *
      * @param letra Char que representa la sigla actual
      * @return Char que representa la sigla anterior
      */
