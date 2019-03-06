@@ -8,14 +8,20 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 
+/**
+ * Clase que se encarga de ver el estado de la aplicación
+ */
 public class Principal extends AppCompatActivity {
-    Juego juego;
+    private Juego juego;
+
+    /**
+     *
+     * @param savedInstanceState Objeto Bundle
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-
-        //setContentView(R.layout.activity_principal);
         View decorView = getWindow().getDecorView();
         int opciones = View.SYSTEM_UI_FLAG_FULLSCREEN        // pone la pantalla en modo pantalla completa ocultando elementos no criticos como la barra de estado.
                 | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION  // oculta la barra de navegación
@@ -34,6 +40,9 @@ public class Principal extends AppCompatActivity {
         setContentView(juego);
     }
 
+    /**
+     * Método que se ejecuta cuando se reanuda la aplicación
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -50,7 +59,9 @@ public class Principal extends AppCompatActivity {
 
     }
 
-
+    /**
+     * Método que se ejecuta cuando se para la aplicación
+     */
     @Override
     protected void onStop() {
         super.onStop();
@@ -61,17 +72,21 @@ public class Principal extends AppCompatActivity {
 
     }
 
+    /**
+     * Método que se ejecuta cuando se pausa la aplicación
+     */
     @Override
     protected void onPause() { //Another activity is taking focus (this activity is about to be "paused").
         super.onPause();
         if(juego.pantallaActual.musica){
             juego.pantallaActual.paraMusica();
-
         }
-        Log.i("HOLA","PAUSE");
 
     }
 
+    /**
+     * Método que se ejecuta cuando se "destruye" la aplicación
+     */
     @Override
     protected void onDestroy() { // The activity is about to become visible.
         super.onDestroy();

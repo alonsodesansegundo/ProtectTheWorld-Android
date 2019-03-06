@@ -18,7 +18,7 @@ public class Juego  extends SurfaceView implements SurfaceHolder.Callback{
 
     private SurfaceHolder surfaceHolder;      // Interfaz abstracta para manejar la superficie de dibujado
     private Context context;                  // Contexto de la aplicación
-    private Pantalla pantallaActual;
+    public Pantalla pantallaActual;
     private int anchoPantalla=1;              // Ancho de la pantalla, su valor se actualiza en el método surfaceChanged
     private int altoPantalla=1;               // Alto de la pantalla, su valor se actualiza en el método surfaceChanged
     private Hilo hilo;                        // Hilo encargado de dibujar y actualizar la física

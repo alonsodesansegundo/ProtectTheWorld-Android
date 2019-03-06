@@ -38,7 +38,7 @@ public class Gameplay extends Pantalla {
     private  Bitmap bitmapFondo;
     private int probabilidadDisparoMarcianos;
     private boolean estoyJugando;
-    private boolean empece;
+    private boolean empece,perdi,pausa;
     private int nivel, filas, columnas, puntuacionGlobal;
     private Bitmap imgMarciano1, imgMarciano2, imgNave, proyectilMarciano, balaNave, explosion;
     private float primeraX, primeraY, tamañoPuntuacion;
@@ -103,7 +103,7 @@ public class Gameplay extends Pantalla {
      */
     public Gameplay(Context contexto, int idPantalla, final int anchoPantalla, int altoPantalla) {
         super(contexto, idPantalla, anchoPantalla, altoPantalla);
-
+perdi=false;
         bitmapFondo = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.universe2);
         bitmapFondo = Bitmap.createScaledBitmap(bitmapFondo, anchoPantalla, bitmapFondo.getHeight(), true);
         fondo = new Fondo[2];

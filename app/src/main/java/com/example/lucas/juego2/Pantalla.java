@@ -17,24 +17,34 @@ import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.SurfaceHolder;
 
+/**
+ * Clase padre de la que heredan todas las pantallas
+ */
 public class Pantalla {
     private String fuente;
-    SharedPreferences preferencias;
+    public SharedPreferences preferencias;
     private MediaPlayer mediaPlayer;
     private AudioManager audioManager;
-    boolean musica;
-    Context contexto;
-    int idPantalla, altoPantalla, anchoPantalla;
-    Bitmap fondo;
-    Boolean perdi, pausa;
-    Paint pTitulo;
-    Vibrator miVibrador;
-private Typeface typeFace;
+    public boolean musica;
+    public Context contexto;
+    public int idPantalla, altoPantalla, anchoPantalla;
+    public Bitmap fondo;
+    public Paint pTitulo;
+    public Vibrator miVibrador;
+    private Typeface typeFace;
+
+    /**
+     *
+     * @param contexto Objeto contexto
+     * @param idPantalla Entero que representa el id de esta pantalla
+     * @param anchoPantalla Entero que representa el ancho de la pantalla
+     * @param altoPantalla Entero que representa el alto de la pantalla
+     */
     public Pantalla(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
         preferencias = contexto.getSharedPreferences("preferencias", Context.MODE_PRIVATE);
         miVibrador = (Vibrator) contexto.getSystemService(Context.VIBRATOR_SERVICE);
-        fuente="fuentes/miFuente.ttf";
-        typeFace= Typeface.createFromAsset(contexto.getAssets(),fuente);
+        fuente = "fuentes/miFuente.ttf";
+        typeFace = Typeface.createFromAsset(contexto.getAssets(), fuente);
         this.contexto = contexto;
         this.idPantalla = idPantalla;
         this.altoPantalla = altoPantalla;
@@ -48,20 +58,33 @@ private Typeface typeFace;
 
     }
 
+    /**
+     * Método que se usará para cambiar la fuente de los diferentes paint del juego
+     * @return Objeto Typeface con el que cambiar la fuente de los paint
+     */
     public Typeface getTypeFace() {
         return typeFace;
     }
 
+    /**
+     * Método con el que obtener el AudioManager para el sonido de la explosión de la nave
+     * @return Objeto AudioManager
+     */
     public AudioManager getAudioManager() {
         return audioManager;
     }
 
-    // Actualizamos la física de los elementos en pantalla
+    /**
+     * Método en el que actualizamos la física de los elementos en pantalla
+     */
     public void actualizarFisica() {
 
     }
 
-    // Rutina de dibujo en el lienzo. Se le llamará desde el hilo
+    /**
+     * Rutina de dibujo en el lienzo. Se le llamará desde el hilo
+     * @param c Objeto Canvas para poder dibujar
+     */
     public void dibujar(Canvas c) {
         try {
 
@@ -70,6 +93,11 @@ private Typeface typeFace;
         }
     }
 
+    /**
+     * Método que captura los diferentes eventos de pulsación que se pueden producir en la pantalla
+     * @param event MotionEvent evento de pulsación
+     * @return Entero que representa el código de la pantalla
+     */
     public int onTouchEvent(MotionEvent event) {
         int pointerIndex = event.getActionIndex();        //Obtenemos el índice de la acción
         int pointerID = event.getPointerId(pointerIndex); //Obtenemos el Id del pointer asociado a la acción
@@ -93,6 +121,12 @@ private Typeface typeFace;
         return idPantalla;
     }
 
+    /**
+     * Método que nos servirá para detectar si hemos pulsado en la región donde está un rect o no
+     * @param boton Rect que simula el botón
+     * @param evento MotionEvent del que obtendremos el punto X,Y
+     * @return True si hemos pulsado en dicho Rect, false de lo contrario
+     */
     public boolean pulsa(Rect boton, MotionEvent evento) {
         if (boton.contains((int) evento.getX(), (int) evento.getY())) {
             return true;
@@ -101,25 +135,36 @@ private Typeface typeFace;
         }
     }
 
+    /**
+     * Método que sirve para realizar la "configuración" de la música
+     * @param cancion Entero que representa la canción que que tendrá dicha pantalla
+     */
     public void configuraMusica(int cancion) {
         mediaPlayer = MediaPlayer.create(contexto, cancion);
         audioManager = (AudioManager) contexto.getSystemService(Context.AUDIO_SERVICE);
-       // int v = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-       // mediaPlayer.setVolume(v / 2, v / 2);
 
         mediaPlayer.setLooping(true);
         suenaMusica();
         paraMusica();
     }
 
+    /**
+     * Método que inicia la música
+     */
     public void suenaMusica() {
         mediaPlayer.start();
     }
 
+    /**
+     * Método que pausa la musica
+     */
     public void paraMusica() {
         mediaPlayer.pause();
     }
 
+    /**
+     * Método que libera la musica
+     */
     public void acabaMusica() {
         mediaPlayer.release();
     }
