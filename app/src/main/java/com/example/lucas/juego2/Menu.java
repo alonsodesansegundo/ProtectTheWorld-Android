@@ -13,11 +13,21 @@ import android.view.MotionEvent;
 
 import java.util.ArrayList;
 
+/**
+ * Esta clase se encarga de dibujar la pantalla del menu principal y gestionar su funcionalidad
+ */
 public class Menu extends Pantalla {
     private Boton jugar, ayuda, opciones, records,creditos;
     private int alto, ancho, espacio;
     private String txtCreditos,txtOpciones,txtAyuda,txtRecords;
 
+    /**
+     *
+     * @param contexto Objeto contexto
+     * @param idPantalla Entero que representa el id de esta pantalla
+     * @param anchoPantalla Entero que representa el ancho de la pantalla
+     * @param altoPantalla Entero que representa el alto de la pantalla
+     */
     public Menu(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
         super(contexto, idPantalla, anchoPantalla, altoPantalla);
 
@@ -74,11 +84,10 @@ public class Menu extends Pantalla {
         }
     }
 
-    // Actualizamos la física de los elementos en pantalla
-    public void actualizarFisica() {
-    }
-
-    // Rutina de dibujo en el lienzo. Se le llamará desde el hilo
+    /**
+     * Método encargado de dibujar el menú principal
+     * @param c Objeto Canvas para poder dibujar
+     */
     public void dibujar(Canvas c) {
         try {
             //dibujo la imagen de fondo
@@ -104,6 +113,11 @@ public class Menu extends Pantalla {
         }
     }
 
+    /**
+     * Método que gestiona la pulsación en el menu principal.
+     * @param event Objeto MotionEvent
+     * @return Entero que representa el codigo de la pantalla. En el caso de haber pulsado un boton, devuelvo el entero que represente la pantalla a la que quiero ir. Si no he pulsado ningun boton, devuelvo el idactual
+     */
     public int onTouchEvent(MotionEvent event) {
        int pointerIndex = event.getActionIndex();        //Obtenemos el índice de la acción
         int pointerID = event.getPointerId(pointerIndex); //Obtenemos el Id del pointer asociado a la acción

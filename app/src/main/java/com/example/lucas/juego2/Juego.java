@@ -7,6 +7,9 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+/**
+ * Clase que hereda surfeceView que se encarga del control de escenas (de pantallas)
+ */
 public class Juego  extends SurfaceView implements SurfaceHolder.Callback{
     // control de tiempo de la aplicación
     long last,now;
@@ -15,12 +18,16 @@ public class Juego  extends SurfaceView implements SurfaceHolder.Callback{
 
     private SurfaceHolder surfaceHolder;      // Interfaz abstracta para manejar la superficie de dibujado
     private Context context;                  // Contexto de la aplicación
-    Pantalla pantallaActual;
+    private Pantalla pantallaActual;
     private int anchoPantalla=1;              // Ancho de la pantalla, su valor se actualiza en el método surfaceChanged
     private int altoPantalla=1;               // Alto de la pantalla, su valor se actualiza en el método surfaceChanged
     private Hilo hilo;                        // Hilo encargado de dibujar y actualizar la física
     private boolean funcionando = false;      // Control del hilo
 
+    /**
+     *
+     * @param context Objeto contexto
+     */
     public Juego(Context context) {
         super(context);
         // control de tiempo de la aplicación
@@ -37,6 +44,12 @@ public class Juego  extends SurfaceView implements SurfaceHolder.Callback{
     }
 
     //GESTIONO LA PULSACIOON DE LA PANTALLA
+
+    /**
+     * Dependiendo del código de la pantalla, hago una cosa u otra. Si el codigo de mi pantalla actual es diferente al que recibo, genero una nueva pantallaactual.
+     * @param event Objeto MotionEvent
+     * @return Siempre devuelve true
+     */
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         synchronized (surfaceHolder) {
@@ -72,12 +85,14 @@ public class Juego  extends SurfaceView implements SurfaceHolder.Callback{
         }
         return true;
     }
-
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
-
     }
 
+    /**
+     * Método que se ejecuta cuando "se destroza" el surface
+     * @param surfaceHolder Objeto SurfaceHolder
+     */
     @Override
     public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
         hilo.setFuncionando(false);  // Se para el hilo
@@ -88,6 +103,13 @@ public class Juego  extends SurfaceView implements SurfaceHolder.Callback{
         }
     }
 
+    /**
+     * Método que se ejcuta cuando "el surface cambia"
+     * @param holder Objeto SurfaceHolder
+     * @param format Entero que representa el formato
+     * @param width Entero que representa el ancho de la pantalla
+     * @param height Entero que representa el alto de la pantalla
+     */
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
         anchoPantalla = width;               // se establece el nuevo ancho de pantalla
@@ -102,7 +124,12 @@ public class Juego  extends SurfaceView implements SurfaceHolder.Callback{
             hilo.start(); // se arranca el hilo
         }
     }
-    // Clase Hilo en la cual implementamos el método de dibujo (y física) para que se haga en paralelo con la gestión de la interfaz de usuario
+    // Clase Hilo en la cual implementamos el método de dibujo (y física) para que
+    // se haga en paralelo con la gestión de la interfaz de usuario
+
+    /**
+     * Clase en la cual implemento el método dibujar y actualizar física
+     */
     class Hilo extends Thread {
         public Hilo(){
 
