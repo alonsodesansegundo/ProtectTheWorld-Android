@@ -17,6 +17,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
+/**
+ * Esta clase se encarga de dibujar la pantalla de opciones y gestionar su funcionalidad
+ */
 public class Opciones extends Pantalla {
     private String selNave,opciones,txtMusica,txtSi,txtNo,txtVibracion,txtGiroscopio,txtNoSensor;
     private Bitmap n,n1,n2,imgVolver;
@@ -30,6 +33,13 @@ public class Opciones extends Pantalla {
     private SharedPreferences.Editor editorPreferencias;
     private boolean vibracion,giroscopio;
     private Paint pTexto;
+    /**
+     *
+     * @param contexto Objeto contexto
+     * @param idPantalla Entero que representa el id de esta pantalla
+     * @param anchoPantalla Entero que representa el ancho de la pantalla
+     * @param altoPantalla Entero que representa el alto de la pantalla
+     */
     public Opciones(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
         super(contexto, idPantalla, anchoPantalla, altoPantalla);
         alturaBoton=altoPantalla/11;
@@ -142,6 +152,10 @@ public class Opciones extends Pantalla {
         actualizaGiroscopio();
     }
 
+    /**
+     * Método que se encarga de dibujar la pantalla de opciones
+     * @param c Objeto Canvas para poder dibujar
+     */
     @Override
     public void dibujar(Canvas c) {
         try{
@@ -190,10 +204,11 @@ public class Opciones extends Pantalla {
         }
     }
 
-    @Override
-    public void actualizarFisica() {
-        super.actualizarFisica();
-    }
+    /**
+     * Este método se encarga de gestionar los movimientos que se producen en dicha pantalla
+     * @param event Evento según el tipo de pulsación o movimiento en la pantalla
+     * @return Devuelve un entero. En el caso de pulsar el boton de volver, devuelve el entero que representa la pantalla de inicio, es decir, devuelve 0. De haber pulsado cualquier otra cosa que no fuera el boton de volver, devuelve el entero de la pantalla actual.
+     */
     public int onTouchEvent(MotionEvent event) {
         int pointerIndex = event.getActionIndex();        //Obtenemos el índice de la acción
         int pointerID = event.getPointerId(pointerIndex); //Obtenemos el Id del pointer asociado a la acción
@@ -335,6 +350,10 @@ public class Opciones extends Pantalla {
         }
         return idPantalla;
     }
+
+    /**
+     * Método que se encarga de cambiar la nave seleccionada en el fichero Shared Preferences, y de indicar mediante un color gris oscuro la nave seleccionada
+     */
     public void actualizaNaveSeleccionada(){
         switch (naveSeleccionada){
             case 0:
@@ -354,6 +373,10 @@ public class Opciones extends Pantalla {
                 break;
         }
     }
+
+    /**
+     * Método que se encarga de actualizar los botones musica según en cual hayamos pulsado, de activar o parar la musica cuando hay que hacerlo, y guardar dicha seleccion el el fichero Shared Preferences
+     */
     public void actualizaMusica(){
         if(musica){
             siMusica.setColor(Color.LTGRAY);
@@ -367,6 +390,10 @@ public class Opciones extends Pantalla {
         editorPreferencias.putBoolean("musica",musica);
         editorPreferencias.commit();
     }
+
+    /**
+     * Método que se encarga de actualizar los botones vibrar según en cual hayamos pulsado y guardar dicha configuracón en el fichero Shared Preferences.
+     */
     public void actualizaVibracion(){
         if(vibracion){
             siVibracion.setColor(Color.LTGRAY);
@@ -379,6 +406,10 @@ public class Opciones extends Pantalla {
         editorPreferencias.commit();
 
     }
+
+    /**
+     * Método que se encarga de actualizar los botones de como jugar segun cual hayamos pulsado y guardar dicha configuración en el fichero Shared Preferences.
+     */
     public void actualizaGiroscopio(){
         if(giroscopio){
             sensorManager = (SensorManager) contexto.getSystemService(Context.SENSOR_SERVICE);
@@ -399,6 +430,10 @@ public class Opciones extends Pantalla {
         editorPreferencias.commit();
     }
     //------------------------VIBRACIÓN DEL DISPOSITIVO------------------------
+
+    /**
+     * Método que hace vibrar nuestro dispositivo durante 1000 milisegundos
+     */
     public void vibrar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             miVibrador.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
