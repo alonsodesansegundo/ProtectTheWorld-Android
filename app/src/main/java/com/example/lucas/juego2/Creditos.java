@@ -12,8 +12,10 @@ import android.view.MotionEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Esta clase se encarga de dibujar la pantalla de créditos y gestionar su funcionalidad
+ */
 public class Creditos extends Pantalla {
-
     private boolean hayDedo;
     private int modo;
     private int posY;
@@ -21,7 +23,13 @@ public class Creditos extends Pantalla {
     private Boton back;
     private String txtCreditos, txtMusica, txtFuente, txtImagenes, txtImg, txtImg2, txtMusic, txtFont, txtCanal,txtYotube,txtHecho, txtAyuda;
     private Paint pTexto, pTexto2;
-
+    /**
+     *
+     * @param contexto Objeto contexto
+     * @param idPantalla Entero que representa el id de esta pantalla
+     * @param anchoPantalla Entero que representa el ancho de la pantalla
+     * @param altoPantalla Entero que representa el alto de la pantalla
+     */
     public Creditos(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
         super(contexto, idPantalla, anchoPantalla, altoPantalla);
 
@@ -68,6 +76,10 @@ txtCanal=contexto.getString(R.string.canalYT);
 
     }
 
+    /**
+     * Este método se encarga de dibujar los creditos relacionados con las imagenes
+     * @param c Objeto canvas para poder dibujar
+     */
     public void dibujaImagenes(Canvas c) {
         //texto de agradecimientos
         c.drawText(txtImagenes, anchoPantalla / 2, posY, pTexto);
@@ -75,6 +87,10 @@ txtCanal=contexto.getString(R.string.canalYT);
         c.drawText(txtImg2, anchoPantalla / 2, posY + pTexto.getTextSize() * 2, pTexto2);
     }
 
+    /**
+     * Este método se encarga de dibujar los creditos relacionados con la música
+     * @param c Objeto canvas para poder dibujar
+     */
     public void dibujaMusica(Canvas c) {
         //texto de agradecimientos
         c.drawText(txtMusica, anchoPantalla / 2, posY, pTexto);
@@ -83,12 +99,20 @@ txtCanal=contexto.getString(R.string.canalYT);
         c.drawText(txtCanal,anchoPantalla/2,posY+pTexto.getTextSize()+pTexto2.getTextSize()*2,pTexto2);
     }
 
+    /**
+     * Este método se encarga de dibujar los creditos relacionados con la fuente
+     * @param c Objeto canvas para poder dibujar
+     */
     public void dibujaFuente(Canvas c) {
 //texto de agradecimientos
         c.drawText(txtFuente, anchoPantalla / 2, posY, pTexto);
         c.drawText(txtFont, anchoPantalla / 2, posY + pTexto.getTextSize(), pTexto2);
     }
 
+    /**
+     * Este método se encarga de dibujar los creditos relacionados con las personas que han ayudado a la realización de dicho juego
+     * @param c Objeto canvas para poder dibujar
+     */
     public void dibujaUltimo(Canvas c) {
     //dibujo el texto
         c.drawText(txtAyuda, anchoPantalla / 2, posY, pTexto);
@@ -98,6 +122,10 @@ txtCanal=contexto.getString(R.string.canalYT);
         c.drawText("Lucas Alonso",anchoPantalla / 2, posY + pTexto.getTextSize()*4, pTexto2);
     }
 
+    /**
+     * Método que se encarga de ir dibujando los creditos. Se encarga de gestionar que creditos hay que dibujar y tambien da la sensación de movimiento hacia abajo.
+     * @param c Objeto canvas para poder dibujar
+     */
     @Override
     public void dibujar(Canvas c) {
         try {
@@ -138,6 +166,11 @@ txtCanal=contexto.getString(R.string.canalYT);
         }
     }
 
+    /**
+     * Este método se encarga de gestionar los movimientos que se producen en dicha pantalla
+     * @param event Evento según el tipo de pulsación o movimiento en la pantalla
+     * @return Devuelve un entero. En el caso de pulsar el boton de volver, devuelve el entero que representa la pantalla de inicio, es decir, devuelve 0. De haber pulsado cualquier otra cosa que no fuera el boton de volver, devuelve el entero de la pantalla actual.
+     */
     public int onTouchEvent(MotionEvent event) {
         int pointerIndex = event.getActionIndex();        //Obtenemos el índice de la acción
         int pointerID = event.getPointerId(pointerIndex); //Obtenemos el Id del pointer asociado a la acción

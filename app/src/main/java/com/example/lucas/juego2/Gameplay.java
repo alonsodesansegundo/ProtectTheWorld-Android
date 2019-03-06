@@ -29,6 +29,9 @@ import java.util.TimerTask;
 
 import static android.content.Context.SENSOR_SERVICE;
 
+/**
+ * Esta clase se encarga de dibujar el propio juego y gestionar su funcionalidad
+ */
 public class Gameplay extends Pantalla {
     //------------------------PROPIEDADES GAMEPLAY------------------------
     private Fondo[] fondo;
@@ -90,6 +93,14 @@ public class Gameplay extends Pantalla {
     private Timer miTimer;
 
     //------------------------CONSTRUCTOR------------------------
+
+    /**
+     *
+     * @param contexto Objeto contexto
+     * @param idPantalla Entero que representa el id de esta pantalla
+     * @param anchoPantalla Entero que representa el ancho de la pantalla
+     * @param altoPantalla Entero que representa el alto de la pantalla
+     */
     public Gameplay(Context contexto, int idPantalla, final int anchoPantalla, int altoPantalla) {
         super(contexto, idPantalla, anchoPantalla, altoPantalla);
 
@@ -409,7 +420,9 @@ public class Gameplay extends Pantalla {
         btnNo.setTexto(txtNo, altoPantalla / 30, Color.BLACK,getTypeFace());
     }
 
-    // Actualizamos la física de los elementos en pantalla
+    /**
+     * Método encargado de gestionar la física de los elementos de la pantalla. Es decir, mover los marcianos, las balas...
+     */
     public void actualizarFisica() {
         mueveFondo();
 
@@ -441,6 +454,11 @@ public class Gameplay extends Pantalla {
     }
 
     // Rutina de dibujo en el lienzo. Se le llamará desde el hilo
+
+    /**
+     * Método encarga de dibujar los diferentes elementos con los que tiene el juego, dependiendo de la situacion actual
+     * @param c Objeto Canvas para poder dibujar
+     */
     public void dibujar(Canvas c) {
         try {
             dibujaFondo(c);
@@ -470,7 +488,9 @@ public class Gameplay extends Pantalla {
         }
     }
 
-
+    /**
+     * Método que será llamado cuando no haya más marcianos en el arraybidimensional. Incrementa el nivel y se encarga de rellenar de marcianos el array bidimensional dependiendo del nivel en el que estemos. También se encarga de aumentar la velocidad de los marcianos en el momento adecuado
+     */
     public void rellenaMarcianos() {
         //incremento el nivel
         nivel++;
@@ -504,6 +524,11 @@ public class Gameplay extends Pantalla {
     }
 
     //devuelvo true si encuentro algun marciano, devuelvo false si no hay 7ningun marciano
+
+    /**
+     * Método que utilizaremos para saber si todavía hay marcianos en el arraybidimensional o no
+     * @return True si todavía hay algún marciano. False en el caso de que no haya ningún marciano.
+     */
     public boolean hayMarcianos() {
         for (int i = 0; i < marcianos.length; i++) {
             for (int j = 0; j < marcianos[0].length; j++) {
@@ -516,10 +541,16 @@ public class Gameplay extends Pantalla {
         return false;
     }
 
+    /**
+     * Método que se encarga de vacíar el array en el que están las balas de los marcianos. Será llamado una vez no haya marcianos en el array bidimensional
+     */
     public void vaciaBalas(){
         balasMarcianos.clear();
     }
 
+    /**
+     * Método encargado de mover el fondo mientras estemos jugando
+     */
     public void mueveFondo(){
         if(estoyJugando){
             // Movemos
@@ -535,6 +566,10 @@ public class Gameplay extends Pantalla {
         }
     }
     //------------------------DISPARO DE LA NAVE------------------------
+
+    /**
+     * Método encargado de la bala de la nave. Se encarga de generarla y hacerla desaparecer, o bien porque ha salido de la pantalla, porque ha chocado con una bala de un marciano o porque ha chocado con un marciano.
+     */
     public void disparaNave() {
         //solo habrá una bala de la nave en la pantalla
         //si hay bala, la muevo
@@ -585,12 +620,20 @@ public class Gameplay extends Pantalla {
     }
 
     //------------------------SONIDOS DISPARO NAVE Y MUERE NAVE------------------------
+
+    /**
+     * Método que se encarga de reproducir el sonido de explosión en el momento que somos eliminados
+     */
     public void suenaMuereNave(){
         int v = getAudioManager().getStreamVolume(AudioManager.STREAM_MUSIC);
         efectos.play(sonidoMuereNave, v, v, 1, 0, 1);
     }
 
     //------------------------DISPARO DE LOS MARCIANOS------------------------
+
+    /**
+     * Método que se encarga de que los marcianos puedan disparan. Podrán disparar los marcianos situados más abajo de cada columna.
+     */
     public void disparanMarcianos() {
         //solo podrán disparar los últimos marcianos de cada columna
         //recorro las filas de abajo a arriba
@@ -618,6 +661,10 @@ public class Gameplay extends Pantalla {
     }
 
     //------------------------MOVER BALAS MARCIANOS (ARRAYLIST)------------------------
+
+    /**
+     * Método encargado de mover las balas de los marcianos hacia abajo. Se encarga de ver si algun proyectil choca con la nave o no
+     */
     public void actualizaBalasMarcianos() {
         //además de mover las balas, gestiono si chocan o no con la nave, y si desaparecen de la pantalla las elimino
         //de atrás alante para no tener problemas al eliminar
@@ -635,7 +682,6 @@ public class Gameplay extends Pantalla {
                 }
                 //perdi
                 if (musica) {
-
                     //sonido explosion nave
                     suenaMuereNave();
                 }
@@ -673,6 +719,10 @@ public class Gameplay extends Pantalla {
     }
 
     //------------------------MOVIMIENTO VERTICAL Y HORIZONTAL DE LOS MARCIANOS------------------------
+
+    /**
+     * Método que se encarga de ver en que dirección tienen que moverse los marcianos, y si tienen que descender un nivel o no
+     */
     public void actualizaBanderasMovimiento() {
         //aqui veré en que dirección tienen que ir los marcianos (izq o drch) -> bandera voyIzquierda
         //también veré si descienden un nivel o no -> bandera voy abajo
@@ -706,6 +756,9 @@ public class Gameplay extends Pantalla {
         }
     }
 
+    /**
+     * Método que se encarga de mover los marcianos según las banderas de dirección. Es decir, si tienen que ir a la derecha o a la izquierda, o si tienen que descender un nivel o no
+     */
     public void mueveMarcianos() {
         //recorro las filas
         for (int i = 0; i < marcianos.length; i++) {
@@ -736,6 +789,10 @@ public class Gameplay extends Pantalla {
     }
 
     //------------------------VIBRACIÓN DEL DISPOSITIVO------------------------
+
+    /**
+     * Método que será llamado en el caso de que hayamos perdido y la vibración esté a true, en dicho caso, hará vibrar el dispositivo móvil
+     */
     public void vibrar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             miVibrador.vibrate(VibrationEffect.createOneShot(3000, VibrationEffect.DEFAULT_AMPLITUDE));
@@ -745,6 +802,12 @@ public class Gameplay extends Pantalla {
     }
 
     //------------------------CUANDO PULSO LA PANTALLA (PUEDO PULSAR UN BOTON O MOVER LA NAVE)------------------------
+
+    /**
+     * Este método se encarga de gestionar los movimientos que se producen en dicha pantalla
+     * @param event Evento según el tipo de pulsación o movimiento en la pantalla
+     * @return Devuelve un entero. En el caso de pulsar el boton de si salir, devuelve el entero que representa la pantalla de inicio, es decir, devuelve 0; si hemos pulsado el boton que nos permite repetir partida devuelve un entero que genera una nueva pantalla Gameplay.  De haber pulsado cualquier otra cosa que no fuera el boton de salir o repetir partida, devuelve el entero de la pantalla actual.
+     */
     public int onTouchEvent(MotionEvent event) {
         //cuando el dedo esté en la pantalla, muevo la nave con respecto al eje x!!!!!!!!!
         int pointerIndex = event.getActionIndex();        //Obtenemos el índice de la acción
@@ -955,6 +1018,10 @@ public class Gameplay extends Pantalla {
 
 
     //------------------------CUANDO PULSO EL BTN DE LA MÚSICA EN EL GAMEPLAY------------------------
+
+    /**
+     * Método que será llamado en el momento que pulse el boton de la música mientras estoy jugando. Se encarga de activar o desactivar la música, y guardar dicha booleana en el archivo Shared Preferences
+     */
     public void cambiaBtnMusica() {
         musica = !musica;
         if (musica) {
@@ -969,6 +1036,11 @@ public class Gameplay extends Pantalla {
     }
 
     //------------------------DIBUJAR LA PANTALLA------------------------
+
+    /**
+     * Método encargado de dibujar el fondo, dependiendo de si estoy jugando o no, dibujo de una manera u otra
+     * @param c Objeto Canvas para poder dibujar
+     */
     public void dibujaFondo(Canvas c){
         if (!estoyJugando) c.drawBitmap(bitmapFondo, 0, 0, null); // Dibujamos el fondo
         else {
@@ -976,12 +1048,21 @@ public class Gameplay extends Pantalla {
             c.drawBitmap(fondo[1].imagen, fondo[1].posicion.x, fondo[1].posicion.y, null);
         }
     }
+
+    /**
+     * Método encargado de dibujar la pantalla de inicio del juego
+     * @param c Objeto Canvas para poder dibujar
+     */
     public void dibujaInicio(Canvas c) {
         c.drawText(txtEmpezar, anchoPantalla / 2, altoPantalla / 2 - tamañoPuntuacion / 2, pPunutacion);
         btnJugar.dibujar(c);
         btnNoJugar.dibujar(c);
     }
 
+    /**
+     * Método encargado de dibujar el propio juego. Marcianos, nave, boton musica, boton pausa, puntuacion y balas.
+     * @param c Objeto Canvas para poder dibujar
+     */
     public void dibujaJuego(Canvas c) {
         //dibujo el btnPausa
         btnPausa.dibujar(c);
@@ -1009,9 +1090,12 @@ public class Gameplay extends Pantalla {
         c.drawText(Integer.toString(puntuacionGlobal), anchoPantalla / 2, altoPantalla / 20, pPunutacion);
     }
 
+    /**
+     * Método encargado de dibujar el submenu pausa
+     * @param c Objeto Canvas para poder dibujar
+     */
     public void dibujaPausa(Canvas c) {
-
-        //fondo
+        //fondo pausa
         Paint a = new Paint();
         a.setTypeface(getTypeFace());
         a.setColor(Color.LTGRAY);
@@ -1032,6 +1116,10 @@ public class Gameplay extends Pantalla {
         c.drawText(txtAccion, anchoPantalla / 2, altoPantalla / 2 - altoMenuPausa / 2 + altoPantalla / 20 + margenLateralPausa, a);
     }
 
+    /**
+     * Método encargado de dibujar el submenú cuando pierdes, preguntando si deseas repetir o no
+     * @param c Objeto Canvas para poder dibujar
+     */
     public void dibujaPerdi(Canvas c) {
         //fondo
         Paint a = new Paint();
@@ -1053,6 +1141,10 @@ public class Gameplay extends Pantalla {
         c.drawText(txtRepetir, anchoPantalla / 2, altoPantalla / 2 - altoMenuPausa / 2 + altoPantalla / 20 + margenLateralPausa, a);
     }
 
+    /**
+     * Método encargado de dibujar el submenu con el que podemos introducir nuestras siglas
+     * @param c Objeto Canvas para poder dibujar
+     */
     public void dibujaPideSiglas(Canvas c) {
         //fondo
         Paint a = new Paint();
@@ -1087,6 +1179,10 @@ public class Gameplay extends Pantalla {
 
     }
 
+    /**
+     * Método que comprueba si nuestra puntuación mejora la puntuación más baja que hay en la base de datos
+     * @return True en el caso de que mi puntuación es mayor que la puntuación más baja. False si mi puntuación no es mayor que la puntuación más baja de la base de datos
+     */
     public boolean mejoraPuntuacion() {
         bd = new BaseDeDatos(contexto, "puntuacionesJuego", null, 1);
         db = bd.getWritableDatabase();
@@ -1106,6 +1202,9 @@ public class Gameplay extends Pantalla {
         return false;
     }
 
+    /**
+     * Método que se encarga de introducir en la base de datos nuestra puntuación junto a nuestras siglas. También elimino la puntuación más baja más reciente.
+     */
     public void insertPuntuacion() {
         bd = new BaseDeDatos(contexto, "puntuacionesJuego", null, 1);
         db = bd.getWritableDatabase();
@@ -1133,6 +1232,11 @@ public class Gameplay extends Pantalla {
         perdi = true;
     }
 
+    /**
+     * Método que se encarga de avanzar las siglas
+     * @param letra Char que representa la sigla actual
+     * @return Char que representa la sigla siguiente
+     */
     public char avanza(char letra) {
         pos = abecedario.indexOf(letra);
         if (pos == abecedario.size() - 1) {
@@ -1144,6 +1248,11 @@ public class Gameplay extends Pantalla {
         return letra;
     }
 
+    /**
+     * Método que se encarga de retroceder las siglas
+     * @param letra Char que representa la sigla actual
+     * @return Char que representa la sigla anterior
+     */
     public char retrocede(char letra) {
         pos = abecedario.indexOf(letra);
         if (pos == 0) {
@@ -1155,6 +1264,9 @@ public class Gameplay extends Pantalla {
         return letra;
     }
 
+    /**
+     * Método que se encarga de reanudar el juego, y la música en el caso de estar activada
+     */
     public void reanudaGame() {
         //reanudo el gameplay
         estoyJugando = true;
