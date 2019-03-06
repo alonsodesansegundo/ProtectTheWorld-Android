@@ -14,7 +14,7 @@
     <string name="vibracion">Vibration</string>
     <string name="enviar">Send</string>
     <string name="siglas">Enter your initials</string>
-    <string name="giroscopio">Gyroscope</string>
+    <string name="giroscopio">Moving mobile</string>
     <string name="noRecords">Delete records</string>
     <string name="seguro">Sure?</string>
     <string name="creditos">Credits</string>
@@ -28,4 +28,13 @@
     <string name="infoNiveles">This game will have infinite levels, but they will increase in difficulty. As we complete levels, we will change a row of Martians from an impact by Martians from two impacts. Once we pass the level where there are only Martians of two impacts, we will return to the beginning of the levels, but the Martians will move faster.</string>
     <string name="oneD">One shot</string>
     <string name="twoD">Two shots</string>
+    <string name="noSensor">You don\'t have the sensor</string>
+    <string name="fuente">Font</string>
+    <string name="img">Images</string>
+    <string name="img1">https://game-icons.net</string>
+    <string name="img2">https://pixabay.com/</string>
+    <string name="music1">https://patrickdearteaga.com/</string>
+    <string name="font1">https://www.1001fonts.com/</string>
+    <string name="hecho">Realized and directed by</string>
+    <string name="conAyuda">With the help of</string>
 </resources>

@@ -18,7 +18,7 @@
     <string name="empezar">Empezar</string>
     <string name="enviar">Enviar</string>
     <string name="siglas">Introduce tus siglas</string>
-    <string name="giroscopio">Giroscopio</string>
+    <string name="giroscopio">Moviendo móvil</string>
     <string name="noRecords">Borrar récords</string>
     <string name="seguro">¿Seguro?</string>
     <string name="creditos">Créditos</string>
@@ -32,4 +32,13 @@
     <string name="infoNiveles">Este juego contará con niveles infinitos, pero que irán aumentando en cuanto a dificultad. A medida que vayamos completando niveles, se cambiará una fila de marcianos de un impacto por marcianos de dos impactos. Una vez pasemos el nivel en el que solamente hay marcianos de dos impactos, volveremos al comienzo de los niveles, pero los marcianos se moverán más rápido.</string>
     <string name="oneD">Un impacto</string>
     <string name="twoD">Dos impactos</string>
+    <string name="noSensor">No tienes el sensor</string>
+    <string name="fuente">Fuente</string>
+    <string name="img">Imágenes</string>
+    <string name="img1">https://game-icons.net</string>
+    <string name="img2">https://pixabay.com/</string>
+    <string name="music1">"https://patrickdearteaga.com/ "</string>
+    <string name="font1">https://www.1001fonts.com/</string>
+    <string name="hecho">Realizado y dirigido por</string>
+    <string name="conAyuda">Con la ayuda de</string>
 </resources>

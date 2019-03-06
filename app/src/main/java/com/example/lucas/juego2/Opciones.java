@@ -18,7 +18,7 @@ import android.view.View;
 import android.widget.Toast;
 
 public class Opciones extends Pantalla {
-    private String selNave,opciones,txtMusica,txtSi,txtNo,txtVibracion,txtGiroscopio;
+    private String selNave,opciones,txtMusica,txtSi,txtNo,txtVibracion,txtGiroscopio,txtNoSensor;
     private Bitmap n,n1,n2,imgVolver;
     private int anchoSelectNave;
     private Rect selectNave;
@@ -71,6 +71,8 @@ public class Opciones extends Pantalla {
         txtNo=contexto.getString(R.string.no);
         txtVibracion=contexto.getString(R.string.vibracion);
         txtGiroscopio=contexto.getString(R.string.giroscopio);
+        txtNoSensor=contexto.getString(R.string.noSensor);
+
 
         pTexto = new Paint();
         pTexto.setTypeface(getTypeFace());
@@ -383,7 +385,7 @@ public class Opciones extends Pantalla {
             sensorGiroscopio = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
             if(sensorGiroscopio==null){
                 giroscopio=!giroscopio;
-                Toast.makeText(contexto,"No tienes dicho sensor",Toast.LENGTH_SHORT).show();
+                Toast.makeText(contexto,txtNoSensor,Toast.LENGTH_SHORT).show();
             }
         }
         if(giroscopio){
