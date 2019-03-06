@@ -116,7 +116,6 @@ public class Gameplay extends Pantalla {
         }
 
         sonidoMuereNave = efectos.load(contexto, R.raw.muerenave, 1);
-        sonidoDisparoNave = efectos.load(contexto, R.raw.shot, 1);
         estoyJugando = false;
         miTimer = new Timer();
         task = new TimerTask() {
@@ -283,7 +282,7 @@ public class Gameplay extends Pantalla {
 
         //----------------MUSICA----------------
         musica = preferencias.getBoolean("musica", true);
-        configuraMusica(R.raw.spectre);
+        configuraMusica(R.raw.game);
         if (musica) {
             btnMusica.setImg(imgMusicaOff);
             suenaMusica();

@@ -128,9 +128,6 @@ public class Creditos extends Pantalla {
                     }
                 }
             }
-
-
-
             //boton volver
             back.dibujar(c);
         } catch (Exception e) {
