@@ -9,6 +9,7 @@ import android.graphics.Typeface;
 
 /**
  * Clase que se utilizará para simular el comportamiento de un botón
+ * @author Lucas Alonso de San Segundo
  */
 public class Boton {
     private Paint p, pTextoBtn;
@@ -18,7 +19,7 @@ public class Boton {
     private String texto;
 
     /**
-     *
+     * Constructor de la clase Boton
      * @param left Entero que representa el punto X donde comienza el rectangulo boton (Rect)
      * @param top Entero que representa el punto Y donde comienza el rectangulo boton (Rect)
      * @param right Entero que representa el punto X donde acaba el rectangulo boton (Rect)

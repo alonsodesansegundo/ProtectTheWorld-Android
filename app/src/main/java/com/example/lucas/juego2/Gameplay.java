@@ -31,6 +31,7 @@ import static android.content.Context.SENSOR_SERVICE;
 
 /**
  * Esta clase se encarga de dibujar el propio juego y gestionar su funcionalidad
+ * @author Lucas Alonso de San Segundo
  */
 public class Gameplay extends Pantalla {
     //------------------------PROPIEDADES GAMEPLAY------------------------
@@ -95,6 +96,7 @@ public class Gameplay extends Pantalla {
     //------------------------CONSTRUCTOR------------------------
 
     /**
+     * Constructor de la pantalla Gameplay
      * @param contexto      Objeto contexto
      * @param idPantalla    Entero que representa el id de esta pantalla
      * @param anchoPantalla Entero que representa el ancho de la pantalla
@@ -807,7 +809,6 @@ public class Gameplay extends Pantalla {
 
     /**
      * Este método se encarga de gestionar los movimientos que se producen en dicha pantalla
-     *
      * @param event Evento según el tipo de pulsación o movimiento en la pantalla
      * @return Devuelve un entero. En el caso de pulsar el boton de si salir, devuelve el entero que representa la pantalla de inicio, es decir, devuelve 0; si hemos pulsado el boton que nos permite repetir partida devuelve un entero que genera una nueva pantalla Gameplay.  De haber pulsado cualquier otra cosa que no fuera el boton de salir o repetir partida, devuelve el entero de la pantalla actual.
      */
@@ -1042,7 +1043,6 @@ public class Gameplay extends Pantalla {
 
     /**
      * Método encargado de dibujar el fondo, dependiendo de si estoy jugando o no, dibujo de una manera u otra
-     *
      * @param c Objeto Canvas para poder dibujar
      */
     public void dibujaFondo(Canvas c) {
@@ -1055,7 +1055,6 @@ public class Gameplay extends Pantalla {
 
     /**
      * Método encargado de dibujar la pantalla de inicio del juego
-     *
      * @param c Objeto Canvas para poder dibujar
      */
     public void dibujaInicio(Canvas c) {
@@ -1098,7 +1097,6 @@ public class Gameplay extends Pantalla {
 
     /**
      * Método encargado de dibujar el submenu pausa
-     *
      * @param c Objeto Canvas para poder dibujar
      */
     public void dibujaPausa(Canvas c) {

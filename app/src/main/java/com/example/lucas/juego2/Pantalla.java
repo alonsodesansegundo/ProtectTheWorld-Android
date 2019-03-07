@@ -19,6 +19,7 @@ import android.view.SurfaceHolder;
 
 /**
  * Clase padre de la que heredan todas las pantallas
+ * @author Lucas Alonso de San Segundo
  */
 public class Pantalla {
     private String fuente;
@@ -34,7 +35,7 @@ public class Pantalla {
     private Typeface typeFace;
 
     /**
-     *
+     * Constructor de la clase Pantalla
      * @param contexto Objeto contexto
      * @param idPantalla Entero que representa el id de esta pantalla
      * @param anchoPantalla Entero que representa el ancho de la pantalla

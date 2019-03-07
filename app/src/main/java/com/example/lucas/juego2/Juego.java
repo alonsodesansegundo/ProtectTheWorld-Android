@@ -9,6 +9,7 @@ import android.view.SurfaceView;
 
 /**
  * Clase que hereda surfeceView que se encarga del control de escenas (de pantallas)
+ * @author Lucas Alonso de San Segundo
  */
 public class Juego  extends SurfaceView implements SurfaceHolder.Callback{
     // control de tiempo de la aplicación
@@ -25,7 +26,7 @@ public class Juego  extends SurfaceView implements SurfaceHolder.Callback{
     private boolean funcionando = false;      // Control del hilo
 
     /**
-     *
+     * Constructor de la clase Juego
      * @param context Objeto contexto
      */
     public Juego(Context context) {

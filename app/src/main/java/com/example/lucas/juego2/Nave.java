@@ -11,6 +11,7 @@ import android.graphics.RectF;
 
 /**
  * Clase que genera un objeto de tipo Nave
+ * @author Lucas Alonso de San Segundo
  */
 public class Nave {
     private PointF pos;
@@ -24,7 +25,7 @@ public class Nave {
     //------------------------CONSTRUCTOR------------------------
 
     /**
-     *
+     * Constructor de la clase Nave
      * @param imagen Bitmap escalado que representará la nave
      * @param x Float punto X de la pos del marciano
      * @param y Float punto Y de la pos del marciano

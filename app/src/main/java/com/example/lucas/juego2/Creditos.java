@@ -14,6 +14,7 @@ import java.util.List;
 
 /**
  * Esta clase se encarga de dibujar la pantalla de créditos y gestionar su funcionalidad
+ * @author Lucas Alonso de San Segundo
  */
 public class Creditos extends Pantalla {
     private boolean hayDedo;
@@ -24,7 +25,7 @@ public class Creditos extends Pantalla {
     private String txtCreditos, txtMusica, txtFuente, txtImagenes, txtImg, txtImg2, txtMusic, txtFont, txtCanal,txtYotube,txtHecho, txtAyuda;
     private Paint pTexto, pTexto2;
     /**
-     *
+     * Constructor de la pantalla Creditos
      * @param contexto Objeto contexto
      * @param idPantalla Entero que representa el id de esta pantalla
      * @param anchoPantalla Entero que representa el ancho de la pantalla

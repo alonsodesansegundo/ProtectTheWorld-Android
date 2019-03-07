@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 /**
  * Clase que genera objetos de tipo Marciano
+ * @author Lucas Alonso de San Segundo
  */
 public class Marciano {
     private PointF pos;
@@ -24,6 +25,7 @@ public class Marciano {
     //------------------------CONSTRUCTOR------------------------
 
     /**
+     * Constructor de la clase Marciano
      * @param imagen Bitmap escalado que representa al marciano
      * @param x Float punto X de la pos del marciano
      * @param y Float punto Y de la pos del marciano

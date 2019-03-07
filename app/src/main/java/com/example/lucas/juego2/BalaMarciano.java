@@ -8,6 +8,7 @@ import android.graphics.RectF;
 
 /**
  * Esta clase será utilizada para generar las balas de los marcianos
+ * @author Lucas Alonso de San Segundo
  */
 public class BalaMarciano {
     private Bitmap img;
@@ -15,7 +16,7 @@ public class BalaMarciano {
     private double vBalaMarciano;
 
     /**
-     *
+     * Constructor de la clase BalaMarciano
      * @param x Entero que representa el punto X donde comienza la bala del marciano (contenedor)
      * @param y Entero que representa el punto Y donde comienza la bala del marciano (contenedor)
      * @param ancho Entero que representa el ancho que tendrá la bala del marciano (contenedor)

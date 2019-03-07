@@ -15,6 +15,7 @@ import java.util.ArrayList;
 
 /**
  * Esta clase se encarga de dibujar la pantalla del menu principal y gestionar su funcionalidad
+ * @author Lucas Alonso de San Segundo
  */
 public class Menu extends Pantalla {
     private Boton jugar, ayuda, opciones, records,creditos;
@@ -22,7 +23,7 @@ public class Menu extends Pantalla {
     private String txtCreditos,txtOpciones,txtAyuda,txtRecords;
 
     /**
-     *
+     * Constructor de la pantalla Menu
      * @param contexto Objeto contexto
      * @param idPantalla Entero que representa el id de esta pantalla
      * @param anchoPantalla Entero que representa el ancho de la pantalla

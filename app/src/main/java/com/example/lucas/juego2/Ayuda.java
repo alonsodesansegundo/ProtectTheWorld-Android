@@ -13,6 +13,7 @@ import android.view.MotionEvent;
 
 /**
  * Esta clase se encarga de dibujar la pantalla de ayuda y gestionar su funcionalidad
+ * @author Lucas Alonso de San Segundo
  */
 public class Ayuda extends Pantalla {
     private Bitmap imgVolver;
@@ -27,7 +28,7 @@ public class Ayuda extends Pantalla {
     private int izqBoton, drchBoton, altoBoton;
 
     /**
-     *
+     * Constructor de la clase Ayuda
      * @param contexto Objeto contexto
      * @param idPantalla Entero que representa el id de esta pantalla
      * @param anchoPantalla Entero que representa el ancho de la pantalla

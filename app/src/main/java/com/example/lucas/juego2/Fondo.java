@@ -5,13 +5,14 @@ import android.graphics.PointF;
 
 /**
  * Clase que se utilizará en el gameplay para que el fondo de sensación de movimiento
+ * @author Lucas Alonso de San Segundo
  */
 public class Fondo {
     public PointF posicion;
     public Bitmap imagen;
 
     /**
-     *
+     * Constructor de la Fondo
      * @param imagen Bitmap que será el fondo que queramos
      * @param x Punto X donde se empezará a dibujar el fondo
      * @param y Punto Y donde se empezará a dibujar el fondo

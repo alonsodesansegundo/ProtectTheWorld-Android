@@ -6,12 +6,13 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 /**
  * Clase para poder realizar la conexión a la base de datos
+ * @author Lucas Alonso de San Segundo
  */
 public class BaseDeDatos extends SQLiteOpenHelper {
     String sqlCreateTable=" CREATE TABLE puntuaciones ( id INTEGER,siglas TEXT, puntuacion INTEGER)";
 
     /**
-     *
+     * Constructor de la clase BaseDeDatos
      * @param context Objeto contexto
      * @param name Nombre que tendrá la base de datos
      * @param factory Objeto SQLiteDatabase.CursorFactory

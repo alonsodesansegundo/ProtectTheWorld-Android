@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 /**
  * Esta clase se encarga de dibujar la pantalla de opciones y gestionar su funcionalidad
+ * @author Lucas Alonso de San Segundo
  */
 public class Opciones extends Pantalla {
     private String selNave,opciones,txtMusica,txtSi,txtNo,txtVibracion,txtGiroscopio,txtNoSensor;
@@ -34,7 +35,7 @@ public class Opciones extends Pantalla {
     private boolean vibracion,giroscopio;
     private Paint pTexto;
     /**
-     *
+     * Constructor de la pantalla Opciones
      * @param contexto Objeto contexto
      * @param idPantalla Entero que representa el id de esta pantalla
      * @param anchoPantalla Entero que representa el ancho de la pantalla

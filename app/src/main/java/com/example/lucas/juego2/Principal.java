@@ -10,12 +10,13 @@ import android.view.Window;
 
 /**
  * Clase que se encarga de ver el estado de la aplicación
+ * @author Lucas Alonso de San Segundo
  */
 public class Principal extends AppCompatActivity {
     private Juego juego;
 
     /**
-     *
+     * Constructor de la clase Principal
      * @param savedInstanceState Objeto Bundle
      */
     @Override
