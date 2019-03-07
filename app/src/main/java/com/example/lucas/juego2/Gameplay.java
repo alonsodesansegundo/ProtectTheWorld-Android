@@ -247,7 +247,7 @@ public class Gameplay extends Pantalla {
                 public void onSensorChanged(SensorEvent sensorEvent) {
                     // More code goes here
                     if (estoyJugando) {
-                        float nuevaPos = anchoPantalla / 2 + sensorEvent.values[0] * 100;
+                        float nuevaPos = anchoPantalla / 2 - sensorEvent.values[0] * 100;
                         if (nuevaPos >= 0 && nuevaPos <= anchoPantalla) {
                             miNave.moverNave(nuevaPos);
                         }
