@@ -22,17 +22,17 @@ import android.widget.Toast;
  * @author Lucas Alonso de San Segundo
  */
 public class Opciones extends Pantalla {
-    private String selNave,opciones,txtMusica,txtSi,txtNo,txtVibracion,txtGiroscopio,txtNoSensor;
+    private String selNave,opciones,txtMusica,txtSi,txtNo,txtVibracion,txtgravedad,txtNoSensor;
     private Bitmap n,n1,n2,imgVolver;
     private int anchoSelectNave;
     private Rect selectNave;
     private int alturaBoton,espacioTextoBoton,altoTexto;
     private int naveSeleccionada;
     private SensorManager sensorManager;
-    private Sensor sensorGiroscopio;
-    private Boton nave,nave1,nave2,back,siMusica,noMusica,siVibracion,noVibracion,noGiroscopio,siGiroscopio,btnAux;
+    private Sensor sensorgravedad;
+    private Boton nave,nave1,nave2,back,siMusica,noMusica,siVibracion,noVibracion,nogravedad,sigravedad,btnAux;
     private SharedPreferences.Editor editorPreferencias;
-    private boolean vibracion,giroscopio;
+    private boolean vibracion,gravedad;
     private Paint pTexto;
     /**
      * Constructor de la pantalla Opciones
@@ -81,7 +81,7 @@ public class Opciones extends Pantalla {
         txtSi=contexto.getString(R.string.si);
         txtNo=contexto.getString(R.string.no);
         txtVibracion=contexto.getString(R.string.vibracion);
-        txtGiroscopio=contexto.getString(R.string.giroscopio);
+        txtgravedad=contexto.getString(R.string.giroscopio);
         txtNoSensor=contexto.getString(R.string.noSensor);
 
 
@@ -137,20 +137,20 @@ public class Opciones extends Pantalla {
         vibracion=preferencias.getBoolean("vibracion",true);
         actualizaVibracion();
 
-        //--------------BOTONES SI O NO GIROSCOPIO--------------
+        //--------------BOTONES SI O NO gravedad--------------
 
-        siGiroscopio=new Boton((anchoPantalla-anchoSelectNave)/2,altoPantalla-altoPantalla/4+espacioTextoBoton*5,
+        sigravedad=new Boton((anchoPantalla-anchoSelectNave)/2,altoPantalla-altoPantalla/4+espacioTextoBoton*5,
                 anchoPantalla/2,altoPantalla-altoPantalla/4+espacioTextoBoton*5+alturaBoton,Color.RED);
-        siGiroscopio.setTexto(txtSi,altoTexto,Color.BLACK,getTypeFace());
+        sigravedad.setTexto(txtSi,altoTexto,Color.BLACK,getTypeFace());
 
-        noGiroscopio=new Boton(anchoPantalla/2,altoPantalla-altoPantalla/4+espacioTextoBoton*5,
+        nogravedad=new Boton(anchoPantalla/2,altoPantalla-altoPantalla/4+espacioTextoBoton*5,
                 anchoPantalla-(anchoPantalla-anchoSelectNave)/2,altoPantalla-altoPantalla/4+espacioTextoBoton*5+alturaBoton, Color.RED);
-        noGiroscopio.setTexto(txtNo,altoTexto,Color.BLACK,getTypeFace());
+        nogravedad.setTexto(txtNo,altoTexto,Color.BLACK,getTypeFace());
 
 
-        //---------------------BOOLEAN GIROSCOPIO---------------------
-        giroscopio=preferencias.getBoolean("giroscopio",false);
-        actualizaGiroscopio();
+        //---------------------BOOLEAN gravedad---------------------
+        gravedad=preferencias.getBoolean("gravedad",false);
+        actualizagravedad();
     }
 
     /**
@@ -195,11 +195,11 @@ public class Opciones extends Pantalla {
             siVibracion.dibujar(c);
             noVibracion.dibujar(c);
 
-            //dibujo el texto giroscopio
-            c.drawText(txtGiroscopio,anchoPantalla/2,altoPantalla-altoPantalla/4+espacioTextoBoton*4,pTexto);
-            //dibujo los botones giroscopio
-            siGiroscopio.dibujar(c);
-            noGiroscopio.dibujar(c);
+            //dibujo el texto gravedad
+            c.drawText(txtgravedad,anchoPantalla/2,altoPantalla-altoPantalla/4+espacioTextoBoton*4,pTexto);
+            //dibujo los botones gravedad
+            sigravedad.dibujar(c);
+            nogravedad.dibujar(c);
         }catch (Exception e){
 
         }
@@ -260,14 +260,14 @@ public class Opciones extends Pantalla {
                     btnAux=nave2;
                 }
 
-                //pulsacion giroscopio
-                if(pulsa(siGiroscopio.getRectangulo(),event)){
-                    siGiroscopio.setBandera(true);
-                    btnAux=siGiroscopio;
+                //pulsacion gravedad
+                if(pulsa(sigravedad.getRectangulo(),event)){
+                    sigravedad.setBandera(true);
+                    btnAux=sigravedad;
                 }
-                if(pulsa(noGiroscopio.getRectangulo(),event)){
-                    noGiroscopio.setBandera(true);
-                    btnAux=noGiroscopio;
+                if(pulsa(nogravedad.getRectangulo(),event)){
+                    nogravedad.setBandera(true);
+                    btnAux=nogravedad;
                 }
 
             case MotionEvent.ACTION_POINTER_DOWN:  // Segundo y siguientes tocan
@@ -326,14 +326,14 @@ public class Opciones extends Pantalla {
                 }
                 actualizaNaveSeleccionada();
 
-                //pulsacion botones giroscopio
-                if(pulsa(siGiroscopio.getRectangulo(),event)&&siGiroscopio.getBandera()){
-                    giroscopio=true;
-                    actualizaGiroscopio();
+                //pulsacion botones gravedad
+                if(pulsa(sigravedad.getRectangulo(),event)&&sigravedad.getBandera()){
+                    gravedad=true;
+                    actualizagravedad();
                 }
-                if(pulsa(noGiroscopio.getRectangulo(),event)&&noGiroscopio.getBandera()){
-                    giroscopio=false;
-                    actualizaGiroscopio();
+                if(pulsa(nogravedad.getRectangulo(),event)&&nogravedad.getBandera()){
+                    gravedad=false;
+                    actualizagravedad();
                 }
                 //pongo las bandera del btn aux a false
                 if(btnAux!=null){
@@ -411,23 +411,23 @@ public class Opciones extends Pantalla {
     /**
      * Método que se encarga de actualizar los botones de como jugar segun cual hayamos pulsado y guardar dicha configuración en el fichero Shared Preferences.
      */
-    public void actualizaGiroscopio(){
-        if(giroscopio){
+    public void actualizagravedad(){
+        if(gravedad){
             sensorManager = (SensorManager) contexto.getSystemService(Context.SENSOR_SERVICE);
-            sensorGiroscopio = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
-            if(sensorGiroscopio==null){
-                giroscopio=!giroscopio;
+            sensorgravedad = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
+            if(sensorgravedad==null){
+                gravedad=!gravedad;
                 Toast.makeText(contexto,txtNoSensor,Toast.LENGTH_SHORT).show();
             }
         }
-        if(giroscopio){
-            siGiroscopio.setColor(Color.LTGRAY);
-            noGiroscopio.setColor(Color.DKGRAY);
+        if(gravedad){
+            sigravedad.setColor(Color.LTGRAY);
+            nogravedad.setColor(Color.DKGRAY);
         }else{
-            siGiroscopio.setColor(Color.DKGRAY);
-            noGiroscopio.setColor(Color.LTGRAY);
+            sigravedad.setColor(Color.DKGRAY);
+            nogravedad.setColor(Color.LTGRAY);
         }
-        editorPreferencias.putBoolean("giroscopio",giroscopio);
+        editorPreferencias.putBoolean("gravedad",gravedad);
         editorPreferencias.commit();
     }
     //------------------------VIBRACIÓN DEL DISPOSITIVO------------------------

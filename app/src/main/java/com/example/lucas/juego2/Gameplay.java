@@ -23,7 +23,6 @@ import android.util.Log;
 import android.view.MotionEvent;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -35,58 +34,400 @@ import static android.content.Context.SENSOR_SERVICE;
  */
 public class Gameplay extends Pantalla {
     //------------------------PROPIEDADES GAMEPLAY------------------------
+    //------------------------FONDO------------------------
+    /**
+     * Array de fondos para dar la sensación de movimiento
+     */
     private Fondo[] fondo;
+    
+    /**
+     * Bitmap (imagen) que será utilizada para el fondo del juego
+     */
     private Bitmap bitmapFondo;
+    
+    /**
+     * Entero que representa la probabilidad de disparo que tendrán los marcianos, será del 33%
+     */
     private int probabilidadDisparoMarcianos;
-    private boolean estoyJugando;
-    private boolean empece, perdi, pausa;
-    private int nivel, filas, columnas, puntuacionGlobal;
-    private Bitmap imgMarciano1, imgMarciano2, imgNave, proyectilMarciano, balaNave, explosion;
-    private float primeraX, primeraY, tamanhoPuntuacion;
-    private double vMarciano, vBala, vBalaMarciano, vFondo;
+    
+    /**
+     * Booleanas de control
+     */
+    private boolean empece, perdi, pausa,estoyJugando;
+    
+    /**
+     * Entero que se utilizará para rellenar los marcianos según el nivel en el que estemos
+     */
+    private int nivel;
+    
+    /**
+     * Entero que representa la cantidad de filas de marcianos que habrá
+     */
+    private int filas;
+    
+    /**
+     * Entero que representa la cantidad de columnas de marcianos que habrá
+     */
+    private int columnas;
+    
+    /**
+     * Entero que representa la puntuación del jugador
+     */
+    private int puntuacionGlobal;
+    
+    /**
+     * Bitmap (imagen) que tendrán los marcianos de un impacto
+     */
+    private Bitmap imgMarciano1;
+    
+    /**
+     * Bitmap (imagen) que tendrán los marcianos de dos impactos
+     */
+    private Bitmap imgMarciano2;
+    
+    /**
+     * Bitmap (imagen) que tendrá nuestra nave
+     */
+    private Bitmap imgNave;
+    
+    /**
+     * Bitmap (imagen) que tendrán los proyectiles o balas de los marcianos
+     */
+    private Bitmap proyectilMarciano;
+    
+    /**
+     * Bitmap (imagen) que tendrá el proyectil o bala de nuestra nave
+     */
+    private Bitmap balaNave;
+    
+    /**
+     * Bitmap (imagen) que se representará la explosión de nuestra nave en el momento que perdamos
+     */
+    private Bitmap  explosion;
+    
+    /**
+     * Float que servirá para situar los marcianos respecto al eje X
+     */
+    private float primeraX;
+    
+    /**
+     * Float que servirá para situar los marcianos respecto al eje Y
+     */
+    private float primeraY;
+    
+    /**
+     * Float que representa el tamaño del texto de la puntuación
+     */
+    private float tamanhoPuntuacion;
+    
+    /**
+     * Double que representa la velocidad de movimiento lateral de los marcianos
+     */
+    private double vMarciano;
+    
+    /**
+     * Double que representa la velocidad de la bala de nuestra nave
+     */
+    private double vBala;
+    
+    /**
+     * Double que representa la velocidad de movimiento de las balas de los marcianos
+     */
+    private double vBalaMarciano;
+    
+    /**
+     * Double que representa la velocidad de movimiento del fondo
+     */
+    private double vFondo;
+    
+    /**
+     * Array bidimensional donde estarán situados nuestros Marcianos
+     */
     private Marciano marcianos[][];
+    
+    /**
+     * Objeto nave que será con el que jugaremos
+     */
     private Nave miNave;
-    private boolean voyIzquierda, voyAbajo, mueveNave;
+    
+    /**
+     * Booleana que nos sirve para saber en que dirección se tienen que mover los marcianos
+     */
+    private boolean voyIzquierda;
+    
+    /**
+     * Booleana que nos sirve para saber si los marcianos tienen que descender un nivel o no
+     */
+    private boolean voyAbajo;
+    
+    /**
+     * Booleana para el movimiento de la nave a través de la pulsación en la pantalla
+     */
+    private boolean mueveNave;
+    
+    /**
+     * ArrayList auxiliar que me servirá para que solamente puedan disparar los ultimos marcianos de cada columna
+     */
     private ArrayList misColumnas;
+    
+    /**
+     * ArrayList en el que estarán guardadas todas las balas de los marcianos
+     */
     private ArrayList<BalaMarciano> balasMarcianos;
+    
+    /**
+     * Paint que se utilizará para la puntuación del juegador
+     */
     private Paint pPunutacion;
+    
+    /**
+     * Entero que representa en milisegundos el tiempo que va a vibrar el dispositivo en el caso de haber perdido y que la vibración esté activada
+     */
     private int tiempoVibracion;
-    private Boton btnPausa, btnReanudar, btnSalir, btnMusica, btnJugar, btnNoJugar, btnSi, btnNo, btnAux;
-    private Bitmap imgPausa, imgPlay, imgMusicaOn, imgMusicaOff;
+    
+    /**
+     * Objeto botón que nos permite pausar la partida
+     */
+    private Boton btnPausa;
+    
+    /**
+     * Objeto botón que nos permite reanudar la partida
+     */
+    private Boton btnReanudar;
+    
+    /**
+     * Objeto botón que nos permite salir de la partida y volver al menu principal
+     */
+    private Boton btnSalir;
+    
+    /**
+     * Objeto botón que nos permite activar la música en el caso de que esté desactivada, y viceversa
+     */
+    private Boton btnMusica;
+    
+    /**
+     * Objeto botón que nos permite iniciar el juego
+     */
+    private Boton btnJugar;
+    
+    /**
+     * Objeto botón que nos permite no iniciar el juego y volver al menú principal
+     */
+    private Boton btnNoJugar;
+    
+    /**
+     * Objeto botón que nos permite repetir partida
+     */
+    private Boton btnSi;
+    
+    /**
+     * Objeto botón que nos permite regresar al menú principal una vez hayamos acabado nuestra partida
+     */
+    private Boton btnNo;
+    
+    /**
+     * Objeto botón auxiliar que nos servirá para establecer como no pulsado una vez levantamos el dedo de la pantalla
+     */
+    private Boton btnAux;
+    
+    /**
+     * Bitmap (imagen) para el boton pausa, mientras estemos jugando
+     */
+    private Bitmap imgPausa;
+    
+    /**
+     * Bitmap (imagen) para el boton pausa, mientras estemos en pausa
+     */
+    private Bitmap imgPlay;
+    
+    /**
+     * Bitmap (imagen) para el boton de la musica, mientras la musica no está sonando
+     */
+    private Bitmap imgMusicaOn;
+    
+    /**
+     * Bitmap (imagen) para el boton de la musica, mientras la musica está sonando
+     */
+    private Bitmap imgMusicaOff;
+    
+    /**
+     * Entero que nos servirá para saber con que nave vamos a jugar
+     */
     private int codNave;
+    
+    /**
+     * Entero que representa el margen lateral que habrá la hora de dibujar diferentes "menus", como el menu de pausa
+     */
     private int margenLateralPausa;
+    
+    /**
+     * Entero que utilizaré para dibujar diferentes "menus", como por ejemplo el menu pausa
+     */
     private int altoMenuPausa;
+    
+    /**
+     * Entero en el que estará la puntuación más baja más reciente
+     */
     private int ultimaPuntuacion;
+    
+    /**
+     * Objeto SharedPreferences.Editor para poder cambiar el archivo de configuración
+     */
     private SharedPreferences.Editor editorPreferencias;
+    
+    /**
+     * Objeto SharedPreferences
+     */
     private SharedPreferences preferencias;
-    private boolean vibracion, giroscopio;
+    
+    /**
+     * Booleana de configuración, si está a true el dispositivo vibrará en el momento que perdamos, y al contario
+     */
+    private boolean vibracion;
+    
+    /**
+     * Booleana de configuración que nos indicará cómo se podrá mover la nave, en el caso de estar a true se moverá a traves del sensor de gravedad, y de lo contrario, se moverá con el movimiento del dedo por la pantalla
+     */
+    private boolean gravedad;
+    
 
     //efectos sonoros
+    /**
+     * Objeto soundPool para poder repdroducir el sonido de la explosión de la nave
+     */
     private SoundPool efectos;
-    private int sonidoDisparoNave, sonidoMuereNave;
+    
+    /**
+     * Entero que representa el sonido que se tiene que reproducir cuando hemos sido eliminados
+     */
+    private int  sonidoMuereNave;
+    
+    /**
+     * Entero que representa el numero maximo de efectos sonoros que puede haber
+     */
     private int maxSonidosSimultaneos;
 
-
     //para las siglas
+    /**
+     * Entero auxiliar que utilizaremos para desplazar una sigla
+     */
     private int pos;
+    
+    /**
+     * Entero que representa el tamaño de las siglas
+     */
     private int tamanhoSiglas;
+    
+    /**
+     * ArrayList en el que estarán todas las letras del abecedario
+     */
     private ArrayList<Character> abecedario;
+    /**
+     * Booleanas de control
+     */
     private boolean pideSiglas, tengoSiglas, hiceInsert;
+    
+    /**
+     * Array de char en el que guardaré las siglas del usuario
+     */
     private char[] siglas;
+    
+    /**
+     * Entero utilizado para dibujar el menú iniciales
+     */
     private int altoMenuIniciales;
-    private Boton btnSiglaArriba, btnSiglaAbajo, btnSigla2Arriba,
-            btnSigla2Abajo, btnSigla3Arriba, btnSigla3Abajo, btnEnviar;
-    private Bitmap trianguloArriba, trianguloAbajo;
+    
+    /**
+     * Objeto boton superior de la primera sigla
+     */
+    private Boton btnSiglaArriba;
+    
+    /**
+     * Objeto boton inferior de la primera sigla
+     */
+    private Boton btnSiglaAbajo;
+    
+    /**
+     * Objeto boton superior de la segunda sigla
+     */
+    private Boton btnSigla2Arriba;
+    
+    /**
+     * Objeto boton inferior de la segunda sigla
+     */
+    private Boton btnSigla2Abajo;
+    
+    /**
+     * Objeto boton superior de la tercera sigla
+     */
+    private Boton btnSigla3Arriba;
+    
+    /**
+     * Objeto boton inferior de la tercera sigla
+     */
+    private Boton btnSigla3Abajo;
+    
+    /**
+     * Objeto boton con el que poder realizar la inserccion de nuestras siglas a la base de datos, como poder eliminar la puntuacion mas baja mas reciente
+     */
+    private Boton btnEnviar;
 
-    //giroscopio
-    private Sensor sensorGiroscopio;
+    /**
+     * Bitmap (imagen) utiziada para los botones que estan situados en la parte superior de las siglas
+     */
+    private Bitmap trianguloArriba;
+
+    /**
+     * Bitmap (imagen) utiziada para los botones que estan situados en la parte inferior de las siglas
+     */
+    private Bitmap trianguloAbajo;
+    
+
+    //sensor de gravedad
+    /**
+     * Objeto sensor que será el sensor de gravedad en el caso de haber seleccionado jugar moviendo el movl
+     */
+    private Sensor sensorGravedad;
+
+    /**
+     * Objeto sensor manager
+     */
     private SensorManager sensorManager;
-    private SensorEventListener escuchaGiroscopio;
+
+    /**
+     * Objeto SensorEventListener del sensor de gravedad
+     */
+    private SensorEventListener escuchaGravedad;
+
     //para la bd
+    /**
+     * Entero que representa el id maximo antes de realizar la inserccion y el delete
+     */
     private int ultimoId;
-    private String consultaUltima, consultaId;
+
+    /**
+     * Cadena (query) para obtener los datos de la puntuación más baja más reciente
+     */
+    private String consultaUltima;
+
+    /**
+     * Cadena (query) con la que obtengo el id mas alto antes de realizar el delete y el insert
+     */
+    private String consultaId;
+
+    /**
+     * Objeto BaseDeDatos
+     */
     private BaseDeDatos bd;
+
+    /**
+     * Objeto SQLiteDatabase
+     */
     private SQLiteDatabase db;
+
+    /**
+     * Objeto Cursor
+     */
     private Cursor c;
     private String txtContinuar, txtSalir, txtAccion, txtEmpezar, txtSi, txtRepetir, txtNo, txtSiglas, txtEnviar;
     //timer para disparo marcianos
@@ -236,13 +577,13 @@ public class Gameplay extends Pantalla {
         //----------------ARCHIVO CONFIGURACIÓN--------------
         preferencias = contexto.getSharedPreferences("preferencias", Context.MODE_PRIVATE);
         editorPreferencias = preferencias.edit();
-        //--------------BOOLEAN GIROSCOPIO--------------
-        giroscopio = preferencias.getBoolean("giroscopio", false);
-        if (giroscopio) {
+        //--------------BOOLEAN gravedad--------------
+        gravedad = preferencias.getBoolean("gravedad", false);
+        if (gravedad) {
             sensorManager = (SensorManager) contexto.getSystemService(Context.SENSOR_SERVICE);
 
-            sensorGiroscopio = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
-            escuchaGiroscopio = new SensorEventListener() {
+            sensorGravedad = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
+            escuchaGravedad = new SensorEventListener() {
                 @Override
                 public void onSensorChanged(SensorEvent sensorEvent) {
                     // More code goes here
@@ -259,8 +600,8 @@ public class Gameplay extends Pantalla {
                 }
             };
             // Register the listener
-            sensorManager.registerListener(escuchaGiroscopio,
-                    sensorGiroscopio, SensorManager.SENSOR_DELAY_NORMAL);
+            sensorManager.registerListener(escuchaGravedad,
+                    sensorGravedad, SensorManager.SENSOR_DELAY_NORMAL);
         }
 
         //--------------BOOLEAN VIBRACION--------------
@@ -821,8 +1162,8 @@ public class Gameplay extends Pantalla {
 
         switch (accion) {
             case MotionEvent.ACTION_DOWN:// Primer dedo toca
-                //si estoy jugando con la opcion del giroscopio desactivada, y pulso en la pos x donde está la nave, puedo mover la nave
-                if (!giroscopio && pointerID == 0 && estoyJugando && (event.getX() >= miNave.getContenedor().left && event.getX() <= miNave.getContenedor().right) || mueveNave) {
+                //si estoy jugando con la opcion del gravedad desactivada, y pulso en la pos x donde está la nave, puedo mover la nave
+                if (!gravedad && pointerID == 0 && estoyJugando && (event.getX() >= miNave.getContenedor().left && event.getX() <= miNave.getContenedor().right) || mueveNave) {
                     mueveNave = true;
                 }
                 if (estoyJugando) {
@@ -1009,7 +1350,7 @@ public class Gameplay extends Pantalla {
 
             case MotionEvent.ACTION_MOVE: // Se mueve alguno de los dedos
 
-                //solo puedo poner mueve nave a true, cuando giroscopio está a false entre una de las condiciones
+                //solo puedo poner mueve nave a true, cuando gravedad está a false entre una de las condiciones
                 if (mueveNave && pointerID == 0) {
                     miNave.moverNave(event.getX());
                 }
@@ -1259,7 +1600,6 @@ public class Gameplay extends Pantalla {
 
     /**
      * Método que se encarga de retroceder las siglas
-     *
      * @param letra Char que representa la sigla actual
      * @return Char que representa la sigla anterior
      */
