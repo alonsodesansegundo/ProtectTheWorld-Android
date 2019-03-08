@@ -9,6 +9,9 @@ import android.database.sqlite.SQLiteOpenHelper;
  * @author Lucas Alonso de San Segundo
  */
 public class BaseDeDatos extends SQLiteOpenHelper {
+    /**
+     * Cadena (query) que crea la tabla donde guardaremos las puntuaciones
+     */
     String sqlCreateTable=" CREATE TABLE puntuaciones ( id INTEGER,siglas TEXT, puntuacion INTEGER)";
 
     /**

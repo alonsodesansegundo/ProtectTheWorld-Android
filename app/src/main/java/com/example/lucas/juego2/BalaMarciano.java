@@ -11,8 +11,19 @@ import android.graphics.RectF;
  * @author Lucas Alonso de San Segundo
  */
 public class BalaMarciano {
+    /**
+     * Bitmap (imagen) que representará la bala del marciano
+     */
     private Bitmap img;
+
+    /**
+     * RectF que utilizaremos como contenedor para detectar las colsiones
+     */
     private RectF contenedor;
+
+    /**
+     * Double que representa la velocidad con la que se moverá la bala respecto al eje Y
+     */
     private double vBalaMarciano;
 
     /**

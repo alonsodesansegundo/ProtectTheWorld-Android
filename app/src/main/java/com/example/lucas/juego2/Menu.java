@@ -18,9 +18,65 @@ import java.util.ArrayList;
  * @author Lucas Alonso de San Segundo
  */
 public class Menu extends Pantalla {
-    private Boton jugar, ayuda, opciones, records,creditos;
-    private int alto, ancho, espacio;
-    private String txtCreditos,txtOpciones,txtAyuda,txtRecords;
+    /**
+     * Objeto boton que nos permite jugar
+     */
+    private Boton jugar;
+
+    /**
+     * Objeto boton que nos permite acceder al menu de ayuda
+     */
+    private Boton ayuda;
+
+    /**
+     * Objeto boton que nos permite acceder a las opciones
+     */
+    private Boton opciones;
+
+    /**
+     * Objeto boton que nos permite acceder a los records
+     */
+    private Boton records;
+
+    /**
+     * Objeto boton que nos permite acceder a los creditos
+     */
+    private Boton creditos;
+
+    /**
+     * Entero que me sirve para situar los botones respecto al eje X
+     */
+    private int alto;
+
+    /**
+     * Entero que me sirve para situar los botones respecto al eje Y
+     */
+    private int ancho;
+
+    /**
+     * Entero que me sirve para separar los botones
+     */
+    private int espacio;
+
+    /**
+     * Texto del boton creditos
+     */
+    private String txtCreditos;
+
+    /**
+     * Texto del boton opciones
+     */
+    private String txtOpciones;
+
+    /**
+     * Texto del boton ayuda
+     */
+    private String txtAyuda;
+
+    /**
+     * Texto del boton records
+     */
+    private String txtRecords;
 
     /**
      * Constructor de la pantalla Menu

@@ -13,26 +13,182 @@ import android.view.MotionEvent;
 
 /**
  * Esta clase se encarga de dibujar la pantalla de ayuda y gestionar su funcionalidad
+ *
  * @author Lucas Alonso de San Segundo
  */
 public class Ayuda extends Pantalla {
+    /**
+     * Bitmap (imagen) para el boton de volver al menu principal
+     */
     private Bitmap imgVolver;
+
+    /**
+     * Objeto Boton para volver al menu principal
+     */
     private Boton back;
-    private Bitmap m1, m2;
-    private float primeraY, contador, posX;
-    private String[] finalidad, infoNave, infoNiveles, infoMarcianos;
-    private String txtAyuda, txtFinalidad,txtP,txtP2, txtNave, txtNiveles, txtMarcianos, tFin, tNave, tNiveles, tMarcianos, impacto1, impacto2;
-    private Paint pTexto, pImpactos;
-    private Boton btnFinalidad, btnNiveles, btnNave, btnMarcianos;
+
+    /**
+     * Bitmap (imagen) del marciano que muere tras recibir un impacto
+     */
+    private Bitmap m1;
+
+    /**
+     * Bitmap (imagen) del marciano que muere tras recibir dos impactos
+     */
+    private Bitmap m2;
+
+    /**
+     * Float que nos servirá para situar los botones respecto al eje Y
+     */
+    private float primeraY;
+
+    /**
+     * Float que nos servirá para situar los botones respecto al eje X
+     */
+    private float posX;
+
+    /**
+     * Array de palabras que aparecerán en el caso de pulsar el boton Finalidad
+     */
+    private String[] finalidad;
+
+    /**
+     * Array de palabras que aparecerán en el caso de pulsar el boton Nave
+     */
+    private String[] infoNave;
+
+    /**
+     * Array de palabras que aparecerán en el caso de pulsar el boton Niveles
+     */
+    private String[] infoNiveles;
+
+    /**
+     * Array de palabras que aparecerán en el caso de pulsar el boton Marcianos
+     */
+    private String[] infoMarcianos;
+
+    /**
+     * Cadena que representará el texto del menu  Ayuda
+     */
+    private String txtAyuda;
+
+    /**
+     * Cadena que representará el texto del menu Finalidad
+     */
+    private String txtFinalidad;
+
+    /**
+     * Cadena que representará el texto puntuacion de los marcianos de un impacto
+     */
+    private String txtP;
+
+    /**
+     * Cadena que representará el texto puntuacion de los marcianos de dos impactos
+     */
+    private String txtP2;
+
+    /**
+     * Cadena que representará la palabra Nave
+     */
+    private String txtNave;
+
+    /**
+     * Cadena que representará el texto del menu  Niveles
+     */
+    private String txtNiveles;
+
+    /**
+     * Cadena que representará el texto del menu Marcianos
+     */
+    private String txtMarcianos;
+
+    /**
+     * Cadena que representará la palabra Finalidad
+     */
+    private String tFin;
+
+    /**
+     * Cadena que representará la palabra Nave
+     */
+    private String tNave;
+
+    /**
+     * Cadena que representará la palabra Niveles
+     */
+    private String tNiveles;
+
+    /**
+     * Cadena que representará la palabra Marcianos
+     */
+    private String tMarcianos;
+
+    /**
+     * Cadena que representará el texto 1 impacto
+     */
+    private String impacto1;
+
+    /**
+     * Cadena que representará el texto dos impactos
+     */
+    private String impacto2;
+
+    /**
+     * Objeto Paint para dibujar el texto
+     */
+    private Paint pTexto;
+
+    /**
+     * Objeto Paint para dibujar las cadenas impactos de los marcianos
+     */
+    private Paint pImpactos;
+
+    /**
+     * Objeto boton para acceder a la información sobre la finalidad del juego
+     */
+    private Boton btnFinalidad;
+
+    /**
+     * Objeto boton para acceder a la información sobre los niveles del juego
+     */
+    private Boton btnNiveles;
+
+    /**
+     * Objeto boton para acceder a la información sobre la nave del juego
+     */
+    private Boton btnNave;
+
+    /**
+     * Objeto boton para acceder a la información sobre los marcianos del juego
+     */
+    private Boton btnMarcianos;
+
+    /**
+     * Cadena auxiliar que nos servirá para conocer que tenemos que dibujar
+     */
     private String modo;
-    private int izqBoton, drchBoton, altoBoton;
+
+    /**
+     * Entero que nos indica la posicion en el eje x que empieza el boton
+     */
+    private int izqBoton;
+
+    /**
+     * Entero que nos indica la posicion en el eje x que acaba el boton
+     */
+    private int drchBoton;
+
+    /**
+     * Entero que nos indica la altura que tendrán los botones (eje Y)
+     */
+    private int altoBoton;
 
     /**
      * Constructor de la clase Ayuda
-     * @param contexto Objeto contexto
-     * @param idPantalla Entero que representa el id de esta pantalla
+     *
+     * @param contexto      Objeto contexto
+     * @param idPantalla    Entero que representa el id de esta pantalla
      * @param anchoPantalla Entero que representa el ancho de la pantalla
-     * @param altoPantalla Entero que representa el alto de la pantalla
+     * @param altoPantalla  Entero que representa el alto de la pantalla
      */
     public Ayuda(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
         super(contexto, idPantalla, anchoPantalla, altoPantalla);
@@ -65,14 +221,13 @@ public class Ayuda extends Pantalla {
         tMarcianos = contexto.getString(R.string.btnMarcianos);
         impacto1 = contexto.getString(R.string.oneD);
         impacto2 = contexto.getString(R.string.twoD);
-txtP=contexto.getString(R.string.points);
-txtP2=contexto.getString(R.string.points2);
+        txtP = contexto.getString(R.string.points);
+        txtP2 = contexto.getString(R.string.points2);
         finalidad = txtFinalidad.split(" ");
         infoNave = txtNave.split(" ");
         infoNiveles = txtNiveles.split(" ");
         infoMarcianos = txtMarcianos.split(" ");
         primeraY = altoPantalla / 5;
-        contador = 0;
         posX = 0;
         //-----------FONDO----------
         fondo = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.fondo2);
@@ -131,7 +286,7 @@ txtP2=contexto.getString(R.string.points2);
 
     /**
      * Este metodo se encarga de dibujar una lista de palabras de manera que entren en la pantalla
-     * @param c Objeto canvas para poder dibujar
+     * @param c     Objeto canvas para poder dibujar
      * @param texto Array de palabras que tendrá que dibujar de manera que todas entren en la pantalla
      */
     public void dibujaTexto(Canvas c, String[] texto) {
@@ -235,6 +390,7 @@ txtP2=contexto.getString(R.string.points2);
 
     /**
      * Este método se encarga de gestionar los movimientos que se producen en dicha pantalla
+     *
      * @param event Evento según el tipo de pulsación o movimiento en la pantalla
      * @return Devuelve un entero. En el caso de pulsar el boton de volver, devuelve el entero que representa la pantalla de inicio, es decir, devuelve 0. De haber pulsado cualquier otra cosa que no fuera el boton de volver, devuelve el entero de la pantalla actual.
      */

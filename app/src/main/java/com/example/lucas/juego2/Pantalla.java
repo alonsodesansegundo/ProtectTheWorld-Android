@@ -19,27 +19,82 @@ import android.view.SurfaceHolder;
 
 /**
  * Clase padre de la que heredan todas las pantallas
+ *
  * @author Lucas Alonso de San Segundo
  */
 public class Pantalla {
+    /**
+     * Ruta donde se encuentra la fuente que voy a utilizar
+     */
     private String fuente;
+
+    /**
+     * Objeto SharedPreferences
+     */
     public SharedPreferences preferencias;
+
+    /**
+     * Objeto MediaPlayer
+     */
     private MediaPlayer mediaPlayer;
+
+    /**
+     * Objeto AudioManager
+     */
     private AudioManager audioManager;
+
+    /**
+     * Booleana para ver si tiene que sonar la musica o no
+     */
     public boolean musica;
+
+    /**
+     * Objeto contexto
+     */
     public Context contexto;
-    public int idPantalla, altoPantalla, anchoPantalla;
+
+    /**
+     * Entero que representa el codigo de la pantalla
+     */
+    public int idPantalla;
+
+    /**
+     * Entero que representa el alto de la pantalla
+     */
+    public int altoPantalla;
+
+    /**
+     * Entero que representa el ancho de la pantalla
+     */
+    public int anchoPantalla;
+
+    /**
+     * Bitmap(imagen) que estableceremos como fondo
+     */
     public Bitmap fondo;
+
+    /**
+     * Objeto paint para dibujar el titulo de la pantalla actual
+     */
     public Paint pTitulo;
+
+    /**
+     * Objeto Vibrator
+     */
     public Vibrator miVibrador;
+
+    /**
+     * Objeto Typeface para cambiar la fuente
+     */
     private Typeface typeFace;
 
     /**
      * Constructor de la clase Pantalla
-     * @param contexto Objeto contexto
-     * @param idPantalla Entero que representa el id de esta pantalla
+     *
+     * @param contexto      Objeto contexto
+     * @param idPantalla    Entero que representa el id de esta pantalla
      * @param anchoPantalla Entero que representa el ancho de la pantalla
-     * @param altoPantalla Entero que representa el alto de la pantalla
+     * @param altoPantalla  Entero que representa el alto de la pantalla
      */
     public Pantalla(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
         preferencias = contexto.getSharedPreferences("preferencias", Context.MODE_PRIVATE);
@@ -61,6 +116,7 @@ public class Pantalla {
 
     /**
      * Método que se usará para cambiar la fuente de los diferentes paint del juego
+     *
      * @return Objeto Typeface con el que cambiar la fuente de los paint
      */
     public Typeface getTypeFace() {
@@ -69,6 +125,7 @@ public class Pantalla {
 
     /**
      * Método con el que obtener el AudioManager para el sonido de la explosión de la nave
+     *
      * @return Objeto AudioManager
      */
     public AudioManager getAudioManager() {
@@ -84,6 +141,7 @@ public class Pantalla {
 
     /**
      * Rutina de dibujo en el lienzo. Se le llamará desde el hilo
+     *
      * @param c Objeto Canvas para poder dibujar
      */
     public void dibujar(Canvas c) {
@@ -96,6 +154,7 @@ public class Pantalla {
 
     /**
      * Método que captura los diferentes eventos de pulsación que se pueden producir en la pantalla
+     *
      * @param event MotionEvent evento de pulsación
      * @return Entero que representa el código de la pantalla
      */
@@ -124,7 +183,8 @@ public class Pantalla {
 
     /**
      * Método que nos servirá para detectar si hemos pulsado en la región donde está un rect o no
-     * @param boton Rect que simula el botón
+     *
+     * @param boton  Rect que simula el botón
      * @param evento MotionEvent del que obtendremos el punto X,Y
      * @return True si hemos pulsado en dicho Rect, false de lo contrario
      */
@@ -138,6 +198,7 @@ public class Pantalla {
 
     /**
      * Método que sirve para realizar la "configuración" de la música
+     *
      * @param cancion Entero que representa la canción que que tendrá dicha pantalla
      */
     public void configuraMusica(int cancion) {

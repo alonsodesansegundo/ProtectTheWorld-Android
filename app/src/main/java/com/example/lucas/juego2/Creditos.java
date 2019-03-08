@@ -14,22 +14,112 @@ import java.util.List;
 
 /**
  * Esta clase se encarga de dibujar la pantalla de créditos y gestionar su funcionalidad
+ *
  * @author Lucas Alonso de San Segundo
  */
 public class Creditos extends Pantalla {
+    /**
+     * Booleana para detectar si hay algun dedo en la pantalla o no, si lo hay, no muevo el texto
+     */
     private boolean hayDedo;
+
+    /**
+     * Entero que nos sirve para gestionar que texto debe aparecer en la pantalla
+     */
     private int modo;
+
+    /**
+     * Entero con el que iremos moviendo el texto respecto al eje Y
+     */
     private int posY;
+
+    /**
+     * Bitmap (imagen) para el boton que nos permite volver al menu principal
+     */
     private Bitmap imgVolver;
+
+    /**
+     * Objeto boton que nos permite regresar al menu principal
+     */
     private Boton back;
-    private String txtCreditos, txtMusica, txtFuente, txtImagenes, txtImg, txtImg2, txtMusic, txtFont, txtCanal,txtYotube,txtHecho, txtAyuda;
-    private Paint pTexto, pTexto2;
+
+    /**
+     * Cadena que representará la palabra créditos
+     */
+    private String txtCreditos;
+
+    /**
+     * Cadena que representará la palabra musica
+     */
+    private String txtMusica;
+
+    /**
+     * Cadena que representará la palabra fuente
+     */
+    private String txtFuente;
+
+    /**
+     * Cadena que representará la palabra imagenes
+     */
+    private String txtImagenes;
+
+    /**
+     * Cadena que representará el primer agradecimiento imagenes
+     */
+    private String txtImg;
+
+    /**
+     * Cadena que representará el segundo agradecimiento imagenes
+     */
+    private String txtImg2;
+
+    /**
+     * Cadena que representará el agradecimiento a la musica
+     */
+    private String txtMusic;
+
+    /**
+     * Cadena que representará el afradecimiento a la fuente
+     */
+    private String txtFont;
+
+    /**
+     * Cadena que representará la el agradecimiento al canal
+     */
+    private String txtCanal;
+
+    /**
+     * Cadena que representará la direccion de youtube
+     */
+    private String txtYotube;
+
+    /**
+     * Cadena que representará el texto Hecho y dirigido por
+     */
+    private String txtHecho;
+
+    /**
+     * Cadena que representará el texto Con la ayuda de
+     */
+    private String txtAyuda;
+
+    /**
+     * Objeto paint para escribir el texto del agradecimiento actual Imagenes,Musica
+     */
+    private Paint pTexto;
+
+    /**
+     * Objeto paint para escribir el texto de donde hemos sacado los diferentes datos; imagenes, musica...
+     */
+    private Paint pTexto2;
+
     /**
      * Constructor de la pantalla Creditos
-     * @param contexto Objeto contexto
-     * @param idPantalla Entero que representa el id de esta pantalla
+     *
+     * @param contexto      Objeto contexto
+     * @param idPantalla    Entero que representa el id de esta pantalla
      * @param anchoPantalla Entero que representa el ancho de la pantalla
-     * @param altoPantalla Entero que representa el alto de la pantalla
+     * @param altoPantalla  Entero que representa el alto de la pantalla
      */
     public Creditos(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
         super(contexto, idPantalla, anchoPantalla, altoPantalla);
@@ -58,8 +148,8 @@ public class Creditos extends Pantalla {
         txtFont = contexto.getString(R.string.font1);
         txtHecho = contexto.getString(R.string.hecho);
         txtAyuda = contexto.getString(R.string.conAyuda);
-txtYotube=contexto.getString(R.string.youtube);
-txtCanal=contexto.getString(R.string.canalYT);
+        txtYotube = contexto.getString(R.string.youtube);
+        txtCanal = contexto.getString(R.string.canalYT);
         //-------------FONDO-------------
         fondo = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.fondo2);
         fondo = Bitmap.createScaledBitmap(fondo, anchoPantalla, altoPantalla, true);
@@ -79,6 +169,7 @@ txtCanal=contexto.getString(R.string.canalYT);
 
     /**
      * Este método se encarga de dibujar los creditos relacionados con las imagenes
+     *
      * @param c Objeto canvas para poder dibujar
      */
     public void dibujaImagenes(Canvas c) {
@@ -90,18 +181,20 @@ txtCanal=contexto.getString(R.string.canalYT);
 
     /**
      * Este método se encarga de dibujar los creditos relacionados con la música
+     *
      * @param c Objeto canvas para poder dibujar
      */
     public void dibujaMusica(Canvas c) {
         //texto de agradecimientos
         c.drawText(txtMusica, anchoPantalla / 2, posY, pTexto);
         c.drawText(txtMusic, anchoPantalla / 2, posY + pTexto.getTextSize(), pTexto2);
-        c.drawText(txtYotube,anchoPantalla/2,posY+pTexto.getTextSize()+pTexto2.getTextSize(),pTexto2);
-        c.drawText(txtCanal,anchoPantalla/2,posY+pTexto.getTextSize()+pTexto2.getTextSize()*2,pTexto2);
+        c.drawText(txtYotube, anchoPantalla / 2, posY + pTexto.getTextSize() + pTexto2.getTextSize(), pTexto2);
+        c.drawText(txtCanal, anchoPantalla / 2, posY + pTexto.getTextSize() + pTexto2.getTextSize() * 2, pTexto2);
     }
 
     /**
      * Este método se encarga de dibujar los creditos relacionados con la fuente
+     *
      * @param c Objeto canvas para poder dibujar
      */
     public void dibujaFuente(Canvas c) {
@@ -112,19 +205,21 @@ txtCanal=contexto.getString(R.string.canalYT);
 
     /**
      * Este método se encarga de dibujar los creditos relacionados con las personas que han ayudado a la realización de dicho juego
+     *
      * @param c Objeto canvas para poder dibujar
      */
     public void dibujaUltimo(Canvas c) {
-    //dibujo el texto
+        //dibujo el texto
         c.drawText(txtAyuda, anchoPantalla / 2, posY, pTexto);
         c.drawText("Javier Conde", anchoPantalla / 2, posY + pTexto.getTextSize(), pTexto2);
 
-        c.drawText(txtHecho,anchoPantalla/2,posY + pTexto.getTextSize()*3,pTexto);
-        c.drawText("Lucas Alonso",anchoPantalla / 2, posY + pTexto.getTextSize()*4, pTexto2);
+        c.drawText(txtHecho, anchoPantalla / 2, posY + pTexto.getTextSize() * 3, pTexto);
+        c.drawText("Lucas Alonso", anchoPantalla / 2, posY + pTexto.getTextSize() * 4, pTexto2);
     }
 
     /**
      * Método que se encarga de ir dibujando los creditos. Se encarga de gestionar que creditos hay que dibujar y tambien da la sensación de movimiento hacia abajo.
+     *
      * @param c Objeto canvas para poder dibujar
      */
     @Override
@@ -169,6 +264,7 @@ txtCanal=contexto.getString(R.string.canalYT);
 
     /**
      * Este método se encarga de gestionar los movimientos que se producen en dicha pantalla
+     *
      * @param event Evento según el tipo de pulsación o movimiento en la pantalla
      * @return Devuelve un entero. En el caso de pulsar el boton de volver, devuelve el entero que representa la pantalla de inicio, es decir, devuelve 0. De haber pulsado cualquier otra cosa que no fuera el boton de volver, devuelve el entero de la pantalla actual.
      */

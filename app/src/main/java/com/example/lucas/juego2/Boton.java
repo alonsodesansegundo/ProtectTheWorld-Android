@@ -12,10 +12,34 @@ import android.graphics.Typeface;
  * @author Lucas Alonso de San Segundo
  */
 public class Boton {
-    private Paint p, pTextoBtn;
+    /**
+     * Objeto paint con el que pintaremos el contenedor (Rect)
+     */
+    private Paint p;
+
+    /**
+     * Objeto paint con el que pintaremos el texto del boton
+     */
+    private Paint pTextoBtn;
+
+    /**
+     * Objeto Rect que utilizaremos para ver si el usuario pulsa el boton o no
+     */
     private Rect rectangulo;
+
+    /**
+     * Bandera que utilizaremos para ver que el usuario realmente pulsa el boton, es decir, pulsa y levanta el dedo en la region donde esta situado el boton
+     */
     private boolean bandera;
+
+    /**
+     * Bitmap (imagen) que tendrá el boton
+     */
     private Bitmap img;
+
+    /**
+     * Texto que aparecerá en el boton
+     */
     private String texto;
 
     /**

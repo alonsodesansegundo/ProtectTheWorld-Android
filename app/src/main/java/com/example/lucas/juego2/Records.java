@@ -16,33 +16,147 @@ import java.util.ArrayList;
 
 /**
  * Esta clase se encarga de dibujar la pantalla de records y gestionar su funcionalidad
+ *
  * @author Lucas Alonso de San Segundo
  */
 public class Records extends Pantalla {
+    /**
+     * Bitmap (imagen) para el boton de volver al menu principal
+     */
     private Bitmap imgVolver;
+
+    /**
+     * String (query) que realiza la consulta de todos las puntuaciones de la bd
+     */
     private String consulta;
+
+    /**
+     * Objeto boton que nos permite regresar al menu principal
+     */
     private Boton back;
+
+    /**
+     * Objeto BaseDeDatos
+     */
     private BaseDeDatos bd;
+
+    /**
+     * Objeto SQLiteDatabase
+     */
     private SQLiteDatabase db;
+
+    /**
+     * Objeto Cursor
+     */
     private Cursor c;
+
+    /**
+     * Array de lineas que tengo que mostrar en la pantalla
+     */
     private ArrayList<String> texto;
+
+    /**
+     * Cadena auxiliar en la que guardo el texto que añado al arraylist texto
+     */
     private String aux;
-    private int contador, altoTexto;
+
+    /**
+     * Entero que sirve para mostrar la posicion de la puntuacion y siglas
+     */
+    private int contador;
+
+    /**
+     * Entero que representa el tamaño que tendrá el texto
+     */
+    private int altoTexto;
+
+    /**
+     * Entero que me sirve para dibujar los records respecto al eje Y
+     */
     private int posY;
+
+    /**
+     * Objeto paint que uso para pintar los recors
+     */
     private Paint pPuntuaciones;
-    private String txtRecords, txtSi, txtNo, txtSeguro;
-    private Bitmap oro, plata, bronce;
-    private Boton btnBorrarRecords, btnSi, btnNo;
+
+    /**
+     * String cadena que representa el texto Borrar records
+     */
+    private String txtRecords;
+
+    /**
+     * String cadena que representa el texto si
+     */
+    private String txtSi;
+
+    /**
+     * String cadena que representa el texto no
+     */
+    private String txtNo;
+
+    /**
+     * String cadena que representa el texto Estas seguro?
+     */
+    private String txtSeguro;
+
+    /**
+     * Bitmap(imagen) que representa la medalla de oro
+     */
+    private Bitmap oro;
+
+    /**
+     * Bitmap(imagen) que representa la medalla de plata
+     */
+    private Bitmap plata;
+
+    /**
+     * Bitmap(imagen) que representa la medalla de bronce
+     */
+    private Bitmap bronce;
+
+    /**
+     * Objeto boton que nos pregunta si queremos borrar los reccords
+     */
+    private Boton btnBorrarRecords;
+
+    /**
+     * Objeto boton que nos permite borrar los records
+     */
+    private Boton btnSi;
+
+    /**
+     * Objeto boton que nos permite cancelar el hecho de querer borrar los records
+     */
+    private Boton btnNo;
+
+    /**
+     * Booleana de control
+     */
     private boolean submenu;
+
+    /**
+     * Objeto paint con el que pinto el submenu de quieres borrar...
+     */
     private Paint pMenu;
-    private int altoMenu, margenMenu;
+
+    /**
+     * Entero para dibujar el submenu respecto al eje x
+     */
+    private int altoMenu;
+
+    /**
+     * Entero para dibujar el submenu respecto al eje Y
+     */
+    private int margenMenu;
 
     /**
      * Constructor de la pantalla Records
-     * @param contexto Objeto contexto
-     * @param idPantalla Entero que representa el id de esta pantalla
+     *
+     * @param contexto      Objeto contexto
+     * @param idPantalla    Entero que representa el id de esta pantalla
      * @param anchoPantalla Entero que representa el ancho de la pantalla
-     * @param altoPantalla Entero que representa el alto de la pantalla
+     * @param altoPantalla  Entero que representa el alto de la pantalla
      */
     public Records(Context contexto, int idPantalla, int anchoPantalla, int altoPantalla) {
         super(contexto, idPantalla, anchoPantalla, altoPantalla);
@@ -110,6 +224,7 @@ public class Records extends Pantalla {
 
     /**
      * Método que se encarga de dibujar la pantalla de récords
+     *
      * @param c Objeto Canvas para poder dibujar
      */
     @Override
@@ -158,6 +273,7 @@ public class Records extends Pantalla {
 
     /**
      * Este método se encarga de gestionar los movimientos que se producen en dicha pantalla
+     *
      * @param event Evento según el tipo de pulsación o movimiento en la pantalla
      * @return Devuelve un entero. En el caso de pulsar el boton de volver, devuelve el entero que representa la pantalla de inicio, es decir, devuelve 0. De haber pulsado cualquier otra cosa que no fuera el boton de volver, devuelve el entero de la pantalla actual.
      */
@@ -267,6 +383,7 @@ public class Records extends Pantalla {
 
     /**
      * Método que se encarga de dibujar el submenú de confirmación para eliminar la base de datos
+     *
      * @param c Objeto Canvas para poder dibujar
      */
     public void dibujaConfirmacion(Canvas c) {

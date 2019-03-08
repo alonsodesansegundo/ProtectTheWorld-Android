@@ -429,9 +429,61 @@ public class Gameplay extends Pantalla {
      * Objeto Cursor
      */
     private Cursor c;
-    private String txtContinuar, txtSalir, txtAccion, txtEmpezar, txtSi, txtRepetir, txtNo, txtSiglas, txtEnviar;
+
+    /**
+     * Cadena que representará la palabra continuar
+     */
+    private String txtContinuar;
+
+    /**
+     * Cadena que representará la palabra salir
+     */
+    private String txtSalir;
+
+    /**
+     * Cadena que representará la palabra accion
+     */
+    private String txtAccion;
+
+    /**
+     * Cadena que representará el texto ¿Estás listo?
+     */
+    private String txtEmpezar;
+
+    /**
+     * Cadena que representará la palabra Si
+     */
+    private String txtSi;
+
+    /**
+     * Cadena que representará el texto ¿Otra partida?
+     */
+    private String txtRepetir;
+
+    /**
+     * Cadena que representará la palabra No
+     */
+    private String txtNo;
+
+    /**
+     * Cadena que representará el texto Introduce tu siglas
+     */
+    private String txtSiglas;
+
+    /**
+     * Cadena que representará la palabra Enviar
+     */
+    private String txtEnviar;
     //timer para disparo marcianos
+
+    /**
+     * Objeto TimerTask para el disparo de los marcianos
+     */
     private TimerTask task;
+
+    /**
+     * Objeto Timer para el disparo de los marcianos
+     */
     private Timer miTimer;
 
     //------------------------CONSTRUCTOR------------------------

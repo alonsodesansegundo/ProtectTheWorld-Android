@@ -8,7 +8,14 @@ import android.graphics.PointF;
  * @author Lucas Alonso de San Segundo
  */
 public class Fondo {
+    /**
+     * PointF que representa la posicion
+     */
     public PointF posicion;
+
+    /**
+     * Bitmap (imagen) que estableceremos como fondo
+     */
     public Bitmap imagen;
 
     /**

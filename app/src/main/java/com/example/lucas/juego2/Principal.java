@@ -13,6 +13,9 @@ import android.view.Window;
  * @author Lucas Alonso de San Segundo
  */
 public class Principal extends AppCompatActivity {
+    /**
+     * Objeto Juego
+     */
     private Juego juego;
 
     /**

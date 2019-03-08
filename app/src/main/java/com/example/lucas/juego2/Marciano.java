@@ -15,11 +15,39 @@ import java.util.ArrayList;
  * @author Lucas Alonso de San Segundo
  */
 public class Marciano {
+    /**
+     * PointF que representa la posicion del marciano
+     */
     private PointF pos;
+
+    /**
+     * Bitmap (imagen)  que representa el marciano
+     */
     private Bitmap imagen;
+
+    /**
+     * Entero que represente la salud del marciano
+     */
     private int salud;
+
+    /**
+     * Double que representa la velocidad de movimiento lateral del marciano
+     */
     private double vMovimiento;
-    private RectF contenedor, aux;
+
+    /**
+     * RectF contenedor con el que detectaré la colisión
+     */
+    private RectF contenedor;
+
+    /**
+     * RectF contenedor con el que detectaré la colisión
+     */
+    private RectF aux;
+
+    /**
+     * Entero que representa la puntuación que se obtiene tras eliminar al marciano
+     */
     private int puntuacion;
 
     //------------------------CONSTRUCTOR------------------------

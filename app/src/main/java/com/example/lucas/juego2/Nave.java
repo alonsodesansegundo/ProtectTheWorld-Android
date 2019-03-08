@@ -14,13 +14,40 @@ import android.graphics.RectF;
  * @author Lucas Alonso de San Segundo
  */
 public class Nave {
+    /**
+     * PointF que representa la posicion de la imagen
+     */
     private PointF pos;
+
+    /**
+     * Bitmap(imagen) que representa la imagen de la nave
+     */
     private Bitmap imagen;
+
+    /**
+     * RectF que será el contenedor de la nave con el que detectaré la colision
+     */
     private RectF contenedor;
     //para el proyectil
+
+    /**
+     * Booleana que indica si hay una bala en la pantalla o no
+     */
     private boolean hayBala;
+
+    /**
+     * RectF contenedor de la bala con el que detectaré las colisiones
+     */
     private RectF bala;
+
+    /**
+     *Bitmap (imagen) que representá la bala de la nave
+     */
     private Bitmap imgBala;
+
+    /**
+     * Double que representa la velocidad con la que se mueve la bala con respecto al eje y (hacia arriba)
+     */
     private double vBala;
     //------------------------CONSTRUCTOR------------------------
 

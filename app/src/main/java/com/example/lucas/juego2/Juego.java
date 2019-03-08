@@ -13,16 +13,57 @@ import android.view.SurfaceView;
  */
 public class Juego  extends SurfaceView implements SurfaceHolder.Callback{
     // control de tiempo de la aplicación
-    long last,now;
+    /**
+     * Long para el control temporal
+     */
+    long last;
+
+    /**
+     * Long para el control temporal
+     */
+    long now;
+    /**
+     * Entero para el control temporal
+     */
     int timeXFrame;
+    /**
+     * Entero para el control temporal
+     */
     int maxFrames;
 
+    /**
+     * Objeto SurfaceHolder
+     */
     private SurfaceHolder surfaceHolder;      // Interfaz abstracta para manejar la superficie de dibujado
+
+    /**
+     * Objeto contexto
+     */
     private Context context;                  // Contexto de la aplicación
+
+    /**
+     * Objeto pantalla que representa la pantalla actual
+     */
     public Pantalla pantallaActual;
+
+    /**
+     * Entero que representa el ancho de la pantalla
+     */
     private int anchoPantalla=1;              // Ancho de la pantalla, su valor se actualiza en el método surfaceChanged
+
+    /**
+     * Entero que representa el alto de la pantalla
+     */
     private int altoPantalla=1;               // Alto de la pantalla, su valor se actualiza en el método surfaceChanged
+
+    /**
+     * Hilo
+     */
     private Hilo hilo;                        // Hilo encargado de dibujar y actualizar la física
+
+    /**
+     * Control del hilo
+     */
     private boolean funcionando = false;      // Control del hilo
 
     /**
