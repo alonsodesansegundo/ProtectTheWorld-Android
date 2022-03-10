@@ -1,4 +1,4 @@
-# Videojuego 'Protect the World' versión escritorio.
+# Videojuego 'Protect the World' versión móvil.
 En este repositorio se encuentra el videojuego 'Protect the World' en versión móvil para Android. 
 
 Protect the World es un videojuego muy similar al tradicional 'Space Invaders', con la diferencia de que en Protect the World una vez superamos el primer nivel aparecerán unos nuevos marcianos, los cuales morirán de dos impactos en lugar de uno. Es decir, la dificultad de matar a los marcianos aumenta a medida que vamos superando los niveles.
